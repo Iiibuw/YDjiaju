@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: '/cases', label: '案例展示' },
   { to: '/news', label: '新闻资讯' },
   { to: '/jobs', label: '人才招聘' },
+  { to: '/service', label: '售后服务' },
   { to: '/about', label: '关于我们' },
   { to: '/contact', label: '联系我们' },
 ]
@@ -34,6 +35,9 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-4 text-sm">
+            <Link to="/member" className="text-stone-500 hover:text-ink" title="会员中心">
+              👤 会员
+            </Link>
             <Link to="/login" className="text-stone-500 hover:text-ink" title="后台">
               后台
             </Link>

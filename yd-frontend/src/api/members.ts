@@ -38,3 +38,8 @@ export async function memberLogin(payload: { phone: string; password: string }):
   const env = await http.post<ApiEnvelope<MemberLoginResp>>('/members/login', payload)
   return unwrap(env)
 }
+
+export async function memberRegister(payload: { phone: string; password: string; nickname?: string | null }): Promise<MemberOut> {
+  const env = await http.post<ApiEnvelope<MemberOut>>('/members/register', payload)
+  return unwrap(env)
+}

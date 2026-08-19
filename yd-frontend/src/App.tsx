@@ -9,10 +9,14 @@ import Cases from './pages/Cases'
 import CaseDetail from './pages/CaseDetail'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Jobs from './pages/Jobs'
+import JobDetail from './pages/JobDetail'
+import Service from './pages/Service'
+import MemberCenter from './pages/MemberCenter'
 import MainLayout from './layouts/MainLayout'
 
 /**
- * 前台路由（M2-2：9 个页面，含资讯 + 案例 + 关于 + 联系）。
+ * 前台路由（M2-2：13 个页面，全量页面）。
  * 用 react-router-dom v7 的 data-router API（createBrowserRouter）。
  */
 const router = createBrowserRouter([
@@ -29,6 +33,10 @@ const router = createBrowserRouter([
       { path: 'cases/:id', element: <CaseDetail /> },
       { path: 'about', element: <About /> },
       { path: 'contact', element: <Contact /> },
+      { path: 'jobs', element: <Jobs /> },
+      { path: 'jobs/:id', element: <JobDetail /> },
+      { path: 'service', element: <Service /> },
+      { path: 'member', element: <MemberCenter /> },
       { path: '*', element: <Home /> },
     ],
   },
