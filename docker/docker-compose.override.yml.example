@@ -1,0 +1,34 @@
+# ==========================================================
+# Docker Compose 覆盖文件（可选）
+# ==========================================================
+# 用法：
+#   1) cp docker-compose.override.yml.example docker-compose.override.yml
+#   2) 编辑下方 db.env 中的连接信息
+#   3) docker compose up -d
+#
+# 当存在 docker-compose.override.yml 时，Docker Compose 会自动
+# merge 到主配置：mysql 容器被 disabled=true 跳过，其它服务 env 注入。
+# ==========================================================
+
+services:
+  mysql:
+    # 禁用 docker 自带 mysql，复用本机已安装的 MySQL 8
+    profiles: ["with-mysql"]   # 仅当 --profile with-mysql 时才启用
+
+  backend:
+    environment:
+      DB_HOST: "${LOCAL_DB_HOST}"
+      DB_PORT: "${LOCAL_DB_PORT}"
+      DB_USER: "${LOCAL_DB_USER}"
+      DB_PASSWORD: "${LOCAL_DB_PASSWORD}"
+      DB_NAME: "${LOCAL_DB_NAME}"
+
+  redis:
+    profiles: ["with-redis"]   # 同理可禁用 docker redis
+
+# 在 .env 中填入：
+#   LOCAL_DB_HOST=host.docker.internal   # Windows 上指向宿主 localhost
+#   LOCAL_DB_PORT=3306
+#   LOCAL_DB_USER=yd
+#   LOCAL_DB_PASSWORD=your-password
+#   LOCAL_DB_NAME=yd_furniture

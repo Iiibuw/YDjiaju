@@ -4,6 +4,13 @@
 # 停止：docker compose down
 # 日志：docker compose logs -f [service]
 # 重置数据：docker compose down -v
+#
+# === 复用本地 MySQL 模式（可选）===
+# 如本机已有 MySQL 8 且不想用 docker mysql，可：
+#   1) 复制 docker-compose.override.yml.example → docker-compose.override.yml
+#   2) 编辑其中的 DB_HOST / DB_PORT / DB_PASSWORD
+#   3) docker compose up -d   （compose 自动覆盖 mysql 服务的启用）
+# ====================================
 
 services:
   # ===== MySQL 8.0 =====
