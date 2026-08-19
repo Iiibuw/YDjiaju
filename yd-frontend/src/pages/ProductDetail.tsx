@@ -1,12 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import ImageGallery from '../components/ImageGallery'
+import BuyNowModal from '../components/BuyNowModal'
+import BookingModal from '../components/BookingModal'
 import { products } from '../api'
 
 export default function ProductDetail() {
   const { id } = useParams()
   const productId = Number(id)
+  const [buyOpen, setBuyOpen] = useState(false)
+  const [bookingOpen, setBookingOpen] = useState(false)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['product', productId],
@@ -59,8 +64,8 @@ export default function ProductDetail() {
             <p className="mt-6 font-display text-2xl text-ink">{data.price_yuan ?? '价格面议'}</p>
 
             <div className="mt-8 flex gap-3">
-              <button className="btn-primary flex-1">立即购买</button>
-              <button className="btn-outline flex-1">预约到店</button>
+              <button className="btn-primary flex-1" onClick={() => setBuyOpen(true)}>立即购买</button>
+              <button className="btn-outline flex-1" onClick={() => setBookingOpen(true)}>预约到店</button>
             </div>
 
             {data.specs && Object.keys(data.specs).length > 0 && (
@@ -88,6 +93,21 @@ export default function ProductDetail() {
             )}
           </div>
         </div>
+      )}
+
+      {/* 下单 / 预约 Modal */}
+      {data && (
+        <>
+          <BuyNowModal
+            open={buyOpen}
+            productId={data.id}
+            productName={data.name}
+            productCover={data.cover_url}
+            priceCents={data.min_price_cents ?? data.max_price_cents ?? 0}
+            onClose={() => setBuyOpen(false)}
+          />
+          <BookingModal open={bookingOpen} sourcePage={`/products/${data.id}`} onClose={() => setBookingOpen(false)} />
+        </>
       )}
     </>
   )

@@ -575,6 +575,117 @@ section("M2-2-B.12 后台删除留言")
 data, code = http("DELETE", f"/api/v1/admin/messages/{new_msg_id}", token=token)
 check("DELETE /admin/messages/{id} → 200", code == 200)
 
+# ==========================================================
+# M2-3 Orders + Appointments
+# ==========================================================
+
+# ===== M2-3.1 下单（游客） =====
+section("M2-3.1 下单（游客模式）")
+data, code = http("POST", "/api/v1/orders", {
+    "items": [{"product_id": 1, "quantity": 1}],
+    "receiver_name": "测试收货人",
+    "receiver_phone": "13800138099",
+    "receiver_address": "广东省广州市天河区测试路 1 号",
+    "remark": "M2-3 测试订单",
+})
+check("POST /orders → 200", code == 200)
+check("code == 0", data.get("code") == 0)
+check("返回 order_no", data["data"]["order_no"])
+check("status == pending", data["data"]["status"] == "pending")
+check("final_cents == 128000", data["data"]["final_cents"] == 128000)
+check("items 含产品名快照", data["data"]["items"][0]["product_name"] == "胡桃禮·实木餐桌")
+new_order_id = data["data"]["id"]
+
+# ===== M2-3.2 下单产品不存在 =====
+section("M2-3.2 下单不存在的产品")
+data, code = http("POST", "/api/v1/orders", {
+    "items": [{"product_id": 9999, "quantity": 1}],
+    "receiver_name": "测试", "receiver_phone": "13800138099",
+    "receiver_address": "广东省广州市测试路 1 号",
+})
+check("下架产品 → 400", "400" in str(code) or data.get("code") == 400)
+
+# ===== M2-3.3 后台订单列表 =====
+section("M2-3.3 后台订单列表")
+data, code = http("GET", "/api/v1/admin/orders", token=token)
+check("GET /admin/orders → 200", code == 200)
+check("total >= 2 (1 种子 + 1 新)", data.get("data", {}).get("total", 0) >= 2)
+
+# ===== M2-3.4 后台订单状态流转 =====
+section("M2-3.4 订单状态流转 paid→shipped→completed")
+data, code = http("PUT", f"/api/v1/admin/orders/{new_order_id}/status", {"status": "paid"}, token=token)
+check("pending→paid → 200", code == 200)
+check("paid_date 已记录", data["data"]["paid_date"] is not None)
+
+data, code = http("PUT", f"/api/v1/admin/orders/{new_order_id}/status", {"status": "shipped"}, token=token)
+check("paid→shipped → 200", code == 200)
+check("shipped_date 已记录", data["data"]["shipped_date"] is not None)
+
+data, code = http("PUT", f"/api/v1/admin/orders/{new_order_id}/status", {"status": "completed"}, token=token)
+check("shipped→completed → 200", code == 200)
+
+data, code = http("PUT", f"/api/v1/admin/orders/{new_order_id}/status", {"status": "invalid_status"}, token=token)
+check("非法状态 → 400", "400" in str(code) or data.get("code") == 400)
+
+# ===== M2-3.5 前台预约 =====
+section("M2-3.5 前台提交预约")
+data, code = http("POST", "/api/v1/appointments", {
+    "type": "visit",
+    "name": "测试预约",
+    "phone": "13800138099",
+    "preferred_date": "2026-08-25T10:00:00",
+    "message": "想看看实木餐桌。",
+    "source_page": "/products/1",
+})
+check("POST /appointments → 200", code == 200)
+check("status == pending", data["data"]["status"] == "pending")
+new_appt_id = data["data"]["id"]
+
+# ===== M2-3.6 后台预约列表 =====
+section("M2-3.6 后台预约列表")
+data, code = http("GET", "/api/v1/admin/appointments", token=token)
+check("GET /admin/appointments → 200", code == 200)
+check("total >= 3 (2 种子 + 1 新)", data.get("data", {}).get("total", 0) >= 3)
+
+# ===== M2-3.7 后台预约状态跟进 =====
+section("M2-3.7 后台预约状态跟进")
+data, code = http("PUT", f"/api/v1/admin/appointments/{new_appt_id}/status", {
+    "status": "converted",
+    "follow_note": "客户已到店购买胡桃禮餐桌",
+}, token=token)
+check("PUT /admin/appointments/{id}/status → 200", code == 200)
+check("status == converted", data["data"]["status"] == "converted")
+check("follow_note 已记录", data["data"]["follow_note"])
+
+# ===== M2-3.8 会员登录后查我的订单 =====
+section("M2-3.8 会员我的订单（种子订单关联 user_id=1）")
+# 用种子会员 13800138001 登录
+data, code = http("POST", "/api/v1/members/login", {
+    "phone": "13800138001", "password": "member123",
+})
+check("种子会员登录 → 200", code == 200)
+member_token2 = data["data"]["access_token"]
+data, code = http("GET", "/api/v1/orders/me", token=member_token2)
+check("GET /orders/me → 200", code == 200)
+check("total >= 1 (种子订单)", data.get("data", {}).get("total", 0) >= 1)
+check("种子订单 status == paid", data["data"]["items"][0]["status"] == "paid")
+
+# ===== M2-3.9 会员我的预约 =====
+section("M2-3.9 会员我的预约")
+data, code = http("GET", "/api/v1/appointments/me", token=member_token2)
+check("GET /appointments/me → 200", code == 200)
+check("total >= 1 (种子预约)", data.get("data", {}).get("total", 0) >= 1)
+
+# ===== M2-3.10 无 token 我的订单 401 =====
+section("M2-3.10 无 token /orders/me")
+data, code = http("GET", "/api/v1/orders/me")
+check("无 token → 401", code == 401)
+
+# ===== M2-3.11 后台删除预约 =====
+section("M2-3.11 后台删除预约")
+data, code = http("DELETE", f"/api/v1/admin/appointments/{new_appt_id}", token=token)
+check("DELETE /admin/appointments/{id} → 200", code == 200)
+
 # ===== 汇总 =====
 print(f"\n\033[1m════════════════════════════════════════════════════════\033[0m")
 print(f"\033[1m  \033[32m通过：{PASS}\033[0m   \033[31m失败：{FAIL}\033[0m\033[0m")

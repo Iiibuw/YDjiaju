@@ -419,6 +419,64 @@ with _session.SessionLocal() as db:
     db.flush()
     print(f"  ✓ 留言: 2 条")
 
+    # ----- 订单（1 个 + 明细） -----
+    from app.models.order import Order as OrderModel
+    from app.models.order_item import OrderItem as OrderItemModel
+
+    o1 = OrderModel(
+        order_no="YD20260819001",
+        user_id=m1.id,
+        receiver_name="张三",
+        receiver_phone="13800138001",
+        receiver_address="广东省广州市天河区珠江新城花城大道 88 号",
+        status="paid",
+        total_cents=128000,
+        shipping_cents=0,
+        discount_cents=0,
+        final_cents=128000,
+        paid_date=now - timedelta(days=1),
+        created_at=1, updated_at=1,
+    )
+    db.add(o1)
+    db.flush()
+    oi1 = OrderItemModel(
+        order_id=o1.id,
+        product_id=p1.id,
+        product_name=p1.name,
+        cover_url=p1.cover_url,
+        price_cents=128000,
+        quantity=1,
+        subtotal_cents=128000,
+        created_at=1, updated_at=1,
+    )
+    db.add(oi1)
+    print(f"  ✓ 订单: 1 个（{o1.order_no}，¥1280.00）")
+
+    # ----- 预约（2 个） -----
+    from app.models.appointment import Appointment as AppointmentModel
+
+    a1 = AppointmentModel(
+        user_id=m1.id,
+        type="visit",
+        name="张三",
+        phone="13800138001",
+        preferred_date=now + timedelta(days=3),
+        message="想看看胡桃禮系列的餐桌和餐边柜。",
+        status="pending",
+        created_at=1, updated_at=1,
+    )
+    a2 = AppointmentModel(
+        type="custom",
+        name="王女士",
+        phone="13900001111",
+        preferred_date=now + timedelta(days=5),
+        message="想定制一张 2 米的黑胡桃木餐桌。",
+        status="following",
+        created_at=1, updated_at=1,
+    )
+    db.add_all([a1, a2])
+    print(f"  ✓ 预约: 2 个（到店 + 定制）")
+
     db.commit()
 
 print("\n✅ Lite 数据库初始化完成！")

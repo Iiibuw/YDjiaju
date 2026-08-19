@@ -1,9 +1,10 @@
-/** 会员中心：登录 / 注册 / 我的信息（接 /members 系列 API）。 */
+/** 会员中心：登录 / 注册 / 我的信息 + 我的订单 / 我的预约。 */
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 
 import { memberLogin, memberRegister, type MemberOut } from '../api/members'
+import { listMyAppointments, listMyOrders, fmtCents, ORDER_STATUS, APPT_STATUS, type AppointmentOut, type OrderOut } from '../api/orders'
 
 const TOKEN_KEY = 'yd_member_token'
 
@@ -67,6 +68,22 @@ export default function MemberCenter() {
     setMode('login')
   }
 
+  // 已登录后拉取订单 + 预约（token 在 localStorage）
+  const hasToken = !!getMemberToken()
+  const { data: myOrders } = useQuery({
+    queryKey: ['my-orders'],
+    queryFn: () => listMyOrders(),
+    enabled: hasToken && !!member,
+  })
+  const { data: myAppts } = useQuery({
+    queryKey: ['my-appointments'],
+    queryFn: () => listMyAppointments(),
+    enabled: hasToken && !!member,
+  })
+
+  const orders: OrderOut[] = myOrders?.items ?? []
+  const appointments: AppointmentOut[] = myAppts?.items ?? []
+
   const canLogin = /^1[3-9]\d{9}$/.test(loginForm.phone) && loginForm.password.length >= 6
   const canRegister = /^1[3-9]\d{9}$/.test(regForm.phone) && regForm.password.length >= 6
 
@@ -91,17 +108,84 @@ export default function MemberCenter() {
 
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="rounded-xl bg-sand/60 p-5">
-                <p className="text-2xl font-bold text-walnut">0</p>
+                <p className="text-2xl font-bold text-walnut">{orders.length}</p>
                 <p className="mt-1 text-sm text-coal/60">我的订单</p>
               </div>
               <div className="rounded-xl bg-sand/60 p-5">
-                <p className="text-2xl font-bold text-walnut">0</p>
+                <p className="text-2xl font-bold text-walnut">{appointments.length}</p>
                 <p className="mt-1 text-sm text-coal/60">我的预约</p>
               </div>
               <div className="rounded-xl bg-sand/60 p-5">
                 <p className="text-2xl font-bold text-walnut">{member.email ? '已绑定' : '未绑定'}</p>
                 <p className="mt-1 text-sm text-coal/60">邮箱</p>
               </div>
+            </div>
+
+            {/* ===== 我的订单 ===== */}
+            <div className="mt-8">
+              <h3 className="mb-3 font-semibold text-coal">我的订单</h3>
+              {orders.length === 0 ? (
+                <div className="rounded-xl bg-sand/40 p-6 text-center text-sm text-coal/50">暂无订单，去「产品中心」看看吧</div>
+              ) : (
+                <div className="space-y-3">
+                  {orders.map((o) => (
+                    <div key={o.id} className="rounded-xl border border-coal/10 bg-white p-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-coal">订单号：{o.order_no}</span>
+                        <span className="rounded-full bg-walnut/10 px-2.5 py-0.5 text-xs text-walnut">
+                          {ORDER_STATUS[o.status]?.label ?? o.status}
+                        </span>
+                      </div>
+                      <div className="mt-3 flex items-center gap-3">
+                        {o.items[0]?.cover_url && (
+                          <img src={o.items[0].cover_url} alt="" className="h-12 w-12 rounded-lg object-cover" />
+                        )}
+                        <div className="flex-1 text-sm text-coal/70">
+                          {o.items.map((it) => (
+                            <div key={it.id}>{it.product_name} × {it.quantity}</div>
+                          ))}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium text-walnut">{fmtCents(o.final_cents)}</p>
+                          <p className="mt-1 text-xs text-coal/50">
+                            {o.created_date ? new Date(o.created_date).toLocaleDateString('zh-CN') : ''}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ===== 我的预约 ===== */}
+            <div className="mt-8">
+              <h3 className="mb-3 font-semibold text-coal">我的预约</h3>
+              {appointments.length === 0 ? (
+                <div className="rounded-xl bg-sand/40 p-6 text-center text-sm text-coal/50">暂无预约，点击顶部「预约到店」即可预约</div>
+              ) : (
+                <div className="space-y-3">
+                  {appointments.map((a) => (
+                    <div key={a.id} className="rounded-xl border border-coal/10 bg-white p-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-coal">
+                          {a.type === 'visit' ? '到店参观' : a.type === 'consult' ? '方案咨询' : a.type === 'custom' ? '定制服务' : '其他'}
+                        </span>
+                        <span className="rounded-full bg-walnut/10 px-2.5 py-0.5 text-xs text-walnut">
+                          {APPT_STATUS[a.status]?.label ?? a.status}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm text-coal/60">
+                        {a.preferred_date ? `期望时间：${new Date(a.preferred_date).toLocaleString('zh-CN')}` : '时间待确认'}
+                      </p>
+                      {a.message && <p className="mt-1 text-sm text-coal/50">需求：{a.message}</p>}
+                      {a.follow_note && (
+                        <p className="mt-2 rounded bg-green-50 px-2 py-1 text-xs text-green-700">跟进：{a.follow_note}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="mt-8 rounded-xl bg-walnut/5 p-6">
@@ -115,7 +199,7 @@ export default function MemberCenter() {
             </div>
 
             <div className="mt-6 text-center text-sm text-coal/50">
-              订单 / 预约功能将在 M2-3 阶段上线，敬请期待。
+              下单、预约功能已上线，欢迎体验。
             </div>
           </div>
         </div>

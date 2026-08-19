@@ -10,10 +10,11 @@ const MENU = [
   { key: '/news', label: '资讯管理' },
   { key: '/jobs', label: '招聘管理' },
   { key: '/cases', label: '案例管理' },
-  { key: '/depts', label: '部门管理' },
+  { key: '/orders', label: '订单管理' },
+  { key: '/appointments', label: '预约管理' },
   { key: '/members', label: '会员管理' },
   { key: '/messages', label: '留言管理' },
-  // M2-3 接入：订单 / 预约 / 仪表盘 ...
+  { key: '/depts', label: '部门管理' },
 ]
 
 export default function AdminLayout() {

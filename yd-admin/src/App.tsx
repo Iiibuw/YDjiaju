@@ -7,10 +7,12 @@ import Cases from './pages/Cases'
 import Departments from './pages/Departments'
 import Members from './pages/Members'
 import Messages from './pages/Messages'
+import Orders from './pages/Orders'
+import Appointments from './pages/Appointments'
 import AdminLayout from './layouts/AdminLayout'
 
 /**
- * 后台路由（M2-2：资讯 + 招聘 + 案例 + 部门 + 会员 + 留言 + 登录）。
+ * 后台路由（M2-3：资讯 + 招聘 + 案例 + 部门 + 会员 + 留言 + 订单 + 预约 + 登录）。
  * 用 react-router-dom v7 的 data-router API。
  */
 const router = createBrowserRouter([
@@ -26,6 +28,8 @@ const router = createBrowserRouter([
       { path: 'depts', element: <Departments /> },
       { path: 'members', element: <Members /> },
       { path: 'messages', element: <Messages /> },
+      { path: 'orders', element: <Orders /> },
+      { path: 'appointments', element: <Appointments /> },
     ],
   },
   { path: '*', element: <Login /> },

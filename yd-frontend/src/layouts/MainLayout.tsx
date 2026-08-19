@@ -1,5 +1,8 @@
-import { Link, Outlet } from 'react-router-dom'
-import type { ReactNode } from 'react'
+import { Link, Outlet, useLocation } from 'react-router-dom'
+import { useState, type ReactNode } from 'react'
+
+import BookingModal from '../components/BookingModal'
+import ChatWidget from '../components/ChatWidget'
 
 const NAV_ITEMS = [
   { to: '/', label: '首页' },
@@ -13,6 +16,9 @@ const NAV_ITEMS = [
 ]
 
 export default function MainLayout({ children }: { children?: ReactNode }) {
+  const [bookingOpen, setBookingOpen] = useState(false)
+  const location = useLocation()
+
   return (
     <div className="min-h-screen flex flex-col bg-sand text-coal">
       {/* ===== 顶部导航 ===== */}
@@ -35,6 +41,12 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-4 text-sm">
+            <button
+              onClick={() => setBookingOpen(true)}
+              className="rounded-full bg-walnut px-4 py-1.5 font-medium text-white hover:bg-walnut/90"
+            >
+              预约到店
+            </button>
             <Link to="/member" className="text-stone-500 hover:text-ink" title="会员中心">
               👤 会员
             </Link>
@@ -85,6 +97,10 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
           © 2026 YD 家具 · 基于 PRD v1.1 + UI/UX v1.0 + 开发技术文档 v1.1
         </div>
       </footer>
+
+      {/* 全局组件：预约 Modal + 在线客服 */}
+      <BookingModal open={bookingOpen} sourcePage={location.pathname} onClose={() => setBookingOpen(false)} />
+      <ChatWidget />
     </div>
   )
 }

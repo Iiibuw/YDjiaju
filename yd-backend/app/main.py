@@ -12,6 +12,7 @@ from app.api.v1.endpoints import (
     admin_jobs,
     admin_members,
     admin_news,
+    admin_orders,
     admin_products,
     auth,
     health,
@@ -19,6 +20,7 @@ from app.api.v1.endpoints import (
     public_jobs,
     public_members,
     public_news,
+    public_orders,
     public_products,
 )
 from app.core.config import settings
@@ -102,12 +104,14 @@ app.include_router(public_cases.router, prefix=API_V1_PREFIX, tags=["public_case
 app.include_router(public_news.router, prefix=API_V1_PREFIX, tags=["public_news"])
 app.include_router(public_jobs.router, prefix=API_V1_PREFIX, tags=["public_jobs"])
 app.include_router(public_members.router, prefix=API_V1_PREFIX, tags=["public_members"])
+app.include_router(public_orders.router, prefix=API_V1_PREFIX, tags=["public_orders"])
 app.include_router(admin_products.router, prefix=API_V1_PREFIX, tags=["admin_products"])
 app.include_router(admin_news.router, prefix=API_V1_PREFIX, tags=["admin_news"])
 app.include_router(admin_jobs.router, prefix=API_V1_PREFIX, tags=["admin_jobs"])
 app.include_router(admin_cases.router, prefix=API_V1_PREFIX, tags=["admin_cases"])
 app.include_router(admin_depts.router, prefix=API_V1_PREFIX, tags=["admin_depts"])
 app.include_router(admin_members.router, prefix=API_V1_PREFIX, tags=["admin_members"])
+app.include_router(admin_orders.router, prefix=API_V1_PREFIX, tags=["admin_orders"])
 
 
 @app.get("/")
