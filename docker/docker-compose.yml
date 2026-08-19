@@ -25,7 +25,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ../开发文档/数据库设计文档_install_all.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ../../开发文档/数据库设计文档_install_all.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_secret_2026"]
       interval: 10s
