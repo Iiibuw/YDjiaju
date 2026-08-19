@@ -59,6 +59,10 @@ services:
     environment:
       DB_HOST: mysql
       REDIS_HOST: redis
+      # M3：生产覆盖（.env.example 是开发默认值）
+      APP_ENV: production
+      DEBUG: "false"
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-please}
     ports:
       - "8000:8000"
     depends_on:

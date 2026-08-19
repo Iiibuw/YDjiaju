@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 import path from 'node:path'
 
 export default defineConfig({
+  // M3：后台部署在 /admin/ 路径下（nginx 反代），生产资源必须带此前缀
+  base: '/admin/',
   plugins: [react()],
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
