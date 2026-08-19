@@ -1,0 +1,14 @@
+{
+  "name": "yd-furniture-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "YD 家居 单仓库 monorepo（前台 + 后台 + 后端）",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "lint": "bash scripts/lint.sh",
+    "gen-types": "bash scripts/gen-types.sh",
+    "init-db": "bash scripts/init-db.sh"
+  }
+}

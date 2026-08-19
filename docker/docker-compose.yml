@@ -1,0 +1,111 @@
+# YD 家居 — 一键启动（Docker Compose）
+#
+# 启动：docker compose up -d
+# 停止：docker compose down
+# 日志：docker compose logs -f [service]
+# 重置数据：docker compose down -v
+
+services:
+  # ===== MySQL 8.0 =====
+  mysql:
+    image: mysql:8.0
+    container_name: yd-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret_2026
+      MYSQL_DATABASE: yd_furniture
+      MYSQL_USER: yd
+      MYSQL_PASSWORD: yd_secret_2026
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../开发文档/数据库设计文档_install_all.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_secret_2026"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ===== Redis 7 =====
+  redis:
+    image: redis:7-alpine
+    container_name: yd-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ===== FastAPI 后端 =====
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    container_name: yd-backend
+    restart: unless-stopped
+    env_file:
+      - ../yd-backend/.env.example
+    environment:
+      DB_HOST: mysql
+      REDIS_HOST: redis
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - backend_uploads:/app/uploads
+    command: ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  # ===== 前台 React =====
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend.Dockerfile
+    container_name: yd-frontend
+    restart: unless-stopped
+    ports:
+      - "5180:80"
+
+  # ===== 后台 React =====
+  admin:
+    build:
+      context: ..
+      dockerfile: docker/admin.Dockerfile
+    container_name: yd-admin
+    restart: unless-stopped
+    ports:
+      - "5181:80"
+
+  # ===== Nginx 反代 =====
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: yd-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+      - frontend
+      - admin
+
+volumes:
+  mysql_data:
+  redis_data:
+  backend_uploads:

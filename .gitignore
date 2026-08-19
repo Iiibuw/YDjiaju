@@ -1,0 +1,70 @@
+# ----- Node -----
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+.pnp.*
+.yarn/
+*.tsbuildinfo
+dist/
+build/
+.cache/
+
+# ----- Python -----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.uv-cache/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# ----- Editor -----
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# ----- 环境 -----
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# ----- 日志 -----
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ----- 后端运行时 ----
+*.pid
+*.seed
+*.pid.lock
+media/
+uploads/
+
+# ===== Docker =====
+.docker-data/
+
+# ===== Build artifacts =====
+.next/
+.nuxt/
+.turbo/
+.vercel/
+
+# ===== Project specific =====
+.workbuddy/
+shared/ts-types/api-types.ts       # 自动生成
+shared/ts-types/openapi.json       # 自动生成
