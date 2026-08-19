@@ -1,18 +1,27 @@
-import { Routes, Route } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
 import Home from './pages/Home'
+import Products from './pages/Products'
+import ProductDetail from './pages/ProductDetail'
+import MainLayout from './layouts/MainLayout'
 
 /**
- * 路由（M0 占位，M1 补全 14 个页面）
- * 严格对齐原型：
- *  - prototype_前台首页.html → pages/Home/Home.tsx
- *  - prototype_产品中心.html → pages/Products/Products.tsx
- *  - ...
+ * 前台路由（M1 阶段：3 个核心页面，14 个全量路由待 M2 补全）。
+ * 用 react-router-dom v7 的 data-router API（createBrowserRouter）。
  */
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: 'products', element: <Products /> },
+      { path: 'products/:id', element: <ProductDetail /> },
+      { path: '*', element: <Home /> },
+    ],
+  },
+])
+
 export default function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="*" element={<Home />} />
-    </Routes>
-  )
+  return <RouterProvider router={router} />
 }

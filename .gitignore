@@ -64,6 +64,14 @@ uploads/
 .turbo/
 .vercel/
 
+# Vite 时间戳缓存（手动跑 tsc/babel 触发）
+*.tsbuildinfo
+vite.config.ts.timestamp-*.mjs
+vite.config.js.timestamp-*.mjs
+# 但锁文件要提交，确保可重现构建
+!yd-frontend/pnpm-lock.yaml
+!yd-admin/pnpm-lock.yaml
+
 # ===== Project specific =====
 .workbuddy/
 shared/ts-types/api-types.ts       # 自动生成

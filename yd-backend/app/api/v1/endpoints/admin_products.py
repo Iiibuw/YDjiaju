@@ -1,0 +1,60 @@
+"""后台产品 CRUD（admin/auth + product M1）。"""
+from fastapi import APIRouter, HTTPException, Query, status
+
+from app.core.deps import CurrentAdmin, DbDep
+from app.schemas.common import ApiResponse, PageData
+from app.schemas.product import ProductCreate
+from app.services import product_service
+
+router = APIRouter()
+
+
+@router.get("/admin/products", response_model=ApiResponse[PageData[dict]])
+def list_products(
+    db: DbDep,
+    admin: CurrentAdmin,
+    keyword: str | None = Query(None),
+    status_filter: str | None = Query(None, description="draft/on_sale/off_sale"),
+    category_id: int | None = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+):
+    items, total = product_service.list_admin_products(
+        db, keyword=keyword, status_filter=status_filter, category_id=category_id, page=page, page_size=page_size
+    )
+    total_pages = (total + page_size - 1) // page_size if total else 0
+    return ApiResponse(
+        data=PageData[dict](
+            items=items, total=total, page=page, page_size=page_size, total_pages=total_pages
+        )
+    )
+
+
+@router.post("/admin/products", response_model=ApiResponse[dict])
+def create_product(payload: ProductCreate, db: DbDep, admin: CurrentAdmin):
+    p = product_service.create_product(db, payload, admin.id)
+    return ApiResponse(data=p.__dict__, message=f"产品 {p.name} 创建成功")
+
+
+@router.get("/admin/products/{product_id}", response_model=ApiResponse[dict])
+def get_product(product_id: int, db: DbDep, admin: CurrentAdmin):
+    p = product_service.get_product_detail(db, product_id)
+    if not p:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="产品不存在")
+    return ApiResponse(data=p.__dict__)
+
+
+@router.put("/admin/products/{product_id}", response_model=ApiResponse[dict])
+def update_product(product_id: int, payload: ProductCreate, db: DbDep, admin: CurrentAdmin):
+    p = product_service.update_product(db, product_id, payload, admin.id)
+    if not p:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="产品不存在")
+    return ApiResponse(data=p.__dict__, message=f"产品 #{product_id} 已更新")
+
+
+@router.delete("/admin/products/{product_id}", response_model=ApiResponse[dict])
+def delete_product(product_id: int, db: DbDep, admin: CurrentAdmin):
+    ok = product_service.delete_product(db, product_id, admin.id)
+    if not ok:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="产品不存在")
+    return ApiResponse(data={"id": product_id}, message="已删除（软删除）")

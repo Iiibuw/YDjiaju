@@ -1,0 +1,9 @@
+# pnpm 11+ 项目配置
+# 参考：https://pnpm.io/settings
+
+allowBuilds:
+  esbuild: true
+  "@tailwindcss/oxide": true
+  inotify: set this to true or false
+
+storeDir: D:/pnpm-store

@@ -1,30 +1,43 @@
 """YD 家居后端入口。FastAPI 应用工厂。"""
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+import structlog
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from app.api.v1.endpoints import health
+from app.api.v1.endpoints import admin_products, auth, health, public_cases, public_products
 from app.core.config import settings
+from app.schemas.common import ApiResponse
+
+# 配置结构化日志
+structlog.configure(
+    processors=[
+        structlog.processors.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.dev.ConsoleRenderer(),
+    ],
+    wrapper_class=structlog.make_filtering_bound_logger(20),
+    cache_logger_on_first_use=True,
+)
+log = structlog.get_logger("yd")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """应用生命周期：启动/关闭钩子。"""
-    print(f"[{settings.APP_NAME}] startup · env={settings.APP_ENV}")
+    log.info("startup", app=settings.APP_NAME, env=settings.APP_ENV, version=app.version)
     yield
-    print(f"[{settings.APP_NAME}] shutdown")
+    log.info("shutdown", app=settings.APP_NAME)
 
 
 app = FastAPI(
     title=settings.APP_NAME,
-    version="0.1.0",
+    version="0.2.0",
     lifespan=lifespan,
     docs_url="/docs" if settings.DEBUG else None,
     redoc_url="/redoc" if settings.DEBUG else None,
 )
 
-# CORS：本地开发允许所有源（生产收紧）
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -33,8 +46,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 注册路由
-app.include_router(health.router, prefix="/api/v1", tags=["health"])
+
+# ===== 全局异常处理 =====
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    """统一 HTTPException 为 ApiResponse 包装。"""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=ApiResponse(
+            code=exc.status_code,
+            message=str(exc.detail),
+            trace_id=request.headers.get("x-request-id"),
+        ).model_dump(),
+    )
+
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    """兜底 500：避免泄露内部细节。"""
+    log.exception("unhandled_exception", path=request.url.path, error=str(exc))
+    return JSONResponse(
+        status_code=500,
+        content=ApiResponse(
+            code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            message="服务内部错误",
+            trace_id=request.headers.get("x-request-id"),
+        ).model_dump(),
+    )
+
+
+# ===== 路由注册 =====
+
+API_V1_PREFIX = "/api/v1"
+
+# 公共 / 后台接口统一挂在 /api/v1 下
+app.include_router(health.router, prefix=API_V1_PREFIX, tags=["health"])
+app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
+app.include_router(public_products.router, prefix=API_V1_PREFIX, tags=["public_products"])
+app.include_router(public_cases.router, prefix=API_V1_PREFIX, tags=["public_cases"])
+app.include_router(admin_products.router, prefix=API_V1_PREFIX, tags=["admin_products"])
 
 
 @app.get("/")
@@ -43,4 +94,5 @@ def root():
         "service": settings.APP_NAME,
         "version": app.version,
         "status": "ok",
+        "swagger": "/docs" if settings.DEBUG else "disabled",
     }
