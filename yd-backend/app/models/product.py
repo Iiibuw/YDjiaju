@@ -39,7 +39,7 @@ class Product(Base, AuditMixin, SoftDeleteMixin):
         },
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer().with_variant(BigInteger, "mysql"), primary_key=True, autoincrement=True)
     product_code: Mapped[str | None] = mapped_column(String(64), nullable=True, comment="v1.1 产品编号（唯一）")
     name: Mapped[str] = mapped_column(String(128), nullable=False, comment="产品名")
     subtitle: Mapped[str | None] = mapped_column(String(255), nullable=True, comment="副标题")

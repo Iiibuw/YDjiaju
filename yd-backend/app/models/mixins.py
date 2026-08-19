@@ -4,14 +4,25 @@
 - id: BIGINT UNSIGNED 主键
 - is_activate: TINYINT(1) NOT NULL DEFAULT 1（激活/禁用）
 - created_at: BIGINT UNSIGNED NULL（创建人，FK → admin_users.id）
-- created_date: DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+- created_date: DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) — MySQL；Lite 用 SQLite 时默认按整秒（精度由应用层兜底）
 - updated_at: BIGINT UNSIGNED NULL（修改人，FK → admin_users.id）
 - updated_date: DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+
+兼容：
+- MySQL 8：使用 CURRENT_TIMESTAMP(3) 子秒精度
+- SQLite（Lite 模式）：用 CURRENT_TIMESTAMP（无子秒）
 """
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, ForeignKey, SmallInteger, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import BigInteger, DateTime, ForeignKey, SmallInteger, event, func
+from sqlalchemy.orm import Mapped, MappedColumn, mapped_column
+
+
+def _sqlite_compat_timestamp(column):
+    """SQLite 不支持 CURRENT_TIMESTAMP(3) → 改写为 CURRENT_TIMESTAMP。"""
+    if str(column.table.bind.dialect.name) == "sqlite":
+        return func.current_timestamp()
+    return func.current_timestamp(3)
 
 
 class AuditMixin:
@@ -19,7 +30,7 @@ class AuditMixin:
 
     is_activate: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=1, server_default="1", comment="激活/禁用：1=激活 0=禁用")
     created_at: Mapped[int | None] = mapped_column(
-        BigInteger().with_variant(BigInteger(), "mysql"),
+        BigInteger,
         ForeignKey("admin_users.id", ondelete="SET NULL", onupdate="CASCADE"),
         nullable=True,
         comment="创建人（FK→admin_users.id）",
@@ -27,11 +38,11 @@ class AuditMixin:
     created_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=False),
         nullable=False,
-        server_default=func.current_timestamp(3),
+        server_default=func.current_timestamp(),
         comment="创建时间",
     )
     updated_at: Mapped[int | None] = mapped_column(
-        BigInteger().with_variant(BigInteger(), "mysql"),
+        BigInteger,
         ForeignKey("admin_users.id", ondelete="SET NULL", onupdate="CASCADE"),
         nullable=True,
         comment="修改人（FK→admin_users.id）",
@@ -39,8 +50,8 @@ class AuditMixin:
     updated_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=False),
         nullable=False,
-        server_default=func.current_timestamp(3),
-        onupdate=func.current_timestamp(3),
+        server_default=func.current_timestamp(),
+        onupdate=func.current_timestamp(),
         comment="修改时间",
     )
 

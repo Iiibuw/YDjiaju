@@ -25,7 +25,7 @@ class Case(Base, AuditMixin, SoftDeleteMixin):
         },
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer().with_variant(BigInteger, "mysql"), primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(128), nullable=False, comment="案例标题")
     category_id: Mapped[int | None] = mapped_column(
         Integer,

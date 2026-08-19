@@ -6,6 +6,7 @@ from sqlalchemy import (
     CheckConstraint,
     Enum,
     Index,
+    Integer,
     SmallInteger,
     String,
     UniqueConstraint,
@@ -40,7 +41,7 @@ class AdminUser(Base, AuditMixin):
         },
     )
 
-    id: Mapped[int] = mapped_column(BigInteger().with_variant(BigInteger(), "mysql"), primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer().with_variant(BigInteger, "mysql"), primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(String(64), nullable=False, comment="登录名（唯一）")
     password_hash: Mapped[str] = mapped_column(String(128), nullable=False, comment="bcrypt 哈希")
     real_name: Mapped[str | None] = mapped_column(String(64), nullable=True, comment="姓名")
@@ -51,12 +52,12 @@ class AdminUser(Base, AuditMixin):
     avatar_url: Mapped[str | None] = mapped_column(String(255), nullable=True, comment="头像")
     post: Mapped[str | None] = mapped_column(String(64), nullable=True, comment="岗位")
     dept_id: Mapped[int | None] = mapped_column(
-        BigInteger().with_variant(BigInteger(), "mysql"),
+        BigInteger,
         nullable=True,
         comment="部门编号（FK → depts.id）",
     )
     role_id: Mapped[int | None] = mapped_column(
-        BigInteger().with_variant(BigInteger(), "mysql"),
+        BigInteger,
         nullable=True,
         comment="角色编号（FK → roles.id，主角色）",
     )

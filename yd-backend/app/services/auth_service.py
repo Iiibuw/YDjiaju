@@ -5,6 +5,7 @@
 - 防爆破：连续 5 次错误锁定 15 分钟
 """
 import base64
+import os
 import time
 import uuid
 
@@ -45,7 +46,16 @@ def new_captcha() -> CaptchaOut:
 
 
 def verify_captcha(captcha_id: str, code: str) -> bool:
-    """校验 captcha；成功立即删除 key（防重放）。"""
+    """校验 captcha；成功立即删除 key（防重放）。
+
+    Dev 模式（DEBUG=True）：接受固定代码 ``DEV_CAPTCHA_CODE``（默认 ``ABCD``），便于自动测试。
+    """
+    # Dev 模式：已知 dev code 一律通过（生产严禁）
+    if settings.DEBUG:
+        dev_code = os.environ.get("DEV_CAPTCHA_CODE", "ABCD")
+        if code.upper().strip() == dev_code:
+            return True
+
     info = _captcha_store.pop(captcha_id, None)
     if not info:
         return False

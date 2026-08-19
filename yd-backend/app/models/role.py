@@ -1,5 +1,5 @@
 """角色表（RBAC）。"""
-from sqlalchemy import BigInteger, Enum, Index, SmallInteger, String, UniqueConstraint
+from sqlalchemy import BigInteger, Enum, Index, Integer, SmallInteger, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -20,7 +20,7 @@ class Role(Base, AuditMixin):
         },
     )
 
-    id: Mapped[int] = mapped_column(BigInteger().with_variant(BigInteger(), "mysql"), primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer().with_variant(BigInteger, "mysql"), primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(64), nullable=False, comment="角色名称")
     code: Mapped[str] = mapped_column(String(32), nullable=False, comment="角色代码（唯一，如 admin/editor/product）")
     description: Mapped[str | None] = mapped_column(String(255), nullable=True, comment="角色描述")

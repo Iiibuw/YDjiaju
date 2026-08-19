@@ -1,7 +1,7 @@
 """前台会员表。"""
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, Index, SmallInteger, String, UniqueConstraint
+from sqlalchemy import BigInteger, DateTime, Index, Integer, SmallInteger, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -22,7 +22,7 @@ class User(Base, AuditMixin, SoftDeleteMixin):
         },
     )
 
-    id: Mapped[int] = mapped_column(BigInteger().with_variant(BigInteger(), "mysql"), primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer().with_variant(BigInteger, "mysql"), primary_key=True, autoincrement=True)
     phone: Mapped[str] = mapped_column(String(20), nullable=False, comment="手机号（登录账号）")
     password_hash: Mapped[str] = mapped_column(String(128), nullable=False, comment="bcrypt 哈希")
     nickname: Mapped[str | None] = mapped_column(String(64), nullable=True, comment="昵称")

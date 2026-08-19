@@ -76,3 +76,10 @@ vite.config.js.timestamp-*.mjs
 .workbuddy/
 shared/ts-types/api-types.ts       # 自动生成
 shared/ts-types/openapi.json       # 自动生成
+
+# Lite 模式本地数据库（生产用 MySQL，不提交）
+yd-backend/yd_lite.db
+yd-backend/*.sqlite
+yd-backend/*.sqlite-journalshared/ts-types/api-types.ts       # 自动生成
+shared/ts-types/openapi.json       # 自动生成
+yd-backend/yd_lite.db

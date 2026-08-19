@@ -33,7 +33,7 @@ def list_products(
 @router.post("/admin/products", response_model=ApiResponse[dict])
 def create_product(payload: ProductCreate, db: DbDep, admin: CurrentAdmin):
     p = product_service.create_product(db, payload, admin.id)
-    return ApiResponse(data=p.__dict__, message=f"产品 {p.name} 创建成功")
+    return ApiResponse(data=product_service.to_admin_dict(p), message=f"产品 {p.name} 创建成功")
 
 
 @router.get("/admin/products/{product_id}", response_model=ApiResponse[dict])
@@ -41,7 +41,7 @@ def get_product(product_id: int, db: DbDep, admin: CurrentAdmin):
     p = product_service.get_product_detail(db, product_id)
     if not p:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="产品不存在")
-    return ApiResponse(data=p.__dict__)
+    return ApiResponse(data=product_service.to_admin_dict(p))
 
 
 @router.put("/admin/products/{product_id}", response_model=ApiResponse[dict])
@@ -49,7 +49,7 @@ def update_product(product_id: int, payload: ProductCreate, db: DbDep, admin: Cu
     p = product_service.update_product(db, product_id, payload, admin.id)
     if not p:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="产品不存在")
-    return ApiResponse(data=p.__dict__, message=f"产品 #{product_id} 已更新")
+    return ApiResponse(data=product_service.to_admin_dict(p), message=f"产品 #{product_id} 已更新")
 
 
 @router.delete("/admin/products/{product_id}", response_model=ApiResponse[dict])

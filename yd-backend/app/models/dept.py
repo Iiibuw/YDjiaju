@@ -1,5 +1,5 @@
 """部门表（树形）。"""
-from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Index, SmallInteger, String, UniqueConstraint
+from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Index, Integer, SmallInteger, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -24,18 +24,18 @@ class Dept(Base, AuditMixin):
         },
     )
 
-    id: Mapped[int] = mapped_column(BigInteger().with_variant(BigInteger(), "mysql"), primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer().with_variant(BigInteger, "mysql"), primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(64), nullable=False, comment="部门名称")
     code: Mapped[str | None] = mapped_column(String(32), nullable=True, comment="部门编码")
     parent_id: Mapped[int | None] = mapped_column(
-        BigInteger().with_variant(BigInteger(), "mysql"),
+        BigInteger,
         ForeignKey("depts.id", ondelete="RESTRICT", onupdate="CASCADE"),
         nullable=True,
         comment="上级部门（自引用）",
     )
     sort: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0, server_default="0", comment="同级排序")
     leader_id: Mapped[int | None] = mapped_column(
-        BigInteger().with_variant(BigInteger(), "mysql"),
+        BigInteger,
         ForeignKey("admin_users.id", ondelete="SET NULL", onupdate="CASCADE"),
         nullable=True,
         comment="部门负责人",

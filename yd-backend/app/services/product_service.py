@@ -244,4 +244,35 @@ __all__ = [
     "update_product",
     "delete_product",
     "list_admin_products",
+    "to_admin_dict",
 ]
+
+
+def to_admin_dict(p: Product) -> dict[str, Any]:
+    """把 Product ORM 对象转为可 JSON 序列化的 dict（剔除 SQLAlchemy 内部状态）。
+
+    用于后台 CRUD 接口的响应。
+    """
+    return {
+        "id": p.id,
+        "product_code": p.product_code,
+        "name": p.name,
+        "subtitle": p.subtitle,
+        "category_id": p.category_id,
+        "space_id": p.space_id,
+        "series_id": p.series_id,
+        "min_price_cents": p.min_price_cents,
+        "max_price_cents": p.max_price_cents,
+        "cover_url": p.cover_url,
+        "status": p.status,
+        "is_top": p.is_top,
+        "support_order": p.support_order,
+        "sort": p.sort,
+        "description": p.description,
+        "extra_specs": p.extra_specs,
+        "other_images": p.other_images_json,
+        "is_activate": p.is_activate,
+        "is_deleted": p.is_deleted,
+        "created_date": p.created_date.isoformat() if p.created_date else None,
+        "updated_date": p.updated_date.isoformat() if p.updated_date else None,
+    }
