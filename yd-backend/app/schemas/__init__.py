@@ -12,6 +12,8 @@ from .job import (
     JobListItem,
     JobListOut,
 )
+from .member import MemberListItem, MemberLoginIn, MemberOut, MemberRegisterIn
+from .message import MessageCreate, MessageOut, MessageReplyIn
 from .news import NewsCreate, NewsDetail, NewsListItem, NewsListOut
 from .product import ProductCreate, ProductDetail, ProductListItem
 
@@ -43,4 +45,11 @@ __all__ = [
     "JobApplicationCreate",
     "JobApplicationOut",
     "JobApplicationListOut",
+    "MemberRegisterIn",
+    "MemberLoginIn",
+    "MemberOut",
+    "MemberListItem",
+    "MessageCreate",
+    "MessageOut",
+    "MessageReplyIn",
 ]

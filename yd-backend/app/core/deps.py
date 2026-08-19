@@ -59,6 +59,34 @@ def get_current_active_admin(
     return admin
 
 
+def get_current_member(
+    token: Annotated[str | None, Depends(oauth2_scheme)],
+    db: Annotated[Session, Depends(get_db)],
+) -> "User":
+    """从 Bearer token 解析当前前台会员（role=member）。"""
+    from app.models.user import User  # 延迟导入避免循环
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="未提供访问凭证",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        payload = decode_token(token)
+        sub = payload.get("sub")
+        if not sub or payload.get("type") != "access":
+            raise HTTPException(status_code=401, detail="无效的 token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="token 无效或已过期")
+
+    user = db.get(User, int(sub))
+    if user is None or user.is_deleted or user.is_activate != 1:
+        raise HTTPException(status_code=401, detail="账号不存在或已禁用")
+    return user
+
+
 # 类型别名
 DbDep = Annotated[Session, Depends(get_db)]
 CurrentAdmin = Annotated["AdminUser", Depends(get_current_active_admin)]
+CurrentMember = Annotated["User", Depends(get_current_member)]

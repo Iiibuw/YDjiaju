@@ -10,6 +10,7 @@ from .category import Category
 from .dept import Dept
 from .job import Job
 from .job_application import JobApplication
+from .message import Message
 from .news import News
 from .product import Product
 from .role import Role
@@ -22,6 +23,7 @@ __all__ = [
     "Dept",
     "Job",
     "JobApplication",
+    "Message",
     "News",
     "Product",
     "Role",

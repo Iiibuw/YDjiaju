@@ -5,6 +5,7 @@
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import json
 
@@ -282,10 +283,11 @@ check("返回 description", data["data"]["description"])
 
 # ===== M2-1.11 Apply job =====
 section("M2-1.11 前台投递岗位")
+TEST_APPLY_PHONE = f"137{int(time.time()) % 100000000:08d}"  # 每次唯一手机号防重复投递
 data, code = http("POST", "/api/v1/public/jobs/apply", {
     "job_id": job_id,
     "name": "李四",
-    "phone": "13800138000",
+    "phone": TEST_APPLY_PHONE,
     "email": "lisi@example.com",
 })
 check("POST /public/jobs/apply → 200", code == 200)
@@ -295,7 +297,7 @@ apply_id = data["data"]["id"]
 
 # 重复投递应 400
 data, code = http("POST", "/api/v1/public/jobs/apply", {
-    "job_id": job_id, "name": "李四", "phone": "13800138000",
+    "job_id": job_id, "name": "李四", "phone": TEST_APPLY_PHONE,
 })
 check("重复投递 → 400", "400" in str(code) or data.get("code") == 400)
 check("错误信息含'重复'", "重复" in str(data.get("message", "")))
@@ -371,7 +373,7 @@ check("view_count 自增", data2["data"]["view_count"] == data["data"]["view_cou
 section("M2-2-A.3 后台案例列表")
 data, code = http("GET", "/api/v1/admin/cases", token=token)
 check("/admin/cases → 200", code == 200)
-check("total == 3", data.get("data", {}).get("total") == 3)
+check("total >= 3 (软删记录 admin 仍可见)", data.get("data", {}).get("total", 0) >= 3)
 
 # ===== M2-2-A.4 Admin case CRUD =====
 section("M2-2-A.4 后台创建案例")
@@ -459,6 +461,119 @@ if roots_with_kids:
     data, code = http("DELETE", f"/api/v1/admin/depts/{root_id_with_kids}", token=token)
     check("删除有子部门的根 → 400", "400" in str(code))
     check("错误信息含'子部门'", "子部门" in str(data.get("message", "")))
+
+# ==========================================================
+# M2-2-B Member + Message
+# ==========================================================
+
+# ===== M2-2-B.1 会员注册 =====
+section("M2-2-B.1 前台会员注册")
+TEST_PHONE = f"139{int(time.time()) % 100000000:08d}"  # 唯一手机号
+data, code = http("POST", "/api/v1/members/register", {
+    "phone": TEST_PHONE,
+    "password": "member123",
+    "nickname": "测试会员",
+})
+check("POST /members/register → 200", code == 200)
+check("code == 0", data.get("code") == 0)
+check("返回 phone", data["data"]["phone"] == TEST_PHONE)
+check("不返回 password_hash", "password_hash" not in str(data["data"]))
+
+# ===== M2-2-B.2 重复注册 =====
+section("M2-2-B.2 重复手机号注册")
+data, code = http("POST", "/api/v1/members/register", {
+    "phone": TEST_PHONE, "password": "member123",
+})
+check("重复注册 → 400", "400" in str(code) or data.get("code") == 400)
+check("错误信息含'已注册'", "已注册" in str(data.get("message", "")))
+
+# ===== M2-2-B.3 会员登录 =====
+section("M2-2-B.3 会员登录")
+data, code = http("POST", "/api/v1/members/login", {
+    "phone": TEST_PHONE, "password": "member123",
+})
+check("POST /members/login → 200", code == 200)
+check("code == 0", data.get("code") == 0)
+check("返回 access_token", data["data"]["access_token"])
+member_token = data["data"]["access_token"]
+
+# ===== M2-2-B.4 会员错误密码 =====
+section("M2-2-B.4 会员错误密码")
+data, code = http("POST", "/api/v1/members/login", {
+    "phone": TEST_PHONE, "password": "wrongpassword",
+})
+check("错误密码 → 400", "400" in str(code) or data.get("code") == 400)
+
+# ===== M2-2-B.5 会员 me =====
+section("M2-2-B.5 会员个人信息 me")
+data, code = http("GET", "/api/v1/members/me", token=member_token)
+check("GET /members/me → 200", code == 200)
+check("phone 一致", data["data"]["phone"] == TEST_PHONE)
+check("nickname 一致", data["data"]["nickname"] == "测试会员")
+
+# ===== M2-2-B.6 会员 token 拒绝 =====
+section("M2-2-B.6 无 token /members/me")
+data, code = http("GET", "/api/v1/members/me")
+check("无 token → 401", code == 401)
+
+# ===== M2-2-B.7 前台留言 =====
+section("M2-2-B.7 前台提交留言")
+data, code = http("POST", "/api/v1/members/messages", {
+    "name": "留言测试用户",
+    "phone": "13800138099",
+    "content": "测试留言：想了解胡桃禮餐桌的价格和定制信息。",
+})
+check("POST /members/messages → 200", code == 200)
+check("status == pending", data["data"]["status"] == "pending")
+new_msg_id = data["data"]["id"]
+
+# ===== M2-2-B.8 后台留言列表 =====
+section("M2-2-B.8 后台留言列表")
+data, code = http("GET", "/api/v1/admin/messages", token=token)
+check("GET /admin/messages → 200", code == 200)
+check("total >= 3 (2 种子 + 1 新)", data.get("data", {}).get("total", 0) >= 3)
+
+# ===== M2-2-B.9 后台回复留言 =====
+section("M2-2-B.9 后台回复留言")
+data, code = http("POST", f"/api/v1/admin/messages/{new_msg_id}/reply", {
+    "reply_content": "您好，胡桃禮餐桌支持定制，详情可联系门店。",
+}, token=token)
+check("POST /admin/messages/{id}/reply → 200", code == 200)
+check("status == replied", data["data"]["status"] == "replied")
+check("返回 reply_content", data["data"]["reply_content"])
+
+# ===== M2-2-B.10 后台会员列表 =====
+section("M2-2-B.10 后台会员列表")
+data, code = http("GET", "/api/v1/admin/members", token=token)
+check("GET /admin/members → 200", code == 200)
+check("total >= 3 (2 种子 + 1 新)", data.get("data", {}).get("total", 0) >= 3)
+
+# ===== M2-2-B.11 后台启用/禁用会员 =====
+section("M2-2-B.11 后台禁用会员")
+# 找到测试会员 id
+member_id = None
+data, _ = http("GET", f"/api/v1/admin/members?keyword={urllib.parse.quote('测试会员')}", token=token)
+for m in data.get("data", {}).get("items", []):
+    if m["phone"] == TEST_PHONE:
+        member_id = m["id"]
+        break
+check("找到测试会员", member_id is not None)
+if member_id:
+    data, code = http("PUT", f"/api/v1/admin/members/{member_id}/status", {"is_activate": False}, token=token)
+    check("禁用 → 200", code == 200)
+    check("is_activate == 0", data["data"]["is_activate"] == 0)
+    # 禁用后登录应 403
+    data, code = http("POST", "/api/v1/members/login", {
+        "phone": TEST_PHONE, "password": "member123",
+    })
+    check("禁用后登录 → 403", code == 403)
+    # 重新启用
+    http("PUT", f"/api/v1/admin/members/{member_id}/status", {"is_activate": True}, token=token)
+
+# ===== M2-2-B.12 后台删除留言 =====
+section("M2-2-B.12 后台删除留言")
+data, code = http("DELETE", f"/api/v1/admin/messages/{new_msg_id}", token=token)
+check("DELETE /admin/messages/{id} → 200", code == 200)
 
 # ===== 汇总 =====
 print(f"\n\033[1m════════════════════════════════════════════════════════\033[0m")

@@ -10,12 +10,14 @@ from app.api.v1.endpoints import (
     admin_cases,
     admin_depts,
     admin_jobs,
+    admin_members,
     admin_news,
     admin_products,
     auth,
     health,
     public_cases,
     public_jobs,
+    public_members,
     public_news,
     public_products,
 )
@@ -99,11 +101,13 @@ app.include_router(public_products.router, prefix=API_V1_PREFIX, tags=["public_p
 app.include_router(public_cases.router, prefix=API_V1_PREFIX, tags=["public_cases"])
 app.include_router(public_news.router, prefix=API_V1_PREFIX, tags=["public_news"])
 app.include_router(public_jobs.router, prefix=API_V1_PREFIX, tags=["public_jobs"])
+app.include_router(public_members.router, prefix=API_V1_PREFIX, tags=["public_members"])
 app.include_router(admin_products.router, prefix=API_V1_PREFIX, tags=["admin_products"])
 app.include_router(admin_news.router, prefix=API_V1_PREFIX, tags=["admin_news"])
 app.include_router(admin_jobs.router, prefix=API_V1_PREFIX, tags=["admin_jobs"])
 app.include_router(admin_cases.router, prefix=API_V1_PREFIX, tags=["admin_cases"])
 app.include_router(admin_depts.router, prefix=API_V1_PREFIX, tags=["admin_depts"])
+app.include_router(admin_members.router, prefix=API_V1_PREFIX, tags=["admin_members"])
 
 
 @app.get("/")

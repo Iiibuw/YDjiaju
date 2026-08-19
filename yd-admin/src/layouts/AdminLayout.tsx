@@ -11,7 +11,9 @@ const MENU = [
   { key: '/jobs', label: '招聘管理' },
   { key: '/cases', label: '案例管理' },
   { key: '/depts', label: '部门管理' },
-  // M2-3 接入：订单 / 会员 / 仪表盘 ...
+  { key: '/members', label: '会员管理' },
+  { key: '/messages', label: '留言管理' },
+  // M2-3 接入：订单 / 预约 / 仪表盘 ...
 ]
 
 export default function AdminLayout() {

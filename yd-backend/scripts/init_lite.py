@@ -378,6 +378,47 @@ with _session.SessionLocal() as db:
 
     print(f"  ✓ 部门: 3 个（1 总部 + 2 子部门）")
 
+    # ----- 会员（2 个） -----
+    from app.models.user import User as UserModel
+    from app.core.security import hash_password
+
+    m1 = UserModel(
+        phone="13800138001",
+        password_hash=hash_password("member123"),
+        nickname="张三",
+        email="zhangsan@example.com",
+        gender=1,
+    )
+    m2 = UserModel(
+        phone="13800138002",
+        password_hash=hash_password("member123"),
+        nickname="李四",
+        email="lisi@example.com",
+        gender=2,
+    )
+    db.add_all([m1, m2])
+    db.flush()
+    print(f"  ✓ 会员: 2 个（{m1.nickname}, {m2.nickname}）")
+
+    # ----- 留言（2 条） -----
+    from app.models.message import Message as MessageModel
+
+    msg1 = MessageModel(
+        name="王女士",
+        phone="13900001111",
+        content="请问胡桃禮餐桌可以定制尺寸吗？我家餐厅比较小。",
+        status="pending",
+    )
+    msg2 = MessageModel(
+        name="陈先生",
+        email="chen@example.com",
+        content="想预约周末到佛山门店看沙发，请问营业时间是几点？",
+        status="pending",
+    )
+    db.add_all([msg1, msg2])
+    db.flush()
+    print(f"  ✓ 留言: 2 条")
+
     db.commit()
 
 print("\n✅ Lite 数据库初始化完成！")
