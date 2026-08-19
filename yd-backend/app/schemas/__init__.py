@@ -1,7 +1,8 @@
 """Pydantic 业务模型层入口。"""
 from .auth import AdminProfileOut, CaptchaOut, LoginIn, TokenOut
-from .case import CaseDetail, CaseListItem
+from .case import CaseCreate, CaseDetail, CaseListItem
 from .common import ApiResponse, ORMBase, PageData, PaginationMeta
+from .dept import DeptCreate, DeptNode
 from .job import (
     JobApplicationCreate,
     JobApplicationListOut,
@@ -28,6 +29,9 @@ __all__ = [
     "ProductCreate",
     "CaseListItem",
     "CaseDetail",
+    "CaseCreate",
+    "DeptNode",
+    "DeptCreate",
     "NewsListItem",
     "NewsDetail",
     "NewsCreate",

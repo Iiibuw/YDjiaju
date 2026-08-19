@@ -297,6 +297,87 @@ with _session.SessionLocal() as db:
     db.flush()
     print(f"  ✓ 招聘岗位: 3 个（2 社招 + 1 校招）")
 
+    # ----- 案例（3 个） -----
+    from app.models.case import Case as CaseModel
+
+    cases = [
+        CaseModel(
+            title="胡桃禮·广州海珠湾花园别墅",
+            category_id=space_dining.id,
+            cover_url="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
+            style="现代简约",
+            area="280㎡",
+            description="<p>客户为三代同堂的 6 口之家，整体调性强调温馨与品质感。</p><p>餐厅以胡桃禮实木餐桌为核心，搭配北美黑胡桃餐边柜，营造现代简约却温暖的就餐氛围。</p><h3>设计要点</h3><ul><li>客厅：胡桃木电视柜 + 真皮主沙发</li><li>餐厅：1800mm 实木餐桌 + 6 把真皮餐椅</li><li>主卧：1.8m 胡桃木床 + 双床头柜 + 6 门衣帽间</li></ul>",
+            published_date=now - timedelta(days=30),
+            sort=999,  # 置顶
+            created_at=1, updated_at=1,
+        ),
+        CaseModel(
+            title="现代北欧·佛山顺德120㎡三居室",
+            category_id=space_bedroom.id,
+            cover_url="https://images.unsplash.com/photo-1556909114-44e3e9399a2c?w=800",
+            style="现代北欧",
+            area="120㎡",
+            description="<p>面向年轻夫妇的第一个家，预算 25 万。</p><p>整体采用浅色橡木 + 米白软装，搭配绿植点缀。</p>",
+            published_date=now - timedelta(days=20),
+            sort=998,
+            created_at=1, updated_at=1,
+        ),
+        CaseModel(
+            title="新中式·东莞东城复式楼",
+            category_id=space_dining.id,
+            cover_url="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800",
+            style="新中式",
+            area="200㎡",
+            description="<p>复式上下两层结构，下层以会客为主，上层为私密居住空间。</p>",
+            published_date=now - timedelta(days=10),
+            sort=997,
+            created_at=1, updated_at=1,
+        ),
+    ]
+    db.add_all(cases)
+    db.flush()
+    print(f"  ✓ 案例: 3 个（全部置顶）")
+
+    # ----- 部门（树形：3 个节点） -----
+    from app.models.dept import Dept as DeptModel
+
+    # 先 ROOT
+    root = DeptModel(
+        name="YD 家居总部",
+        code="YD",
+        parent_id=None,
+        sort=1,
+        created_at=1, updated_at=1,
+    )
+    db.add(root)
+    db.flush()
+    root.path = f",{root.id},"
+
+    sub_design = DeptModel(
+        name="设计中心",
+        code="DS",
+        parent_id=root.id,
+        sort=1,
+        created_at=1, updated_at=1,
+    )
+    db.add(sub_design)
+    db.flush()
+    sub_design.path = f",{root.id},{sub_design.id},"
+
+    sub_op = DeptModel(
+        name="电商运营部",
+        code="OPS",
+        parent_id=root.id,
+        sort=2,
+        created_at=1, updated_at=1,
+    )
+    db.add(sub_op)
+    db.flush()
+    sub_op.path = f",{root.id},{sub_op.id},"
+
+    print(f"  ✓ 部门: 3 个（1 总部 + 2 子部门）")
+
     db.commit()
 
 print("\n✅ Lite 数据库初始化完成！")

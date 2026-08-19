@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.v1.endpoints import (
+    admin_cases,
+    admin_depts,
     admin_jobs,
     admin_news,
     admin_products,
@@ -100,6 +102,8 @@ app.include_router(public_jobs.router, prefix=API_V1_PREFIX, tags=["public_jobs"
 app.include_router(admin_products.router, prefix=API_V1_PREFIX, tags=["admin_products"])
 app.include_router(admin_news.router, prefix=API_V1_PREFIX, tags=["admin_news"])
 app.include_router(admin_jobs.router, prefix=API_V1_PREFIX, tags=["admin_jobs"])
+app.include_router(admin_cases.router, prefix=API_V1_PREFIX, tags=["admin_cases"])
+app.include_router(admin_depts.router, prefix=API_V1_PREFIX, tags=["admin_depts"])
 
 
 @app.get("/")

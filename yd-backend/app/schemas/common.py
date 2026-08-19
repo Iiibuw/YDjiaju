@@ -1,9 +1,13 @@
 """Pydantic 通用模型：API 响应 + 分页。"""
-from typing import Generic, TypeVar
+from datetime import datetime
+from typing import Annotated, Any, Generic, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, PlainSerializer
 
 T = TypeVar("T")
+
+# 自动把 datetime → ISO 字符串（避免前端再次 toLocaleDateString）
+DateTimeStr = Annotated[datetime, PlainSerializer(lambda v: v.isoformat() if v else "", return_type=str)]
 
 
 class ApiResponse(BaseModel, Generic[T]):
@@ -35,6 +39,6 @@ class PageData(BaseModel, Generic[T]):
 
 
 class ORMBase(BaseModel):
-    """ORM 序列化基类：允许从 SQLAlchemy 模型读字段。"""
+    """ORM 序列化基类：允许从 SQLAlchemy 模型读字段 + 自动转 datetime → ISO。"""
 
     model_config = ConfigDict(from_attributes=True)

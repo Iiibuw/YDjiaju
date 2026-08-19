@@ -9,7 +9,9 @@ const { Sider, Header, Content } = Layout
 const MENU = [
   { key: '/news', label: '资讯管理' },
   { key: '/jobs', label: '招聘管理' },
-  // M2-2/3 接入：产品管理 / 案例 / 订单 / 会员 / 仪表盘 ...
+  { key: '/cases', label: '案例管理' },
+  { key: '/depts', label: '部门管理' },
+  // M2-3 接入：订单 / 会员 / 仪表盘 ...
 ]
 
 export default function AdminLayout() {

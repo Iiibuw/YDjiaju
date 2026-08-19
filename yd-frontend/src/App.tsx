@@ -5,10 +5,12 @@ import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import NewsList from './pages/NewsList'
 import NewsDetail from './pages/NewsDetail'
+import Cases from './pages/Cases'
+import CaseDetail from './pages/CaseDetail'
 import MainLayout from './layouts/MainLayout'
 
 /**
- * 前台路由（M2-1：5 个页面，含资讯列表/详情）。
+ * 前台路由（M2-2：7 个页面，含资讯 + 案例）。
  * 用 react-router-dom v7 的 data-router API（createBrowserRouter）。
  */
 const router = createBrowserRouter([
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
       { path: 'products/:id', element: <ProductDetail /> },
       { path: 'news', element: <NewsList /> },
       { path: 'news/:id', element: <NewsDetail /> },
+      { path: 'cases', element: <Cases /> },
+      { path: 'cases/:id', element: <CaseDetail /> },
       { path: '*', element: <Home /> },
     ],
   },

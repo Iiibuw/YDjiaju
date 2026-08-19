@@ -145,13 +145,13 @@ check("POST /admin/products → 200", code == 200)
 check("code == 0", data.get("code") == 0)
 check("返回产品含 product_code", TEST_CODE in str(data))
 
-# ===== 9. Public cases (空表) =====
-section("9. 案例列表（Lite 空表）")
+# ===== 9. Public cases (3 个 M2-2 种子) =====
+section("9. 案例列表（3 个 M2-2 种子）")
 data, code = http("GET", "/api/v1/public/cases")
-print(f"  Response: {json.dumps(data, ensure_ascii=False)[:200]}...")
+print(f"  Response: {json.dumps(data, ensure_ascii=False)[:300]}...")
 check("GET /public/cases → 200", code == 200)
-check("items 为 []", data.get("data", {}).get("items") == [])
-check("total == 0", data.get("data", {}).get("total") == 0)
+check("items 非空", len(data.get("data", {}).get("items", [])) == 3)
+check("total == 3 (M2-2 种子)", data.get("data", {}).get("total") == 3)
 
 # ===== 10. Logout =====
 section("10. 登出")
@@ -342,6 +342,123 @@ check("total >= 1", data.get("data", {}).get("total", 0) >= 1)
 apps = data["data"]["items"]
 check("包含李四的投递", any(a["name"] == "李四" for a in apps))
 check("job_title 字段已 join", apps[0].get("job_title") is not None)
+
+# ==========================================================
+# M2-2-A Cases + Departments
+# ==========================================================
+
+# ===== M2-2-A.1 Public cases list =====
+section("M2-2-A.1 前台案例列表（3 个种子）")
+data, code = http("GET", "/api/v1/public/cases")
+check("/public/cases → 200", code == 200)
+check("total == 3", data.get("data", {}).get("total") == 3)
+case_id = data["data"]["items"][0]["id"]
+
+# ===== M2-2-A.2 Public case detail =====
+section("M2-2-A.2 案例详情")
+data, code = http("GET", f"/api/v1/public/cases/{case_id}")
+check("/public/cases/{id} → 200", code == 200)
+check("返回 title", data["data"]["title"])
+check("返回 style", data["data"]["style"])
+check("返回 description", data["data"]["description"])
+check("category 字段已 join", data["data"].get("category") is not None)
+
+# 浏览量 +1
+data2, _ = http("GET", f"/api/v1/public/cases/{case_id}")
+check("view_count 自增", data2["data"]["view_count"] == data["data"]["view_count"] + 1)
+
+# ===== M2-2-A.3 Admin cases list =====
+section("M2-2-A.3 后台案例列表")
+data, code = http("GET", "/api/v1/admin/cases", token=token)
+check("/admin/cases → 200", code == 200)
+check("total == 3", data.get("data", {}).get("total") == 3)
+
+# ===== M2-2-A.4 Admin case CRUD =====
+section("M2-2-A.4 后台创建案例")
+TEST_CASE = f"测试案例-{int(time.time())}"
+data, code = http("POST", "/api/v1/admin/cases", {
+    "title": TEST_CASE,
+    "cover_url": "https://images.unsplash.com/photo-test?w=800",
+    "style": "测试风格",
+    "area": "100㎡",
+    "description": "<p>测试描述</p>",
+}, token=token)
+check("POST /admin/cases → 200", code == 200)
+check("code == 0", data.get("code") == 0)
+new_case_id = data["data"]["id"]
+
+section("M2-2-A.5 后台更新案例")
+data, code = http("PUT", f"/api/v1/admin/cases/{new_case_id}", {
+    "title": TEST_CASE + " (updated)",
+    "cover_url": "https://images.unsplash.com/photo-test?w=800",
+    "description": "<p>更新后描述</p>",
+}, token=token)
+check("PUT /admin/cases → 200", code == 200)
+check("title 已更新", "updated" in data["data"]["title"])
+
+section("M2-2-A.6 后台删除案例")
+data, code = http("DELETE", f"/api/v1/admin/cases/{new_case_id}", token=token)
+check("DELETE /admin/cases → 200", code == 200)
+# admin 全可见：删除后 GET 应 200 + is_deleted=1
+data, code = http("GET", f"/api/v1/admin/cases/{new_case_id}", token=token)
+check("删除后 admin GET 仍 200", code == 200)
+check("is_deleted == 1", data["data"].get("is_deleted") == 1)
+
+# ===== M2-2-A.7 Admin depts tree =====
+section("M2-2-A.7 后台部门树")
+data, code = http("GET", "/api/v1/admin/depts", token=token)
+check("/admin/depts → 200", code == 200)
+check("返回树结构", isinstance(data["data"], list))
+check("根节点 >= 1", len(data["data"]) >= 1)
+# 验证含子节点（任一根节点有 child 即可）
+root_with_kids = [d for d in data["data"] if len(d.get("children", [])) > 0]
+check("至少一个根有子部门", len(root_with_kids) >= 1)
+if root_with_kids:
+    check("根节点含 children", "children" in root_with_kids[0])
+
+# ===== M2-2-A.8 Admin dept flat =====
+section("M2-2-A.8 后台部门扁平列表")
+data, code = http("GET", "/api/v1/admin/depts/flat", token=token)
+check("/admin/depts/flat → 200", code == 200)
+check("扁平列表为数组", isinstance(data["data"], list))
+check("扁平节点数 >= 4", len(data["data"]) >= 4)
+
+# ===== M2-2-A.9 Admin dept CRUD =====
+section("M2-2-A.9 后台创建子部门")
+TEST_DEPT = f"测试部门-{int(time.time())}"
+# 用根部门 id 作 parent
+root_id = data["data"][0]["id"]
+data, code = http("POST", "/api/v1/admin/depts", {
+    "name": TEST_DEPT,
+    "code": f"TD{int(time.time()) % 10000}",
+    "parent_id": root_id,
+    "sort": 99,
+}, token=token)
+check("POST /admin/depts → 200", code == 200)
+check("返回 path 含 parent_id", "," + str(root_id) + "," in data["data"]["path"])
+new_dept_id = data["data"]["id"]
+
+section("M2-2-A.10 后台更新部门")
+data, code = http("PUT", f"/api/v1/admin/depts/{new_dept_id}", {
+    "name": TEST_DEPT + " (updated)",
+    "sort": 50,
+}, token=token)
+check("PUT /admin/depts → 200", code == 200)
+
+section("M2-2-A.11 后台删除部门")
+data, code = http("DELETE", f"/api/v1/admin/depts/{new_dept_id}", token=token)
+check("DELETE /admin/depts → 200", code == 200)
+
+# ===== M2-2-A.12 删除有子部门的根应失败 =====
+section("M2-2-A.12 删除有子部门的根应 400")
+# 找根 id（树根的 parent_id 为 None）
+data, _ = http("GET", "/api/v1/admin/depts", token=token)
+roots_with_kids = [d for d in data["data"] if len(d.get("children", [])) > 0]
+if roots_with_kids:
+    root_id_with_kids = roots_with_kids[0]["id"]
+    data, code = http("DELETE", f"/api/v1/admin/depts/{root_id_with_kids}", token=token)
+    check("删除有子部门的根 → 400", "400" in str(code))
+    check("错误信息含'子部门'", "子部门" in str(data.get("message", "")))
 
 # ===== 汇总 =====
 print(f"\n\033[1m════════════════════════════════════════════════════════\033[0m")
