@@ -155,6 +155,148 @@ with _session.SessionLocal() as db:
     db.flush()
     print(f"  ✓ 产品: 2 个（{p1.name}, {p2.name}）")
 
+    # ----- 资讯（5 条，2 个分类） -----
+    from datetime import datetime, timedelta
+    from app.models.news import News
+
+    now = datetime.utcnow()
+    news_list = [
+        News(
+            title="YD 家居荣获 2026 中国家具创新品牌奖",
+            subtitle="品牌动态",
+            cover_url="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800",
+            summary="8 月 15 日，YD 家居凭借胡桃禮系列在 2026 中国家具创新品牌评选中脱颖而出...",
+            content="<p>8 月 15 日，YD 家居凭借胡桃禮系列在 2026 中国家具创新品牌评选中脱颖而出，荣获年度创新品牌奖。</p><p>本次评选由...</p>",
+            author="YD 编辑部",
+            category="company",
+            view_count=1280,
+            is_published=1,
+            is_top=1,
+            is_recommend=1,
+            sort=100,
+            published_date=now - timedelta(days=1),
+            created_at=1, updated_at=1,
+        ),
+        News(
+            title="关于我司参加 2026 广州国际家具博览会的通知",
+            subtitle="展会信息",
+            cover_url="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800",
+            summary="我司将于 9 月 10 日至 13 日参加广州国际家具博览会...展位号：5B12",
+            content="<p>我司将于 9 月 10 日至 13 日参加广州国际家具博览会，欢迎新老客户莅临指导。</p><p><strong>展位号：5B12</strong></p>",
+            author="市场部",
+            category="company",
+            view_count=856,
+            is_published=1,
+            is_top=0,
+            is_recommend=1,
+            sort=90,
+            published_date=now - timedelta(days=3),
+            created_at=1, updated_at=1,
+        ),
+        News(
+            title="2026 年家居行业消费趋势报告",
+            subtitle="行业洞察",
+            cover_url="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800",
+            summary="报告显示，2026 年中国家装行业整体规模超 5 万亿元，新中式风格持续走热...",
+            content="<p>报告显示，2026 年中国家装行业整体规模超 5 万亿元，新中式风格持续走热...</p>",
+            author="行业研究部",
+            category="industry",
+            view_count=2340,
+            is_published=1,
+            is_top=1,
+            is_recommend=0,
+            sort=80,
+            published_date=now - timedelta(days=5),
+            created_at=1, updated_at=1,
+        ),
+        News(
+            title="环保新规：水性漆将全面替代油性漆",
+            subtitle="政策法规",
+            cover_url="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
+            summary="工信部新规要求 2026 年 12 月起，家居行业全面使用水性漆...",
+            content="<p>工信部新规要求 2026 年 12 月起，家居行业全面使用水性漆。</p>",
+            author="政策法规组",
+            category="industry",
+            view_count=1567,
+            is_published=1,
+            is_top=0,
+            is_recommend=1,
+            sort=70,
+            published_date=now - timedelta(days=7),
+            created_at=1, updated_at=1,
+        ),
+        News(
+            title="胡桃禮系列新品发布会将于 10 月举行",
+            subtitle="草稿预览",
+            cover_url="https://images.unsplash.com/photo-1581539250439-c96689b5164a?w=800",
+            summary="胡桃禮系列全新升级产品将于 10 月 1 日正式发布...",
+            content="<p>胡桃禮系列全新升级产品将于 10 月 1 日正式发布，敬请期待。</p>",
+            author="品牌部",
+            category="company",
+            view_count=0,
+            is_published=0,  # 草稿状态
+            is_top=0,
+            is_recommend=0,
+            sort=0,
+            published_date=None,
+            created_at=1, updated_at=1,
+        ),
+    ]
+    db.add_all(news_list)
+    db.flush()
+    print(f"  ✓ 资讯: 5 条（4 已发布 + 1 草稿）")
+
+    # ----- 招聘岗位（3 个） -----
+    from app.models.job import Job
+
+    jobs = [
+        Job(
+            title="高级家具设计师",
+            category="social",
+            department="设计中心",
+            location="佛山",
+            salary_min_cents=1500000,  # 1.5w
+            salary_max_cents=2500000,  # 2.5w
+            headcount=2,
+            description="<p>负责实木家具的产品设计与研发。</p>",
+            requirement="<ul><li>5 年以上实木家具设计经验</li><li>熟练使用 SolidWorks/Rhino</li></ul>",
+            publish_date=now - timedelta(days=2),
+            expire_date=now + timedelta(days=60),
+            created_at=1, updated_at=1,
+        ),
+        Job(
+            title="电商运营专员",
+            category="social",
+            department="电商部",
+            location="佛山",
+            salary_min_cents=800000,
+            salary_max_cents=1200000,
+            headcount=1,
+            description="<p>负责天猫/京东旗舰店的日常运营。</p>",
+            requirement="<ul><li>3 年以上家居电商运营经验</li></ul>",
+            publish_date=now - timedelta(days=5),
+            expire_date=now + timedelta(days=30),
+            created_at=1, updated_at=1,
+        ),
+        Job(
+            title="2027 届校园招聘 - 产品设计培训生",
+            category="campus",
+            department="管培生项目",
+            location="佛山",
+            salary_min_cents=800000,
+            salary_max_cents=1200000,
+            headcount=10,
+            description="<p>2 年轮岗 + 双导师制。</p>",
+            requirement="<ul><li>2027 届本科及以上应届生</li><li>专业不限，家具/工业设计优先</li></ul>",
+            publish_date=now - timedelta(days=10),
+            expire_date=now + timedelta(days=90),
+            created_at=1, updated_at=1,
+        ),
+    ]
+    db.add_all(jobs)
+    db.flush()
+    print(f"  ✓ 招聘岗位: 3 个（2 社招 + 1 校招）")
+
     db.commit()
 
 print("\n✅ Lite 数据库初始化完成！")

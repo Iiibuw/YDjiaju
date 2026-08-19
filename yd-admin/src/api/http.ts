@@ -23,6 +23,13 @@ export interface ApiEnvelope<T> {
   data: T
 }
 
+export interface PageMeta {
+  total: number
+  page: number
+  page_size: number
+  total_pages: number
+}
+
 export const http: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE ?? '/api',
   timeout: 30000,

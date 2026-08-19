@@ -8,6 +8,9 @@ from .admin_user import AdminUser
 from .case import Case
 from .category import Category
 from .dept import Dept
+from .job import Job
+from .job_application import JobApplication
+from .news import News
 from .product import Product
 from .role import Role
 from .user import User
@@ -17,6 +20,9 @@ __all__ = [
     "Case",
     "Category",
     "Dept",
+    "Job",
+    "JobApplication",
+    "News",
     "Product",
     "Role",
     "User",

@@ -6,7 +6,17 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.v1.endpoints import admin_products, auth, health, public_cases, public_products
+from app.api.v1.endpoints import (
+    admin_jobs,
+    admin_news,
+    admin_products,
+    auth,
+    health,
+    public_cases,
+    public_jobs,
+    public_news,
+    public_products,
+)
 from app.core.config import settings
 from app.schemas.common import ApiResponse
 
@@ -85,7 +95,11 @@ app.include_router(health.router, prefix=API_V1_PREFIX, tags=["health"])
 app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
 app.include_router(public_products.router, prefix=API_V1_PREFIX, tags=["public_products"])
 app.include_router(public_cases.router, prefix=API_V1_PREFIX, tags=["public_cases"])
+app.include_router(public_news.router, prefix=API_V1_PREFIX, tags=["public_news"])
+app.include_router(public_jobs.router, prefix=API_V1_PREFIX, tags=["public_jobs"])
 app.include_router(admin_products.router, prefix=API_V1_PREFIX, tags=["admin_products"])
+app.include_router(admin_news.router, prefix=API_V1_PREFIX, tags=["admin_news"])
+app.include_router(admin_jobs.router, prefix=API_V1_PREFIX, tags=["admin_jobs"])
 
 
 @app.get("/")

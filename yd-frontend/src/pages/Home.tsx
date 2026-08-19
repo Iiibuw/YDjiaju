@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import ProductCard from '../components/ProductCard'
 import { products, type ProductListItem } from '../api'
+import { listNews, type NewsListItem } from '../api/news'
 
 const BANNERS = [
   { id: 1, title: '百年家具 · 大国工匠', subtitle: '每一件家具，都见证时光', image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1600', link: '/products' },
@@ -29,7 +30,13 @@ export default function Home() {
     queryFn: () => products.listProducts({ is_top: 1, page_size: 6 }),
   })
 
+  const { data: newsData } = useQuery({
+    queryKey: ['news', 'latest'],
+    queryFn: () => listNews({ page_size: 3 }),
+  })
+
   const featuredItems: ProductListItem[] = featured?.items ?? []
+  const latestNews: NewsListItem[] = newsData?.items ?? []
 
   return (
     <>
@@ -110,6 +117,54 @@ export default function Home() {
               <p className="mt-2 text-sm text-stone-500">{it.label}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ===== 最新资讯 ===== */}
+      <section className="bg-white py-20">
+        <div className="container-yf">
+          <div className="mb-10 flex items-end justify-between">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-widest text-walnut">News & Insights</p>
+              <h2 className="mt-2 text-3xl font-bold text-coal">最新资讯</h2>
+            </div>
+            <Link to="/news" className="text-sm text-walnut hover:underline">
+              查看全部 →
+            </Link>
+          </div>
+          {latestNews.length === 0 ? (
+            <div className="py-12 text-center text-coal/50">暂无资讯</div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {latestNews.map((n) => (
+                <Link
+                  key={n.id}
+                  to={`/news/${n.id}`}
+                  className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
+                >
+                  <div className="aspect-[16/9] overflow-hidden bg-sand">
+                    {n.cover_url ? (
+                      <img src={n.cover_url} alt={n.title} className="h-full w-full object-cover transition group-hover:scale-105" loading="lazy" />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-coal/40">暂无封面</div>
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <div className="mb-2 flex items-center gap-2 text-xs">
+                      <span className="rounded bg-walnut/10 px-2 py-0.5 font-medium text-walnut">
+                        {n.category === 'company' ? '企业' :'行业'}
+                      </span>
+                      <span className="text-coal/50">
+                        {n.published_date ? new Date(n.published_date).toLocaleDateString('zh-CN') : ''}
+                      </span>
+                    </div>
+                    <h3 className="line-clamp-2 font-semibold text-coal group-hover:text-walnut">{n.title}</h3>
+                    {n.summary && <p className="mt-2 line-clamp-2 text-sm text-coal/60">{n.summary}</p>}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>
