@@ -1,5 +1,5 @@
 # YD 家具 — Windows 原生开发启动脚本（MySQL 模式，无 Docker 依赖）
-# 用法：双击运行；或在 PowerShell 中执行本脚本
+# 用法：双击根目录 run-dev.bat（推荐）；或右键本脚本「使用 PowerShell 运行」
 # 前提：
 #   1) 本机已安装并启动 MySQL 8.0（默认端口 3306）
 #   2) 本机已安装 Python(含 uv) 与 Node.js(含 npm)
@@ -20,12 +20,29 @@ Write-Host ""
 Write-Host "=== YD 家具 — Windows 原生启动（MySQL 模式，无 Docker）==="
 Write-Host ""
 
-# ===== 0. 选择包管理器（优先 pnpm，缺失则回落 npm）=====
-if (Get-Command pnpm -ErrorAction SilentlyContinue) {
-    $pkg = "pnpm"
-} else {
-    $pkg = "npm"
+# ===== 0. 工具链预检 =====
+function Test-Tool {
+    param([string]$Name, [string]$Hint)
+    if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
+        Write-Host "❌ 未找到命令: $Name" -ForegroundColor Red
+        Write-Host "   $Hint" -ForegroundColor Yellow
+        return $false
+    }
+    return $true
 }
+$toolsOk = $true
+if (-not (Test-Tool "uv"   "请安装 uv 并加入 PATH：https://docs.astral.sh/uv/getting-started/installation/ （或执行 'pip install uv'）")) { $toolsOk = $false }
+if (-not (Test-Tool "node" "请安装 Node.js（含 npm）：https://nodejs.org/")) { $toolsOk = $false }
+if (-not (Test-Tool "npm"  "请安装 Node.js（含 npm）：https://nodejs.org/")) { $toolsOk = $false }
+if (-not $toolsOk) {
+    Write-Host ""
+    Write-Host "请安装上述工具后重跑 run-dev.bat。" -ForegroundColor Yellow
+    pause
+    exit 1
+}
+
+# ===== 0.5 选择包管理器（优先 pnpm，缺失则回落 npm）=====
+if (Get-Command pnpm -ErrorAction SilentlyContinue) { $pkg = "pnpm" } else { $pkg = "npm" }
 Write-Host "📦 检测到包管理器：$pkg （前端将用 '$pkg run dev' 启动）"
 
 # ===== 1. 配置 .env 指向本地 MySQL =====
@@ -93,7 +110,13 @@ except Exception as e:
     print("PING_FAIL", repr(e))
 "@ | Out-File -FilePath $probe -Encoding utf8
 
-$probeOut = & uv run python $probe $dbHost $dbPort $dbUser $dbPass 2>&1
+# 必须在 yd-backend 目录下执行，否则 uv run 找不到 pyproject 依赖
+Push-Location (Join-Path $ROOT "yd-backend")
+try {
+    $probeOut = & uv run python $probe $dbHost $dbPort $dbUser $dbPass 2>&1
+} finally {
+    Pop-Location
+}
 Remove-Item $probe -Force -ErrorAction SilentlyContinue
 
 if ($probeOut -notmatch "PING_OK") {
