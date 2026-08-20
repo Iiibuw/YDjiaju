@@ -47,7 +47,7 @@ export default function BookingModal({ open, sourcePage, onClose }: Props) {
 
   if (!open) return null
 
-  const canSubmit = form.name.trim() && /^1[3-9]\d{9}$/.test(form.phone)
+  const canSubmit = form.name.trim() && /^\d{10,11}$/.test(form.phone)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => { setDone(false); onClose() }}>

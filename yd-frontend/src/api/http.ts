@@ -5,10 +5,9 @@
  */
 import axios, { AxiosError, type AxiosInstance, type AxiosResponse } from 'axios'
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL
-  || (import.meta as any).env?.PROD
-    ? '/api/v1'
-    : 'http://localhost:8000/api/v1'
+// dev 走 vite proxy（vite.config.ts 将 /api → :8000），prod 同源 /api/v1；
+// 部署到独立后端时用 VITE_API_BASE_URL 覆盖。
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || '/api/v1'
 
 export const http: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -16,13 +15,26 @@ export const http: AxiosInstance = axios.create({
   withCredentials: false, // JWT 不放 cookie
 })
 
-// ===== token 持久化 =====
+// ===== token 持久化：按当前路径分流——后台(/admin)用 admin token,前台用 member token =====
 const TOKEN_KEY = 'yd_admin_token'
+const MEMBER_TOKEN_KEY = 'yd_member_token'
+
+const isAdminPath = () =>
+  typeof location !== 'undefined' && location.pathname.startsWith('/admin')
 
 export const tokenStore = {
-  get: () => localStorage.getItem(TOKEN_KEY),
-  set: (t: string) => localStorage.setItem(TOKEN_KEY, t),
-  clear: () => localStorage.removeItem(TOKEN_KEY),
+  get: (): string | null => {
+    if (isAdminPath()) return localStorage.getItem(TOKEN_KEY)
+    return localStorage.getItem(MEMBER_TOKEN_KEY) || localStorage.getItem(TOKEN_KEY)
+  },
+  set: (t: string) => {
+    if (isAdminPath()) localStorage.setItem(TOKEN_KEY, t)
+    else localStorage.setItem(MEMBER_TOKEN_KEY, t)
+  },
+  clear: () => {
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(MEMBER_TOKEN_KEY)
+  },
 }
 
 // ===== 拦截器：注入 token =====

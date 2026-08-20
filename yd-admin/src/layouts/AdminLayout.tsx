@@ -253,6 +253,28 @@ export default function AdminLayout() {
         </Footer>
       </Layout>
 
+      {/* 浮动左下角管理员入口（截图 6 风格） */}
+      <div className="fixed bottom-5 left-5 z-50 flex items-center gap-2 rounded-full bg-white px-2 py-1.5 shadow-lg ring-1 ring-black/5">
+        <Avatar
+          size={36}
+          style={{ backgroundColor: '#7C3F00', flexShrink: 0 }}
+          icon={<UserOutlined />}
+        >
+          {displayName[0]}
+        </Avatar>
+        <div className="flex flex-col pr-1 leading-tight">
+          <span className="text-xs font-medium text-coal">{displayName}</span>
+          <span className="text-[10px] text-stone-500">
+            {profile?.role?.toUpperCase() || 'ADMIN'}
+          </span>
+        </div>
+        <Dropdown menu={userDropdown} placement="topRight" trigger={['click']}>
+          <Button size="small" type="text" icon={<DownOutlined style={{ fontSize: 10 }} />}>
+            操作
+          </Button>
+        </Dropdown>
+      </div>
+
       {/* 修改密码 Modal */}
       <Modal
         title="修改密码"

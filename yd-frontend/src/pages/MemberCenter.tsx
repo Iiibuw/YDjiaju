@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { memberLogin, memberRegister, type MemberOut } from '../api/members'
 import { listMyAppointments, listMyOrders, fmtCents, ORDER_STATUS, APPT_STATUS, type AppointmentOut, type OrderOut } from '../api/orders'
+import { listMyApplications, type MyApplication } from '../api/jobs'
 
 const TOKEN_KEY = 'yd_member_token'
 
@@ -31,8 +32,13 @@ interface RegisterForm {
 export default function MemberCenter() {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [member, setMember] = useState<MemberOut | null>(() => {
-    const raw = localStorage.getItem('yd_member_info')
-    return raw ? (JSON.parse(raw) as MemberOut) : null
+    try {
+      const raw = localStorage.getItem('yd_member_info')
+      return raw ? (JSON.parse(raw) as MemberOut) : null
+    } catch {
+      localStorage.removeItem('yd_member_info')
+      return null
+    }
   })
   const [loginForm, setLoginForm] = useState<LoginForm>({ phone: '', password: '' })
   const [regForm, setRegForm] = useState<RegisterForm>({ phone: '', password: '', nickname: '' })
@@ -80,12 +86,18 @@ export default function MemberCenter() {
     queryFn: () => listMyAppointments(),
     enabled: hasToken && !!member,
   })
+  const { data: myApps } = useQuery({
+    queryKey: ['my-applications'],
+    queryFn: () => listMyApplications(),
+    enabled: hasToken && !!member,
+  })
 
   const orders: OrderOut[] = myOrders?.items ?? []
   const appointments: AppointmentOut[] = myAppts?.items ?? []
+  const applications = myApps?.items ?? []
 
-  const canLogin = /^1[3-9]\d{9}$/.test(loginForm.phone) && loginForm.password.length >= 6
-  const canRegister = /^1[3-9]\d{9}$/.test(regForm.phone) && regForm.password.length >= 6
+  const canLogin = /^\d{10,11}$/.test(loginForm.phone) && loginForm.password.length >= 6
+  const canRegister = /^\d{10,11}$/.test(regForm.phone) && regForm.password.length >= 6
 
   // ===== 已登录视图 =====
   if (member) {
@@ -106,7 +118,7 @@ export default function MemberCenter() {
               </button>
             </div>
 
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-xl bg-sand/60 p-5">
                 <p className="text-2xl font-bold text-walnut">{orders.length}</p>
                 <p className="mt-1 text-sm text-coal/60">我的订单</p>
@@ -114,6 +126,10 @@ export default function MemberCenter() {
               <div className="rounded-xl bg-sand/60 p-5">
                 <p className="text-2xl font-bold text-walnut">{appointments.length}</p>
                 <p className="mt-1 text-sm text-coal/60">我的预约</p>
+              </div>
+              <div className="rounded-xl bg-sand/60 p-5">
+                <p className="text-2xl font-bold text-walnut">{applications.length}</p>
+                <p className="mt-1 text-sm text-coal/60">我的投递</p>
               </div>
               <div className="rounded-xl bg-sand/60 p-5">
                 <p className="text-2xl font-bold text-walnut">{member.email ? '已绑定' : '未绑定'}</p>
@@ -182,6 +198,30 @@ export default function MemberCenter() {
                       {a.follow_note && (
                         <p className="mt-2 rounded bg-green-50 px-2 py-1 text-xs text-green-700">跟进：{a.follow_note}</p>
                       )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ===== 我的投递 ===== */}
+            <div className="mt-8">
+              <h3 className="mb-3 font-semibold text-coal">我的投递</h3>
+              {applications.length === 0 ? (
+                <div className="rounded-xl bg-sand/40 p-6 text-center text-sm text-coal/50">暂无投递，去「人才招聘」看看吧</div>
+              ) : (
+                <div className="space-y-3">
+                  {applications.map((a: MyApplication) => (
+                    <div key={a.id} className="rounded-xl border border-coal/10 bg-white p-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-coal">{a.job_title ?? `岗位 #${a.job_id}`}</span>
+                        <span className="rounded-full bg-walnut/10 px-2.5 py-0.5 text-xs text-walnut">
+                          {a.stage === 'applied' ? '已投递' : a.stage === 'screening' ? '初筛中' : a.stage === 'interview' ? '面试中' : a.stage === 'offer' ? '已录用' : a.stage === 'rejected' ? '未通过' : a.stage}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs text-coal/50">
+                        {a.applied_date ? `投递时间：${new Date(a.applied_date).toLocaleString('zh-CN')}` : ''}
+                      </p>
                     </div>
                   ))}
                 </div>
