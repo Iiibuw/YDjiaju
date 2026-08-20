@@ -12,6 +12,16 @@ const SUB = '#d4ccb8'
 const DEEP_BG = '#2c2520'
 const BORDER = '#4a3f32'
 
+/**
+ * 后台登录页绝对地址：
+ * - 后台是独立 dev server（yd-admin @ 5181，basename /admin），
+ *   不能用相对路径 "/admin/login"（会在前台 5180 上被前台 Router 接管、错误渲染前台模板）
+ * - 生产部署时通过环境变量 VITE_ADMIN_BASE_URL 覆盖
+ */
+const ADMIN_LOGIN_URL = `${
+  import.meta.env.VITE_ADMIN_BASE_URL || 'http://localhost:5181'
+}/admin/login`
+
 export default function Footer() {
   return (
     <footer
@@ -41,13 +51,9 @@ export default function Footer() {
             </div>
           </div>
           <a
-            href="/admin/login"
+            href={ADMIN_LOGIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={(e) => {
-              // 双重保险：onClick 也跳转，避免某些浏览器拦截 target=_blank
-              e.stopPropagation()
-            }}
             className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-colors"
             style={{ backgroundColor: GOLD, color: '#1a150c' }}
             onMouseEnter={(e) => {

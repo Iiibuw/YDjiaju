@@ -217,7 +217,6 @@ export default function AdminLayout() {
           </div>
         </div>
 
-        {/* ===== 左下角用户区：头像 + 用户名 + 下拉菜单（截图 2 风格） ===== */}
         </Sider>
 
       <Layout className="flex flex-col">
