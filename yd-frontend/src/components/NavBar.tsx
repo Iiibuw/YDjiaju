@@ -51,10 +51,9 @@ const NAV = [
 ]
 
 // 黑金色 hardcoded（不依赖 token）—— NavBar/Footer 是固定奢华区
-// v2.2：深色底从 #0d0b09 提到 #2c2520（暖深褐），让米白文字更清晰
+// v2.3：导航文字提亮 #e6ddcc（深棕底上清晰可读），hover 纯白
 const GOLD = '#c9a227'
 const INK_LIGHT = '#ece5d8'
-const SUB = '#d4ccb8' // 加亮版次级文字
 const DEEPER_BG = '#3a3128'
 const BORDER = '#4a3f32'
 
@@ -62,7 +61,7 @@ const navCls = ({ isActive }: { isActive: boolean }) =>
   `relative inline-flex items-center py-1 outline-none transition-colors focus:outline-none after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[${GOLD}] after:transition-all ${
     isActive
       ? `font-semibold text-[${GOLD}] after:w-full`
-      : `text-[${SUB}] hover:text-[${INK_LIGHT}] after:w-0 hover:after:w-full`
+      : `font-normal text-[#e6ddcc] hover:text-white after:w-0 hover:after:w-full`
   }`
 
 export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Props) {
@@ -106,7 +105,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
               <NavLink to={item.to} className={navCls}>
                 {item.label}
                 {item.children && (
-                  <span className="ml-1 inline-flex text-[9px] leading-none" style={{ color: SUB }}>
+                  <span className="ml-1 inline-flex text-[9px] leading-none" style={{ color: 'currentColor' }}>
                     ▼
                   </span>
                 )}
@@ -122,7 +121,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
                         key={c.label}
                         to={c.to}
                         className="block rounded-lg px-3 py-2 text-sm hover:text-[#ece5d8]"
-                        style={{ color: SUB }}
+                        style={{ color: "#e6ddcc" }}
                         onMouseEnter={(e) => {
                           ;(e.currentTarget as HTMLElement).style.backgroundColor = '#1f1a14'
                         }}
@@ -146,7 +145,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
             onClick={onOpenSearch}
             title="站内搜索"
             className="p-2 transition-colors"
-            style={{ color: SUB }}
+            style={{ color: "#e6ddcc" }}
             aria-label="搜索"
           >
             🔍
@@ -162,7 +161,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
             onClick={onOpenCart}
             title="购物车"
             className="relative p-2 transition-colors"
-            style={{ color: SUB }}
+            style={{ color: "#e6ddcc" }}
             aria-label="购物车"
           >
             🛒
@@ -178,7 +177,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
           <Link
             to={member ? '/member' : '/login'}
             className="hidden items-center gap-1 p-2 md:inline-flex"
-            style={{ color: SUB }}
+            style={{ color: "#e6ddcc" }}
             title="会员中心"
           >
             <span
@@ -194,7 +193,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
           <button
             onClick={() => setMobileOpen((v) => !v)}
             className="p-2 lg:hidden"
-            style={{ color: SUB }}
+            style={{ color: "#e6ddcc" }}
             aria-label="菜单"
           >
             ☰
@@ -223,7 +222,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
                   <Link to={item.to} onClick={() => setMobileOpen(false)}>
                     {item.label}
                   </Link>
-                  {item.children && <span style={{ color: SUB }}>▾</span>}
+                  {item.children && <span style={{ color: "#e6ddcc" }}>▾</span>}
                 </summary>
                 {item.children && (
                   <div className="ml-3 flex flex-col border-l pl-3" style={{ borderColor: BORDER }}>
@@ -233,7 +232,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
                         to={c.to}
                         onClick={() => setMobileOpen(false)}
                         className="px-3 py-2"
-                        style={{ color: SUB }}
+                        style={{ color: "#e6ddcc" }}
                       >
                         {c.label}
                       </Link>
