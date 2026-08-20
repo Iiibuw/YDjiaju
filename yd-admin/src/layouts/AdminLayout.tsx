@@ -171,7 +171,11 @@ export default function AdminLayout() {
 
   return (
     <Layout className="min-h-screen">
-      <Sider width={220} theme="dark" className="!bg-[#1f1f1f]">
+      <Sider
+        width={220}
+        theme="dark"
+        style={{ backgroundColor: '#001529', minHeight: '100vh', height: '100vh' }}
+      >
         <div className="flex h-16 items-center justify-center border-b border-white/10">
           <Link to="/" className="font-display text-lg font-semibold tracking-wide text-white">
             YD · 管理后台
@@ -185,6 +189,7 @@ export default function AdminLayout() {
             key: m.key,
             label: <Link to={m.key}>{m.label}</Link>,
           }))}
+          style={{ backgroundColor: '#001529' }}
         />
       </Sider>
 

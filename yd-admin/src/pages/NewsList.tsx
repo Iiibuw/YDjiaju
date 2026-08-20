@@ -210,8 +210,15 @@ export default function NewsListPage() {
           <img
             src={url}
             alt=""
-            className="h-9 w-9 flex-shrink-0 rounded object-cover"
             loading="lazy"
+            style={{
+              width: 36,
+              height: 36,
+              objectFit: 'cover',
+              flexShrink: 0,
+              borderRadius: 4,
+              display: 'block',
+            }}
             onError={(e) => {
               ;(e.currentTarget as HTMLImageElement).style.opacity = '0.3'
             }}

@@ -56,14 +56,21 @@ export default function Orders() {
               {it.cover_url ? (
                 <img
                   src={it.cover_url}
-                  className="h-8 w-8 flex-shrink-0 rounded object-cover"
                   loading="lazy"
+                  style={{
+                    width: 36,
+                    height: 36,
+                    objectFit: 'cover',
+                    flexShrink: 0,
+                    borderRadius: 4,
+                    display: 'block',
+                  }}
                   onError={(e) => {
                     ;(e.currentTarget as HTMLImageElement).style.opacity = '0.3'
                   }}
                 />
               ) : (
-                <div className="h-8 w-8 flex-shrink-0 rounded bg-gray-100" />
+                <div style={{ width: 36, height: 36, borderRadius: 4, flexShrink: 0 }} className="bg-gray-100" />
               )}
               <span className="truncate">{it.product_name} × {it.quantity}</span>
             </div>
