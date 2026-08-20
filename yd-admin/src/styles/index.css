@@ -29,3 +29,47 @@ body {
 .ant-table-thead > tr > th {
   border-top: 1px solid #e8e8e8;
 }
+
+/* ===== 全局视觉统一：圆角 / 阴影 / 间距 ===== */
+.ant-card {
+  border-radius: 12px !important;
+  border-color: #eef0f2 !important;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04) !important;
+}
+.ant-card .ant-card-head {
+  border-bottom-color: #f0f0f0;
+  min-height: 48px;
+}
+.ant-btn {
+  border-radius: 6px !important;
+}
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker,
+.ant-input-number {
+  border-radius: 6px !important;
+}
+.ant-table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+.ant-modal-content {
+  border-radius: 14px !important;
+}
+.ant-tag {
+  border-radius: 4px;
+}
+
+/* 滚动条美化（Webkit） */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom'
 
 import Login from './pages/Login'
+import Dashboard from './pages/Dashboard'
 import NewsListPage from './pages/NewsList'
 import JobsPage from './pages/Jobs'
 import Cases from './pages/Cases'
@@ -39,7 +40,8 @@ const router = createBrowserRouter(
       loader: requireAuth,
       element: <AdminLayout />,
       children: [
-        { index: true, element: <NewsListPage /> },
+        { index: true, element: <Dashboard /> },
+        { path: 'dashboard', element: <Dashboard />, loader: requireAuth },
         { path: 'news', element: <NewsListPage />, loader: requireAuth },
         { path: 'news/new', element: <NewsNewPage />, loader: requireAuth },
         { path: 'jobs', element: <JobsPage />, loader: requireAuth },

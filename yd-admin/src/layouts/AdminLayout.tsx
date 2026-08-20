@@ -26,6 +26,7 @@ import { changePassword, fetchProfile, getCaptcha, login, type AdminProfile } fr
 const { Sider, Header, Content } = Layout
 
 const MENU = [
+  { key: '/dashboard', label: '仪表盘' },
   { key: '/news', label: '资讯管理' },
   { key: '/jobs', label: '招聘管理' },
   { key: '/cases', label: '案例管理' },
@@ -35,6 +36,31 @@ const MENU = [
   { key: '/messages', label: '留言管理' },
   { key: '/depts', label: '部门管理' },
 ]
+
+/** 品牌线性图标：沙发 + 桌面（家具元素，简洁线性风格） */
+function BrandLogoMark() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-6 w-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* 沙发主体 */}
+      <path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3" />
+      <path d="M4 11a2 2 0 0 0-2 2v3h20v-3a2 2 0 0 0-2-2H4Z" />
+      {/* 沙发扶手 */}
+      <path d="M2 16v2M22 16v2" />
+      {/* 桌腿 */}
+      <path d="M8 6V4h8v2" />
+      {/* YD 首字母负形（用短横强调） */}
+      <path d="M9 13h6M12 13v2" />
+    </svg>
+  )
+}
 
 export default function AdminLayout() {
   const nav = useNavigate()
@@ -166,42 +192,80 @@ export default function AdminLayout() {
       <Sider
         width={220}
         theme="dark"
-        style={{ backgroundColor: '#001529', minHeight: '100vh', height: '100vh' }}
+        className="!flex !flex-col"
+        style={{ backgroundColor: '#001529', minHeight: '100vh', height: '100vh', position: 'sticky', top: 0 }}
       >
         {/* Logo 区域：图标 + 品牌名 + 副标题 */}
+        {/* ===== 品牌 Logo：线性家具图标 + 小尺寸文字 ===== */}
         <div
-          className="flex h-16 items-center gap-3 border-b px-4"
-          style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+          className="flex h-14 items-center gap-2.5 border-b px-4"
+          style={{ borderColor: 'rgba(255,255,255,0.08)' }}
         >
-          <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-base font-bold"
-            style={{
-              background: 'linear-gradient(135deg, #1677ff 0%, #4096ff 100%)',
-              color: '#fff',
-              boxShadow: '0 2px 8px rgba(22,119,255,0.4)',
-            }}
-          >
-            YD
-          </div>
+          <span className="text-gold" style={{ color: '#c9a227' }}>
+            <BrandLogoMark />
+          </span>
           <div className="flex flex-col leading-tight">
-            <span className="font-display text-base font-semibold tracking-wide text-white">
-              管理后台
+            <span className="font-display text-sm font-semibold tracking-wide text-white">
+              YD 家具
             </span>
-            <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.55)' }}>
-              YD Furniture · Admin
+            <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Admin Console
             </span>
           </div>
         </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[loc.pathname]}
-          items={MENU.map((m) => ({
-            key: m.key,
-            label: <Link to={m.key}>{m.label}</Link>,
-          }))}
-          style={{ backgroundColor: '#001529' }}
-        />
+
+        {/* ===== 菜单（flex-1 撑开，把底部用户区顶到底） ===== */}
+        <div className="flex-1 overflow-y-auto py-2">
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[loc.pathname]}
+            items={MENU.map((m) => ({
+              key: m.key,
+              label: <Link to={m.key}>{m.label}</Link>,
+            }))}
+            style={{ backgroundColor: 'transparent', borderInlineEnd: 'none' }}
+          />
+        </div>
+
+        {/* ===== 左下角用户区：头像 + 用户名 + 退出（与菜单分离） ===== */}
+        <div
+          className="border-t px-4 py-3"
+          style={{ borderColor: 'rgba(255,255,255,0.08)' }}
+        >
+          <div className="flex items-center gap-2.5">
+            <Avatar
+              size={36}
+              icon={<UserOutlined />}
+              src={profile?.avatar_url || undefined}
+              style={{ backgroundColor: '#1677ff', flexShrink: 0 }}
+            >
+              {displayName[0]}
+            </Avatar>
+            <div className="min-w-0 flex-1 leading-tight">
+              <div className="truncate text-sm font-medium text-white">{displayName}</div>
+              <div className="truncate text-[10px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                @{profile?.username || 'admin'}
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              title="退出登录"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm transition-colors"
+              style={{ color: 'rgba(255,255,255,0.55)' }}
+              onMouseEnter={(e) => {
+                ;(e.currentTarget as HTMLElement).style.color = '#ff4d4f'
+                ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,77,79,0.12)'
+              }}
+              onMouseLeave={(e) => {
+                ;(e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.55)'
+                ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+              }}
+            >
+              <LogoutOutlined />
+            </button>
+          </div>
+        </div>
       </Sider>
 
       <Layout className="flex flex-col">
