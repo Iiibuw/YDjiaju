@@ -68,7 +68,7 @@ export default function ChatWidget() {
 
       {/* 聊天窗口 */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-40 flex h-[480px] w-[360px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-coal/10">
+        <div className="fixed bottom-24 right-6 z-40 flex h-[480px] w-[360px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl bg-card shadow-2xl ring-1 ring-coal/10">
           <header className="flex items-center gap-3 bg-walnut px-5 py-4 text-white">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-lg">🤖</div>
             <div>
@@ -84,7 +84,7 @@ export default function ChatWidget() {
                   className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-6 ${
                     m.from === 'user'
                       ? 'rounded-br-sm bg-walnut text-white'
-                      : 'rounded-bl-sm bg-white text-coal shadow-sm ring-1 ring-coal/5'
+                      : 'rounded-bl-sm bg-card text-coal shadow-sm ring-1 ring-coal/5'
                   }`}
                 >
                   {m.text}
@@ -93,7 +93,7 @@ export default function ChatWidget() {
             ))}
           </div>
 
-          <div className="border-t border-coal/10 bg-white p-3">
+          <div className="border-t border-coal/10 bg-card p-3">
             <div className="mb-2 flex flex-wrap gap-1.5">
               {QUICK_QUESTIONS.map((q) => (
                 <button

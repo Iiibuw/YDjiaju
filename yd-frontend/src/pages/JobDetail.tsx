@@ -56,7 +56,7 @@ export default function JobDetail() {
   return (
     <article className="bg-sand pb-16">
       {/* ===== 顶部 ===== */}
-      <header className="bg-white py-10">
+      <header className="bg-card py-10">
         <div className="container-yf mx-auto max-w-3xl">
           <Link to="/jobs" className="inline-flex items-center text-sm text-walnut hover:underline">← 返回招聘列表</Link>
           <div className="mt-4 flex items-center gap-2 text-xs">
@@ -84,7 +84,7 @@ export default function JobDetail() {
 
       {/* ===== 薪资卡 ===== */}
       <div className="container-yf mx-auto max-w-3xl">
-        <div className="mt-8 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-coal/5">
+        <div className="mt-8 rounded-2xl bg-card p-6 shadow-sm ring-1 ring-coal/5">
           <div className="flex items-center justify-between">
             <span className="text-sm text-coal/50">薪资范围</span>
             <span className="text-2xl font-bold text-walnut">{fmtSalary(data.salary_min_cents, data.salary_max_cents)}</span>
@@ -93,7 +93,7 @@ export default function JobDetail() {
 
         {/* ===== 职责 ===== */}
         {data.description && (
-          <div className="mt-6 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-coal/5">
+          <div className="mt-6 rounded-2xl bg-card p-8 shadow-sm ring-1 ring-coal/5">
             <h2 className="mb-4 text-xl font-bold text-coal">岗位职责</h2>
             <div className="prose max-w-none leading-8 text-coal/80 [&_p]:my-3 [&_ul]:my-3 [&_li]:my-1"
               dangerouslySetInnerHTML={{ __html: data.description }} />
@@ -102,7 +102,7 @@ export default function JobDetail() {
 
         {/* ===== 要求 ===== */}
         {data.requirement && (
-          <div className="mt-6 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-coal/5">
+          <div className="mt-6 rounded-2xl bg-card p-8 shadow-sm ring-1 ring-coal/5">
             <h2 className="mb-4 text-xl font-bold text-coal">任职要求</h2>
             <div className="prose max-w-none leading-8 text-coal/80 [&_p]:my-3 [&_ul]:my-3 [&_li]:my-1"
               dangerouslySetInnerHTML={{ __html: data.requirement }} />
@@ -113,7 +113,7 @@ export default function JobDetail() {
       {/* ===== 投递 Modal ===== */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setModalOpen(false)}>
-          <div className="w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl bg-white p-8" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl bg-card p-8" onClick={(e) => e.stopPropagation()}>
             {done ? (
               <div className="text-center">
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-2xl text-green-600">✓</div>

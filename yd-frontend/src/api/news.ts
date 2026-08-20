@@ -103,7 +103,7 @@ export async function listNews(params?: { category?: string; is_top?: boolean; p
   if (params?.page) qs.set('page', String(params.page))
   if (params?.page_size) qs.set('page_size', String(params.page_size))
   try {
-    const env = await http.get<ApiEnvelope<ListNewsResp>>(`/api/v1/public/news?${qs.toString()}`)
+    const env = await http.get<ApiEnvelope<ListNewsResp>>(`/public/news?${qs.toString()}`)
     return unwrap(env)
   } catch {
     return { items: mockNews, total: mockNews.length, page: 1, page_size: 20, total_pages: 1, meta: { total: mockNews.length, page: 1, page_size: 20, total_pages: 1 } }
@@ -112,7 +112,7 @@ export async function listNews(params?: { category?: string; is_top?: boolean; p
 
 export async function getNewsDetail(id: number): Promise<NewsDetail | null> {
   try {
-    const env = await http.get<ApiEnvelope<NewsDetail>>(`/api/v1/public/news/${id}`)
+    const env = await http.get<ApiEnvelope<NewsDetail>>(`/public/news/${id}`)
     return unwrap(env)
   } catch {
     return mockDetail(id)

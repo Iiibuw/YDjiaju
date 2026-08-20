@@ -35,7 +35,7 @@ export default function SearchModal({ open, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-start justify-center bg-ink/40 p-4 pt-24" onClick={onClose}>
-      <div className="w-full max-w-xl max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-xl max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl bg-card p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <form onSubmit={submit} className="flex gap-2">
           <input
             ref={inputRef}

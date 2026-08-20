@@ -99,7 +99,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
               </NavLink>
               {item.children && (
                 <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-                  <div className="min-w-36 rounded-xl border border-stone-200 bg-white p-1.5 shadow-lg">
+                  <div className="min-w-36 rounded-xl border border-stone-200 bg-card p-1.5 shadow-lg">
                     {item.children.map((c) => (
                       <Link
                         key={c.label}
@@ -146,7 +146,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
             href="/admin/login"
             target="_blank"
             rel="noopener"
-            className="hidden items-center gap-1 rounded-md border border-stone-200 bg-white px-2.5 py-1 text-xs text-stone-500 hover:border-walnut hover:text-walnut lg:inline-flex"
+            className="hidden items-center gap-1 rounded-md border border-stone-200 bg-card px-2.5 py-1 text-xs text-stone-500 hover:border-walnut hover:text-walnut lg:inline-flex"
             title="管理后台"
           >
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
@@ -168,7 +168,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
 
       {/* 移动端折叠菜单 */}
       {mobileOpen && (
-        <div className="border-t border-stone-200 bg-white lg:hidden">
+        <div className="border-t border-stone-200 bg-card lg:hidden">
           <div className="container-yf flex flex-col py-3 text-sm">
             <Link to="/" onClick={() => setMobileOpen(false)} className="px-3 py-2 text-stone-700 hover:bg-sand rounded-lg">
               首页

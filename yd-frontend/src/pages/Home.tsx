@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 
@@ -5,12 +6,22 @@ import ProductCard from '../components/ProductCard'
 import { products, type ProductListItem } from '../api'
 import { listNews, type NewsListItem } from '../api/news'
 import { listCases, type CaseListItem } from '../api/cases'
+import { listBanners, type Banner } from '../api/banners'
 
-const BANNERS = [
-  { id: 1, title: '百年家具 · 大国工匠', subtitle: '每一件家具，都见证时光', image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1600', link: '/products' },
-  { id: 2, title: '胡桃禮系列 · 新品上市', subtitle: '北美黑胡桃 · 现代简约', image: 'https://images.unsplash.com/photo-1567538096342-cd31b4c75e9b?w=1600', link: '/products?series_id=1' },
-  { id: 3, title: '预约到店 · 享专属服务', subtitle: '免费方案设计 + 设计师一对一', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1600', link: '/contact' },
+const FALLBACK_BANNERS: Banner[] = [
+  { id: 1, title: '百年家具 · 大国工匠', image_url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1600', link_type: 'url', link_target: '/products', sort: 1 },
+  { id: 2, title: '胡桃禮系列 · 新品上市', image_url: 'https://images.unsplash.com/photo-1567538096342-cd31b4c75e9b?w=1600', link_type: 'url', link_target: '/products', sort: 2 },
+  { id: 3, title: '预约到店 · 享专属服务', image_url: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1600', link_type: 'url', link_target: '/contact', sort: 3 },
 ]
+
+/** 轮播链接跳转（link_type=url 直接用 link_target，其余走对应模块路由）。 */
+function bannerHref(b: Banner): string {
+  if (b.link_type === 'url') return b.link_target
+  if (b.link_type === 'product') return `/products/${b.link_target}`
+  if (b.link_type === 'news') return `/news/${b.link_target}`
+  if (b.link_type === 'case') return `/cases/${b.link_target}`
+  return '/'
+}
 
 const STATS = [
   { n: '500+', label: '产品 SKU' },
@@ -41,37 +52,57 @@ export default function Home() {
     queryFn: () => listCases({ page_size: 3 }),
   })
 
+  const { data: banners } = useQuery({
+    queryKey: ['banners'],
+    queryFn: listBanners,
+  })
+
   const featuredItems: ProductListItem[] = featured?.items ?? []
   const latestNews: NewsListItem[] = newsData?.items ?? []
   const featuredCases: CaseListItem[] = casesData?.items ?? []
+  const heroBanners: Banner[] = banners && banners.length > 0 ? banners : FALLBACK_BANNERS
+
+  // 轮播自动切换（UI 文档 §10.3：5s 间隔 + 指示点）
+  const [heroIdx, setHeroIdx] = useState(0)
+  const hero = heroBanners[heroIdx % heroBanners.length] ?? heroBanners[0]
+  useEffect(() => {
+    const t = setInterval(() => setHeroIdx((i) => (i + 1) % Math.max(1, heroBanners.length)), 5000)
+    return () => clearInterval(t)
+  }, [heroBanners.length])
 
   return (
     <>
-      {/* ===== Hero 轮播（M1 占位：3 张静态卡） ===== */}
-      <section className="relative h-[500px] lg:h-[640px] overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${BANNERS[0].image})` }}
+      {/* ===== Hero 轮播（数据驱动，后端 banners / 前端 fallback） ===== */}
+      <section className="relative h-[500px] overflow-hidden lg:h-[640px]">
+        <Link
+          to={hero ? bannerHref(hero) : '/products'}
+          className="absolute inset-0 block bg-cover bg-center"
+          style={{ backgroundImage: `url(${hero?.image_url})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
-        </div>
-        <div className="relative container-yf h-full flex flex-col justify-center text-white">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/80">{BANNERS[0].title}</p>
-          <h1 className="mt-4 font-display text-4xl lg:text-6xl font-semibold leading-tight">
-            {BANNERS[0].subtitle}
+        </Link>
+        <div className="relative container-yf flex h-full flex-col justify-center text-white">
+          <p className="text-xs uppercase tracking-[0.3em] text-white/80">{hero?.title}</p>
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight lg:text-6xl">
+            {hero?.title}
           </h1>
           <div className="mt-8 flex gap-4">
-            <Link to="/products" className="inline-flex items-center justify-center px-8 py-3 bg-white text-ink font-medium hover:bg-white/90 transition-colors">
+            <Link to="/products" className="inline-flex items-center justify-center bg-gold px-8 py-3 font-medium text-[#1a150c] transition-colors hover:bg-gold/90">
               浏览产品
             </Link>
-            <Link to="/contact" className="inline-flex items-center justify-center px-8 py-3 border border-white/40 text-white hover:bg-white/10 transition-colors">
+            <Link to="/contact" className="inline-flex items-center justify-center border border-white/40 px-8 py-3 text-white transition-colors hover:bg-white/10">
               预约到店
             </Link>
           </div>
         </div>
         <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
-          {BANNERS.map((_, i) => (
-            <span key={i} className={`w-8 h-0.5 ${i === 0 ? 'bg-white' : 'bg-white/40'}`} />
+          {heroBanners.map((_, i) => (
+            <button
+              key={i}
+              aria-label={`轮播 ${i + 1}`}
+              onClick={() => setHeroIdx(i)}
+              className={`h-0.5 w-8 transition-colors ${i === heroIdx % heroBanners.length ? 'bg-gold' : 'bg-white/40'}`}
+            />
           ))}
         </div>
       </section>
@@ -102,7 +133,7 @@ export default function Home() {
       </section>
 
       {/* ===== 品牌承诺 ===== */}
-      <section className="bg-white py-20">
+      <section className="bg-card py-20">
         <div className="container-yf">
           <div className="grid md:grid-cols-3 gap-12 text-center">
             {PROMISES.map((it) => (
@@ -128,7 +159,7 @@ export default function Home() {
       </section>
 
       {/* ===== 最新资讯 ===== */}
-      <section className="bg-white py-20">
+      <section className="bg-card py-20">
         <div className="container-yf">
           <div className="mb-10 flex items-end justify-between">
             <div>
@@ -147,7 +178,7 @@ export default function Home() {
                 <Link
                   key={n.id}
                   to={`/news/${n.id}`}
-                  className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
+                  className="group block overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
                 >
                   <div className="aspect-[16/9] overflow-hidden bg-sand">
                     {n.cover_url ? (
@@ -195,7 +226,7 @@ export default function Home() {
                 <Link
                   key={c.id}
                   to={`/cases/${c.id}`}
-                  className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
+                  className="group block overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-coal/5">
                     {c.cover_url ? (

@@ -6,18 +6,33 @@ import ImageGallery from '../components/ImageGallery'
 import BuyNowModal from '../components/BuyNowModal'
 import BookingModal from '../components/BookingModal'
 import { products } from '../api'
+import { useCartStore } from '../store/cart'
+import { useToastStore } from '../store/toast'
 
 export default function ProductDetail() {
   const { id } = useParams()
   const productId = Number(id)
   const [buyOpen, setBuyOpen] = useState(false)
   const [bookingOpen, setBookingOpen] = useState(false)
+  const addToCart = useCartStore((s) => s.add)
+  const toast = useToastStore((s) => s.push)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['product', productId],
     queryFn: () => products.getProductDetail(productId),
     enabled: Number.isFinite(productId) && productId > 0,
   })
+
+  const onAddCart = () => {
+    if (!data) return
+    addToCart({
+      id: data.id,
+      name: data.name,
+      priceCents: data.min_price_cents ?? data.max_price_cents ?? 0,
+      cover: data.cover_url,
+    })
+    toast(`已加入购物车：${data.name}`, 'success')
+  }
 
   return (
     <>
@@ -65,6 +80,7 @@ export default function ProductDetail() {
 
             <div className="mt-8 flex gap-3">
               <button className="btn-primary flex-1" onClick={() => setBuyOpen(true)}>立即购买</button>
+              <button className="btn-outline flex-1" onClick={onAddCart}>加入购物车</button>
               <button className="btn-outline flex-1" onClick={() => setBookingOpen(true)}>预约到店</button>
             </div>
 

@@ -32,7 +32,7 @@ export default function FilterPanel({ groups, active, onChange }: Props) {
                 className={`text-sm w-full text-left px-2 py-1 rounded transition-colors ${
                   !active[g.name]
                     ? 'bg-ink text-white'
-                    : 'text-stone-600 hover:text-ink hover:bg-white'
+                    : 'text-stone-600 hover:text-ink hover:bg-card'
                 }`}
               >
                 全部
@@ -45,7 +45,7 @@ export default function FilterPanel({ groups, active, onChange }: Props) {
                   className={`text-sm w-full text-left px-2 py-1 rounded flex items-center justify-between transition-colors ${
                     active[g.name] === it.key
                       ? 'bg-ink text-white'
-                      : 'text-stone-600 hover:text-ink hover:bg-white'
+                      : 'text-stone-600 hover:text-ink hover:bg-card'
                   }`}
                 >
                   <span>{it.label}</span>

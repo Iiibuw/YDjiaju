@@ -1,4 +1,7 @@
-/** 关于我们：品牌故事 + 数据 + 资质 + 团队。 */
+/** 关于我们：动态区块（后端 about-sections）+ 品牌故事 + 数据 + 资质 + 团队。 */
+import { useQuery } from '@tanstack/react-query'
+
+import { listAboutSections, type AboutSection } from '../api/about'
 
 const MILESTONES = [
   { year: '1953', title: '品牌创立', desc: '佛山木工坊起家，主打手工实木家具' },
@@ -24,6 +27,12 @@ const VALUES = [
 ]
 
 export default function About() {
+  const { data: sectionsData } = useQuery({
+    queryKey: ['about-sections'],
+    queryFn: listAboutSections,
+  })
+  const sections: AboutSection[] = sectionsData ?? []
+
   return (
     <>
       {/* ===== 顶部横幅 ===== */}
@@ -37,8 +46,35 @@ export default function About() {
         </div>
       </section>
 
+      {/* ===== 关于我们区块（阶段 4：数据驱动 /public/about-sections，无数据时保留静态） ===== */}
+      {sections.length > 0 && (
+        <section className="bg-card py-20">
+          <div className="container-yf space-y-16">
+            {sections.map((s) => (
+              <div key={s.id} id={s.code}>
+                <h2 className="text-center text-3xl font-bold text-coal">{s.title}</h2>
+                {s.subtitle && <p className="mt-2 text-center text-coal/60">{s.subtitle}</p>}
+                {s.body && (
+                  <div
+                    className="mx-auto mt-8 max-w-3xl text-base leading-8 text-coal/80 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1"
+                    dangerouslySetInnerHTML={{ __html: s.body }}
+                  />
+                )}
+                {s.images.length > 0 && (
+                  <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
+                    {s.images.map((img) => (
+                      <img key={img.id} src={img.url} alt={img.caption ?? s.title} className="h-52 w-full rounded-xl object-cover" />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* ===== 品牌故事 ===== */}
-      <section className="bg-white py-20">
+      <section className="bg-card py-20">
         <div className="container-yf grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <div className="overflow-hidden rounded-2xl">
             <img
@@ -67,7 +103,7 @@ export default function About() {
           <h2 className="text-center text-3xl font-bold text-coal">发展历程</h2>
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-5">
             {MILESTONES.map((m) => (
-              <div key={m.year} className="relative rounded-2xl bg-white p-6 shadow-sm ring-1 ring-coal/5">
+              <div key={m.year} className="relative rounded-2xl bg-card p-6 shadow-sm ring-1 ring-coal/5">
                 <p className="font-display text-2xl font-bold text-walnut">{m.year}</p>
                 <p className="mt-2 font-semibold text-coal">{m.title}</p>
                 <p className="mt-2 text-sm leading-6 text-coal/60">{m.desc}</p>
@@ -78,7 +114,7 @@ export default function About() {
       </section>
 
       {/* ===== 品牌价值 ===== */}
-      <section className="bg-white py-20">
+      <section className="bg-card py-20">
         <div className="container-yf">
           <h2 className="text-center text-3xl font-bold text-coal">品牌承诺</h2>
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -99,7 +135,7 @@ export default function About() {
           <h2 className="text-center text-3xl font-bold text-coal">资质认证</h2>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             {CERTIFICATES.map((c) => (
-              <div key={c} className="rounded-full border border-walnut/30 bg-white px-6 py-3 text-sm font-medium text-walnut">
+              <div key={c} className="rounded-full border border-walnut/30 bg-card px-6 py-3 text-sm font-medium text-walnut">
                 ✓ {c}
               </div>
             ))}
@@ -108,7 +144,7 @@ export default function About() {
       </section>
 
       {/* ===== 团队 ===== */}
-      <section className="bg-white py-20">
+      <section className="bg-card py-20">
         <div className="container-yf">
           <h2 className="text-center text-3xl font-bold text-coal">核心团队</h2>
           <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">

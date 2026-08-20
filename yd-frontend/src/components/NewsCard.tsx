@@ -9,7 +9,7 @@ export default function NewsCard({ news }: { news: NewsListItem }) {
   return (
     <Link
       to={`/news/${news.id}`}
-      className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-coal/5 transition hover:-translate-y-0.5 hover:shadow-lg"
+      className="group block overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-coal/5 transition hover:-translate-y-0.5 hover:shadow-lg"
     >
       <div className="relative aspect-[16/9] overflow-hidden bg-sand">
         {news.cover_url ? (

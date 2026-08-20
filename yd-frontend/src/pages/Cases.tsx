@@ -33,7 +33,7 @@ export default function Cases() {
       </section>
 
       {/* ===== 风格筛选 ===== */}
-      <section className="border-b border-coal/10 bg-white">
+      <section className="border-b border-coal/10 bg-card">
         <div className="container-yf flex flex-wrap items-center gap-2 py-4">
           {STYLES.map((s) => (
             <button
@@ -67,7 +67,7 @@ export default function Cases() {
                 <Link
                   key={c.id}
                   to={`/cases/${c.id}`}
-                  className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-coal/5 hover:shadow-lg"
+                  className="group block overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-coal/5 hover:shadow-lg"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-coal/5">
                     {c.cover_url ? (

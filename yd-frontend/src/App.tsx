@@ -13,6 +13,9 @@ import Jobs from './pages/Jobs'
 import JobDetail from './pages/JobDetail'
 import Service from './pages/Service'
 import MemberCenter from './pages/MemberCenter'
+import Downloads from './pages/Downloads'
+import Login from './pages/Login'
+import CartCheckout from './pages/CartCheckout'
 import MainLayout from './layouts/MainLayout'
 
 /**
@@ -37,6 +40,9 @@ const router = createBrowserRouter([
       { path: 'jobs/:id', element: <JobDetail /> },
       { path: 'service', element: <Service /> },
       { path: 'member', element: <MemberCenter /> },
+      { path: 'downloads', element: <Downloads /> },
+      { path: 'login', element: <Login /> },
+      { path: 'checkout', element: <CartCheckout /> },
       { path: '*', element: <Home /> },
     ],
   },

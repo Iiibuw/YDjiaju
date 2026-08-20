@@ -118,3 +118,23 @@ export async function applyJob(payload: ApplyPayload): Promise<{ id: number; sta
   const env = await http.post<ApiEnvelope<{ id: number; stage: string }>>('/public/jobs/apply', payload)
   return unwrap(env)
 }
+
+export interface MyApplication {
+  id: number
+  job_id: number
+  job_title: string | null
+  name: string
+  phone: string
+  stage: string
+  applied_date: string | null
+}
+
+export interface ListMyAppsResp {
+  items: MyApplication[]
+  total: number
+}
+
+export async function listMyApplications(): Promise<ListMyAppsResp> {
+  const env = await http.get<ApiEnvelope<ListMyAppsResp>>('/public/jobs/applications/me')
+  return unwrap(env)
+}

@@ -13,7 +13,7 @@ export default function ProductCard({ product }: Props) {
   return (
     <Link
       to={`/products/${product.id}`}
-      className="group block overflow-hidden bg-white border border-stone-200/60 hover:border-ink/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      className="group block overflow-hidden bg-card border border-stone-200/60 hover:border-ink/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
     >
       <div className="aspect-[4/3] overflow-hidden bg-stone-100">
         {product.cover_url ? (

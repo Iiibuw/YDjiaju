@@ -4,10 +4,25 @@ import { useMemo, useState } from 'react'
 import ProductCard from '../components/ProductCard'
 import FilterPanel from '../components/FilterPanel'
 import { products, type ProductListItem } from '../api'
+import { listCategories } from '../api/categories'
 
 export default function Products() {
   // 三维筛选：空间 / 品类 / 系列
   const [active, setActive] = useState<Record<string, string>>({})
+
+  // 动态分类（阶段 4：后端 /public/categories 按 kind 分组，替代静态 filterGroups）
+  const { data: cats } = useQuery({
+    queryKey: ['categories', 'all'],
+    queryFn: () => listCategories(),
+  })
+  const filterGroups = useMemo(() => {
+    const all = cats ?? []
+    const group = (kind: string, name: string) => ({
+      name,
+      items: all.filter((c) => c.kind === kind).map((c) => ({ key: String(c.id), label: c.name })),
+    })
+    return [group('space', '空间'), group('series', '系列'), group('category', '品类')]
+  }, [cats])
 
   const params = useMemo(() => {
     const p: products.ListParams = { page_size: 24 }
@@ -21,36 +36,6 @@ export default function Products() {
     queryKey: ['products', params],
     queryFn: () => products.listProducts(params),
   })
-
-  const filterGroups = [
-    {
-      name: '空间',
-      items: [
-        { key: '1', label: '餐厅', count: 2 },
-        { key: '2', label: '卧室', count: 1 },
-        { key: '3', label: '客厅', count: 2 },
-        { key: '4', label: '书房', count: 1 },
-      ],
-    },
-    {
-      name: '系列',
-      items: [
-        { key: '1', label: '胡桃禮', count: 3 },
-        { key: '2', label: '北欧系列', count: 2 },
-      ],
-    },
-    {
-      name: '品类',
-      items: [
-        { key: '1', label: '餐桌', count: 1 },
-        { key: '2', label: '餐边柜', count: 1 },
-        { key: '3', label: '床', count: 1 },
-        { key: '4', label: '沙发', count: 1 },
-        { key: '5', label: '茶几', count: 1 },
-        { key: '6', label: '书桌椅', count: 1 },
-      ],
-    },
-  ]
 
   return (
     <>
@@ -86,7 +71,7 @@ export default function Products() {
           )}
 
           {data && data.items.length === 0 && (
-            <div className="bg-white border border-stone-200 p-12 text-center text-stone-500">
+            <div className="bg-card border border-stone-200 p-12 text-center text-stone-500">
               暂无符合筛选条件的产品
             </div>
           )}

@@ -35,7 +35,7 @@ export default function CaseDetail() {
   return (
     <article className="bg-sand pb-16">
       {/* ===== 顶部信息 ===== */}
-      <header className="bg-white py-10">
+      <header className="bg-card py-10">
         <div className="container-yf">
           <Link to="/cases" className="inline-flex items-center text-sm text-walnut hover:underline">
             ← 返回案例列表
@@ -69,7 +69,7 @@ export default function CaseDetail() {
       {/* ===== 描述 ===== */}
       {data.description && (
         <div className="container-yf mt-10">
-          <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-coal/5">
+          <div className="rounded-2xl bg-card p-8 shadow-sm ring-1 ring-coal/5">
             <h2 className="mb-4 text-xl font-bold text-coal">项目说明</h2>
             <div
               className="prose max-w-none text-base leading-8 [&_p]:my-4 [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_ul]:my-3 [&_li]:my-1 [&_img]:rounded-lg"
