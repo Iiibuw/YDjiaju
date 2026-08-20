@@ -36,7 +36,7 @@ export default function About() {
   return (
     <>
       {/* ===== 顶部横幅 ===== */}
-      <section className="bg-gradient-to-br from-walnut/10 to-sand py-16">
+      <section id="about-yd" className="bg-gradient-to-br from-walnut/10 to-sand py-16">
         <div className="container-yf text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-walnut">About YD</p>
           <h1 className="mt-3 text-4xl font-bold text-coal sm:text-5xl">关于 YD 家具</h1>
@@ -48,7 +48,7 @@ export default function About() {
 
       {/* ===== 关于我们区块（阶段 4：数据驱动 /public/about-sections，无数据时保留静态） ===== */}
       {sections.length > 0 && (
-        <section className="bg-card py-20">
+        <section className="bg-white py-20">
           <div className="container-yf space-y-16">
             {sections.map((s) => (
               <div key={s.id} id={s.code}>
@@ -74,7 +74,7 @@ export default function About() {
       )}
 
       {/* ===== 品牌故事 ===== */}
-      <section className="bg-card py-20">
+      <section id="story" className="bg-white py-20">
         <div className="container-yf grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <div className="overflow-hidden rounded-2xl">
             <img
@@ -98,12 +98,12 @@ export default function About() {
       </section>
 
       {/* ===== 里程碑 ===== */}
-      <section className="bg-sand py-20">
+      <section id="history" className="bg-sand py-20 scroll-mt-20">
         <div className="container-yf">
           <h2 className="text-center text-3xl font-bold text-coal">发展历程</h2>
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-5">
             {MILESTONES.map((m) => (
-              <div key={m.year} className="relative rounded-2xl bg-card p-6 shadow-sm ring-1 ring-coal/5">
+              <div key={m.year} className="relative rounded-2xl bg-white p-6 shadow-sm ring-1 ring-coal/5">
                 <p className="font-display text-2xl font-bold text-walnut">{m.year}</p>
                 <p className="mt-2 font-semibold text-coal">{m.title}</p>
                 <p className="mt-2 text-sm leading-6 text-coal/60">{m.desc}</p>
@@ -114,7 +114,7 @@ export default function About() {
       </section>
 
       {/* ===== 品牌价值 ===== */}
-      <section className="bg-card py-20">
+      <section id="promise" className="bg-white py-20 scroll-mt-20">
         <div className="container-yf">
           <h2 className="text-center text-3xl font-bold text-coal">品牌承诺</h2>
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -130,12 +130,12 @@ export default function About() {
       </section>
 
       {/* ===== 资质 ===== */}
-      <section className="bg-sand py-20">
+      <section id="certificates" className="bg-sand py-20 scroll-mt-20">
         <div className="container-yf">
           <h2 className="text-center text-3xl font-bold text-coal">资质认证</h2>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             {CERTIFICATES.map((c) => (
-              <div key={c} className="rounded-full border border-walnut/30 bg-card px-6 py-3 text-sm font-medium text-walnut">
+              <div key={c} className="rounded-full border border-walnut/30 bg-white px-6 py-3 text-sm font-medium text-walnut">
                 ✓ {c}
               </div>
             ))}
@@ -144,7 +144,7 @@ export default function About() {
       </section>
 
       {/* ===== 团队 ===== */}
-      <section className="bg-card py-20">
+      <section id="team" className="bg-white py-20 scroll-mt-20">
         <div className="container-yf">
           <h2 className="text-center text-3xl font-bold text-coal">核心团队</h2>
           <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
@@ -157,6 +157,33 @@ export default function About() {
                 <p className="mt-1 text-sm text-coal/50">{t.role}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== 联系信息（页面最底部新增区块） ===== */}
+      <section id="contact" className="bg-sand py-16 scroll-mt-20">
+        <div className="container-yf">
+          <h2 className="text-center text-3xl font-bold text-coal">联系信息</h2>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div className="rounded-2xl bg-white p-6 text-center ring-1 ring-coal/5">
+              <div className="text-3xl">📞</div>
+              <h3 className="mt-3 text-sm font-semibold uppercase tracking-widest text-walnut">联系电话</h3>
+              <p className="mt-3 text-2xl font-bold text-coal">400-xxx-xxxx</p>
+              <p className="mt-1 text-xs text-coal/50">全国统一服务热线</p>
+            </div>
+            <div className="rounded-2xl bg-white p-6 text-center ring-1 ring-coal/5">
+              <div className="text-3xl">⏰</div>
+              <h3 className="mt-3 text-sm font-semibold uppercase tracking-widest text-walnut">工作时间</h3>
+              <p className="mt-3 text-2xl font-bold text-coal">9:00 — 18:00</p>
+              <p className="mt-1 text-xs text-coal/50">周一至周日 全年无休</p>
+            </div>
+            <div className="rounded-2xl bg-white p-6 text-center ring-1 ring-coal/5">
+              <div className="text-3xl">📍</div>
+              <h3 className="mt-3 text-sm font-semibold uppercase tracking-widest text-walnut">公司地址</h3>
+              <p className="mt-3 text-base font-semibold text-coal">广东省佛山市顺德区</p>
+              <p className="mt-1 text-xs text-coal/50">YD 家具总部</p>
+            </div>
           </div>
         </div>
       </section>

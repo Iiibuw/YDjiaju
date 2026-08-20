@@ -47,16 +47,7 @@ const NAV = [
       { label: '校园招聘', to: '/jobs#campus' },
     ],
   },
-  {
-    to: '/about',
-    label: '关于我们',
-    children: [
-      { label: '关于YD', to: '/about#about-yd' },
-      { label: '发展历程', to: '/about#history' },
-      { label: '品牌介绍', to: '/about#brand' },
-      { label: '联系我们', to: '/about#contact' },
-    ],
-  },
+  { to: '/about', label: '关于YD' },
 ]
 
 // 黑金色 hardcoded（不依赖 token）—— NavBar/Footer 是固定奢华区

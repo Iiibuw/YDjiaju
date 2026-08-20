@@ -119,7 +119,7 @@ export default function Footer() {
                 className="transition-colors hover:text-[#c9a227]"
                 style={{ color: SUB }}
               >
-                关于我们
+                关于 YD
               </Link>
             </li>
             <li>
