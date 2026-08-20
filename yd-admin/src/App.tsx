@@ -3,6 +3,8 @@ import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import NewsListPage from './pages/NewsList'
+import NewsNewPage from './pages/NewsNew'
+import NewsEditPage from './pages/NewsEdit'
 import JobsPage from './pages/Jobs'
 import Cases from './pages/Cases'
 import Departments from './pages/Departments'
@@ -10,7 +12,6 @@ import Members from './pages/Members'
 import Messages from './pages/Messages'
 import Orders from './pages/Orders'
 import Appointments from './pages/Appointments'
-import NewsNewPage from './pages/NewsNew'
 import JobNewPage from './pages/JobNew'
 import CaseNewPage from './pages/CaseNew'
 import MemberNewPage from './pages/MemberNew'
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
         { path: 'dashboard', element: <Dashboard />, loader: requireAuth },
         { path: 'news', element: <NewsListPage />, loader: requireAuth },
         { path: 'news/new', element: <NewsNewPage />, loader: requireAuth },
+        { path: 'news/edit/:id', element: <NewsEditPage />, loader: requireAuth },
         { path: 'jobs', element: <JobsPage />, loader: requireAuth },
         { path: 'jobs/new', element: <JobNewPage />, loader: requireAuth },
         { path: 'cases', element: <Cases />, loader: requireAuth },

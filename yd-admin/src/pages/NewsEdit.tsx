@@ -1,4 +1,4 @@
-/** 独立「新增资讯」页：字段/校验/提交与列表页弹窗完全一致，保存后返回列表。 */
+/** 独立「编辑资讯」页：字段/校验/提交与弹窗版完全一致，保存后返回列表。 */
 import { useState } from 'react'
 import {
   Button,
@@ -12,9 +12,9 @@ import {
   Upload,
   message,
 } from 'antd'
-import { ArrowLeftOutlined, PlusOutlined, UploadOutlined, EyeOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { ArrowLeftOutlined, SaveOutlined, UploadOutlined, EyeOutlined } from '@ant-design/icons'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { newsAdmin, type NewsCreatePayload } from '../api/news'
 import { uploadImage, validateImageUrl } from '../api/uploads'
@@ -35,22 +35,7 @@ interface FormValues {
   sort?: number
 }
 
-const empty: FormValues = {
-  title: '',
-  subtitle: '',
-  category: 'company',
-  cover_url: '',
-  summary: '',
-  content: '',
-  author: '',
-  source: '',
-  is_published: false,
-  is_top: false,
-  is_recommend: false,
-  sort: 0,
-}
-
-/** 封面 URL 复合输入：手动 + 上传 + 预览 */
+/** 封面 URL 复合输入：手动 + 上传 + 预览（预览图小尺寸等比例） */
 function CoverUrlField({ value, onChange }: { value?: string; onChange?: (v: string) => void }) {
   const [uploading, setUploading] = useState(false)
 
@@ -91,7 +76,7 @@ function CoverUrlField({ value, onChange }: { value?: string; onChange?: (v: str
         </Upload>
       </div>
       {value && /^https?:\/\//i.test(value) && (
-        <div className="rounded border border-gray-200 bg-gray-50 p-2">
+        <div className="inline-flex flex-col rounded border border-gray-200 bg-gray-50 p-2">
           <div className="mb-1 flex items-center gap-1 text-xs text-gray-500">
             <EyeOutlined /> 预览
           </div>
@@ -124,32 +109,57 @@ function RichField({ name, placeholder, minHeight, mode }: { name: keyof FormVal
   )
 }
 
-export default function NewsNewPage() {
+export default function NewsEditPage() {
   const nav = useNavigate()
+  const { id } = useParams<{ id: string }>()
+  const newsId = Number(id)
   const qc = useQueryClient()
   const [form] = Form.useForm<FormValues>()
 
-  const createMut = useMutation({
-    mutationFn: (p: FormValues) =>
-      newsAdmin.create({
-        ...p,
-        cover_url: p.cover_url || null,
-        summary: p.summary || null,
-        subtitle: p.subtitle || null,
-        author: p.author || null,
-        source: p.source || null,
+  // 加载现有资讯
+  const { data: item, isLoading } = useQuery({
+    queryKey: ['admin-news-detail', newsId],
+    queryFn: () => newsAdmin.get(newsId),
+    enabled: !!newsId,
+  })
+
+  const updateMut = useMutation({
+    mutationFn: (payload: FormValues) =>
+      newsAdmin.update(newsId, {
+        ...payload,
+        cover_url: payload.cover_url || null,
+        summary: payload.summary || null,
+        subtitle: payload.subtitle || null,
+        author: payload.author || null,
+        source: payload.source || null,
       } as NewsCreatePayload),
     onSuccess: () => {
-      message.success('资讯已创建')
+      message.success('资讯已更新')
       qc.invalidateQueries({ queryKey: ['admin-news'] })
       nav('/news')
     },
     onError: (e: any) => {
-      message.error(`创建失败：${e?.response?.data?.message || (e as Error).message}`)
+      message.error(`更新失败：${e?.response?.data?.message || (e as Error).message}`)
     },
   })
 
-  const handleSubmit = (vals: FormValues) => createMut.mutate(vals)
+  // 数据加载完成后填充表单
+  const formInitial: FormValues | undefined = item
+    ? {
+        title: item.title,
+        subtitle: item.subtitle ?? '',
+        category: item.category,
+        cover_url: item.cover_url ?? '',
+        summary: item.summary ?? '',
+        content: item.content,
+        author: item.author ?? '',
+        source: item.source ?? '',
+        is_published: item.is_published,
+        is_top: item.is_top,
+        is_recommend: item.is_recommend,
+        sort: item.sort,
+      }
+    : undefined
 
   return (
     <Card
@@ -158,24 +168,26 @@ export default function NewsNewPage() {
           <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => nav('/news')}>
             返回列表
           </Button>
-          新建资讯
+          编辑资讯 #{newsId}
         </Space>
       }
       extra={
         <Space>
           <Button onClick={() => nav('/news')}>取消</Button>
-          <Button type="primary" icon={<PlusOutlined />} loading={createMut.isPending} onClick={() => form.submit()}>
+          <Button type="primary" icon={<SaveOutlined />} loading={updateMut.isPending} onClick={() => form.submit()}>
             保存
           </Button>
         </Space>
       }
+      loading={isLoading}
     >
       <div className="mx-auto max-w-3xl">
         <Form<FormValues>
           form={form}
           layout="vertical"
-          initialValues={empty}
-          onFinish={handleSubmit}
+          initialValues={formInitial}
+          onFinish={(vals) => updateMut.mutate(vals)}
+          key={item ? `edit-${newsId}` : 'loading'}
         >
           <Form.Item name="title" label="标题" rules={[{ required: true, min: 2, max: 128 }]}>
             <Input placeholder="请输入标题（2-128 字）" />
