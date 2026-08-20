@@ -14,8 +14,8 @@ RUN pnpm build
 
 FROM nginx:1.27-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-# SPA fallback（含 try_files /index.html）
-COPY docker/nginx/frontend-default.conf /etc/nginx/conf.d/default.conf
+# SPA fallback（含 /admin 前缀重写 + try_files /index.html）
+COPY docker/nginx/admin-default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
   CMD wget -q --spider http://localhost/ || exit 1

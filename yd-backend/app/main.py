@@ -42,6 +42,19 @@ log = structlog.get_logger("yd")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log.info("startup", app=settings.APP_NAME, env=settings.APP_ENV, version=app.version)
+    # 以 ORM 为唯一真相源自建表 + 幂等种子（测试环境跳过，避免污染）
+    if settings.APP_ENV != "test":
+        try:
+            from app.db.seed import ensure_schema, seed_initial_data
+            from app.db import session as _session
+
+            ensure_schema()
+            with _session.SessionLocal() as db:
+                seeded = seed_initial_data(db)
+            log.info("schema_ready", seeded=seeded)
+        except Exception:
+            # 建表失败不应阻塞启动，但必须暴露出来便于排查
+            log.exception("schema_init_failed")
     yield
     log.info("shutdown", app=settings.APP_NAME)
 
