@@ -1,4 +1,4 @@
-/** 后台资讯管理：列表 + 新建/编辑 + 删除。 */
+/** 后台资讯管理：列表 + 新建/编辑 + 删除（含图片上传 + URL 校验）。 */
 import { useState } from 'react'
 import {
   Button,
@@ -13,12 +13,15 @@ import {
   Switch,
   Table,
   Tag,
+  Upload,
   message,
 } from 'antd'
+import { PlusOutlined, UploadOutlined, EyeOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { newsAdmin, type NewsCreatePayload, type NewsItem } from '../api/news'
+import { uploadImage, validateImageUrl } from '../api/uploads'
 
 const CATEGORY_LABELS: Record<string, string> = {
   company: '企业新闻',
@@ -57,6 +60,83 @@ const empty: FormValues = {
   sort: 0,
 }
 
+/**
+ * 封面 URL 复合输入：手动输入 + 上传按钮 + 预览图
+ * 父组件通过 form 实例同步到 Form.Item 的 cover_url 字段。
+ */
+function CoverUrlField({
+  value,
+  onChange,
+  form,
+}: {
+  value?: string
+  onChange?: (v: string) => void
+  form: ReturnType<typeof Form.useForm<FormValues>>[0]
+}) {
+  const [uploading, setUploading] = useState(false)
+
+  const handleUpload = async (file: File) => {
+    setUploading(true)
+    try {
+      const r = await uploadImage(file)
+      message.success(`上传成功：${r.filename}`)
+      // 通过 onChange 把 URL 同步到 Form.Item
+      onChange?.(r.url)
+      form.setFieldsValue({ cover_url: r.url })
+    } catch (e: any) {
+      const msg =
+        e?.response?.data?.message ||
+        e?.response?.data?.detail?.[0]?.msg ||
+        '上传失败'
+      message.error(msg)
+    } finally {
+      setUploading(false)
+    }
+    // 阻止 antd Upload 的默认上传
+    return false
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-2">
+        <Input
+          value={value ?? ''}
+          onChange={(e) => onChange?.(e.target.value)}
+          placeholder="https://..."
+          maxLength={500}
+          allowClear
+          className="flex-1"
+        />
+        <Upload
+          accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+          showUploadList={false}
+          beforeUpload={handleUpload}
+          disabled={uploading}
+        >
+          <Button icon={<UploadOutlined />} loading={uploading}>
+            上传图片
+          </Button>
+        </Upload>
+      </div>
+      {value && /^https?:\/\//i.test(value) && (
+        <div className="rounded border border-gray-200 bg-gray-50 p-2">
+          <div className="mb-1 flex items-center gap-1 text-xs text-gray-500">
+            <EyeOutlined /> 预览
+          </div>
+          <img
+            src={value}
+            alt="cover"
+            className="max-h-32 max-w-xs rounded border border-gray-200 object-contain"
+            onError={(e) => {
+              ;(e.currentTarget as HTMLImageElement).style.display = 'none'
+            }}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function NewsListPage() {
   const qc = useQueryClient()
   const [page, setPage] = useState(1)
@@ -66,6 +146,7 @@ export default function NewsListPage() {
   const [isPublished, setIsPublished] = useState<boolean | undefined>()
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<NewsItem | null>(null)
+  const [form] = Form.useForm<FormValues>()
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-news', page, pageSize, keyword, category, isPublished],
@@ -121,6 +202,24 @@ export default function NewsListPage() {
   const columns: ColumnsType<NewsItem> = [
     { title: 'ID', dataIndex: 'id', width: 60 },
     {
+      title: '封面',
+      dataIndex: 'cover_url',
+      width: 70,
+      render: (url: string | null) =>
+        url ? (
+          <img
+            src={url}
+            alt=""
+            className="h-10 w-16 rounded object-cover"
+            onError={(e) => {
+              ;(e.currentTarget as HTMLImageElement).style.opacity = '0.3'
+            }}
+          />
+        ) : (
+          <span className="text-xs text-gray-400">无</span>
+        ),
+    },
+    {
       title: '标题',
       dataIndex: 'title',
       ellipsis: true,
@@ -149,7 +248,8 @@ export default function NewsListPage() {
       title: '发布时间',
       dataIndex: 'published_date',
       width: 170,
-      render: (d: string | null) => (d ? new Date(d).toLocaleString('zh-CN', { dateStyle: 'short', timeStyle: 'short' }) : '-'),
+      render: (d: string | null) =>
+        d ? new Date(d).toLocaleString('zh-CN', { dateStyle: 'short', timeStyle: 'short' }) : '-',
     },
     {
       title: '操作',
@@ -157,9 +257,25 @@ export default function NewsListPage() {
       fixed: 'right',
       render: (_, r) => (
         <Space size="small">
-          <Button size="small" type="link" onClick={() => { setEditing(r); setModalOpen(true) }}>编辑</Button>
-          <Popconfirm title="确认删除该资讯？" okText="删除" cancelText="取消" onConfirm={() => deleteMut.mutate(r.id)}>
-            <Button size="small" type="link" danger>删除</Button>
+          <Button
+            size="small"
+            type="link"
+            onClick={() => {
+              setEditing(r)
+              setModalOpen(true)
+            }}
+          >
+            编辑
+          </Button>
+          <Popconfirm
+            title="确认删除该资讯？"
+            okText="删除"
+            cancelText="取消"
+            onConfirm={() => deleteMut.mutate(r.id)}
+          >
+            <Button size="small" type="link" danger>
+              删除
+            </Button>
           </Popconfirm>
         </Space>
       ),
@@ -216,7 +332,16 @@ export default function NewsListPage() {
               { value: false, label: '草稿' },
             ]}
           />
-          <Button type="primary" onClick={() => { setEditing(null); setModalOpen(true) }}>新建资讯</Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setEditing(null)
+              setModalOpen(true)
+            }}
+          >
+            新建资讯
+          </Button>
         </Space>
       }
     >
@@ -225,12 +350,15 @@ export default function NewsListPage() {
         loading={isLoading}
         dataSource={data?.items ?? []}
         columns={columns}
-        scroll={{ x: 900 }}
+        scroll={{ x: 1000 }}
         pagination={{
           current: page,
           pageSize,
           total: data?.total,
-          onChange: (p, ps) => { setPage(p); setPageSize(ps) },
+          onChange: (p, ps) => {
+            setPage(p)
+            setPageSize(ps)
+          },
         }}
       />
 
@@ -238,15 +366,16 @@ export default function NewsListPage() {
         open={modalOpen}
         title={editing ? '编辑资讯' : '新建资讯'}
         width={760}
-        onCancel={() => { setModalOpen(false); setEditing(null) }}
-        onOk={() => {
-          // 通过 form ref submit（见下）
-          ;(document.getElementById('news-form-submit') as HTMLButtonElement | null)?.click()
+        onCancel={() => {
+          setModalOpen(false)
+          setEditing(null)
         }}
+        onOk={() => form.submit()}
         confirmLoading={createMut.isPending || updateMut.isPending}
         destroyOnClose
       >
         <Form<FormValues>
+          form={form}
           layout="vertical"
           initialValues={formInitial}
           onFinish={(vals) => {
@@ -270,10 +399,29 @@ export default function NewsListPage() {
                 ]}
               />
             </Form.Item>
-            <Form.Item name="cover_url" label="封面 URL">
-              <Input placeholder="https://..." maxLength={255} />
-            </Form.Item>
           </div>
+
+          {/* 封面 URL：复合输入（手动 + 上传 + 预览） */}
+          <Form.Item
+            name="cover_url"
+            label="封面图"
+            rules={[
+              {
+                validator: (_, v) => {
+                  const msg = validateImageUrl(v)
+                  return msg ? Promise.reject(new Error(msg)) : Promise.resolve()
+                },
+              },
+            ]}
+            extra={
+              <span className="text-xs text-gray-500">
+                支持 https 网络链接，或点击「上传图片」选择本地 png/jpg/webp/gif（≤5MB）
+              </span>
+            }
+          >
+            <CoverUrlInputWithForm />
+          </Form.Item>
+
           <Form.Item name="summary" label="摘要">
             <Input.TextArea rows={2} maxLength={500} showCount />
           </Form.Item>
@@ -281,20 +429,45 @@ export default function NewsListPage() {
             <Input.TextArea rows={8} placeholder="<p>正文内容</p>" />
           </Form.Item>
           <div className="grid grid-cols-2 gap-4">
-            <Form.Item name="author" label="作者"><Input /></Form.Item>
-            <Form.Item name="source" label="来源"><Input /></Form.Item>
+            <Form.Item name="author" label="作者">
+              <Input />
+            </Form.Item>
+            <Form.Item name="source" label="来源">
+              <Input />
+            </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-4">
-            <Form.Item name="is_published" label="发布" valuePropName="checked"><Switch /></Form.Item>
-            <Form.Item name="is_top" label="置顶" valuePropName="checked"><Switch /></Form.Item>
-            <Form.Item name="is_recommend" label="推荐" valuePropName="checked"><Switch /></Form.Item>
+            <Form.Item name="is_published" label="发布" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+            <Form.Item name="is_top" label="置顶" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+            <Form.Item name="is_recommend" label="推荐" valuePropName="checked">
+              <Switch />
+            </Form.Item>
           </div>
           <Form.Item name="sort" label="排序（数值大者优先）">
             <InputNumber min={0} max={9999} />
           </Form.Item>
-          <button id="news-form-submit" type="submit" style={{ display: 'none' }} />
         </Form>
       </Modal>
     </Card>
+  )
+}
+
+/**
+ * 在 Form.Item 内部通过 Form.useFormInstance 拿父 form 实例，
+ * 配合 Form.useWatch 监听值变化，让 CoverUrlField 既受控又同步到 cover_url 字段。
+ */
+function CoverUrlInputWithForm() {
+  const form = Form.useFormInstance<FormValues>()
+  const value = form.getFieldValue('cover_url') as string | undefined
+  return (
+    <CoverUrlField
+      form={form}
+      value={value}
+      onChange={(v) => form.setFieldValue('cover_url', v)}
+    />
   )
 }

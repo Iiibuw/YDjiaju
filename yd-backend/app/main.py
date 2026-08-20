@@ -1,27 +1,44 @@
 """YD 家居后端入口。FastAPI 应用工厂。"""
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.endpoints import (
+    admin_about,
+    admin_audit_logs,
+    admin_banners,
     admin_cases,
+    admin_categories,
+    admin_chat_keywords,
+    admin_dashboard,
     admin_depts,
+    admin_downloads,
     admin_jobs,
     admin_members,
     admin_news,
     admin_orders,
+    admin_payments,
     admin_products,
+    admin_site_configs,
+    admin_system,
     auth,
     health,
+    public_about,
+    public_banners,
     public_cases,
+    public_categories,
+    public_downloads,
     public_jobs,
     public_members,
     public_news,
     public_orders,
     public_products,
+    upload,
 )
 from app.core.config import settings
 from app.schemas.common import ApiResponse
@@ -113,6 +130,10 @@ API_V1_PREFIX = "/api/v1"
 app.include_router(health.router, prefix=API_V1_PREFIX, tags=["health"])
 app.include_router(auth.router, prefix=API_V1_PREFIX, tags=["auth"])
 app.include_router(public_products.router, prefix=API_V1_PREFIX, tags=["public_products"])
+app.include_router(public_banners.router, prefix=API_V1_PREFIX, tags=["public_banners"])
+app.include_router(public_categories.router, prefix=API_V1_PREFIX, tags=["public_categories"])
+app.include_router(public_downloads.router, prefix=API_V1_PREFIX, tags=["public_downloads"])
+app.include_router(public_about.router, prefix=API_V1_PREFIX, tags=["public_about"])
 app.include_router(public_cases.router, prefix=API_V1_PREFIX, tags=["public_cases"])
 app.include_router(public_news.router, prefix=API_V1_PREFIX, tags=["public_news"])
 app.include_router(public_jobs.router, prefix=API_V1_PREFIX, tags=["public_jobs"])
@@ -125,6 +146,23 @@ app.include_router(admin_cases.router, prefix=API_V1_PREFIX, tags=["admin_cases"
 app.include_router(admin_depts.router, prefix=API_V1_PREFIX, tags=["admin_depts"])
 app.include_router(admin_members.router, prefix=API_V1_PREFIX, tags=["admin_members"])
 app.include_router(admin_orders.router, prefix=API_V1_PREFIX, tags=["admin_orders"])
+app.include_router(admin_categories.router, prefix=API_V1_PREFIX, tags=["admin_categories"])
+app.include_router(admin_banners.router, prefix=API_V1_PREFIX, tags=["admin_banners"])
+app.include_router(admin_downloads.router, prefix=API_V1_PREFIX, tags=["admin_downloads"])
+app.include_router(admin_site_configs.router, prefix=API_V1_PREFIX, tags=["admin_site_configs"])
+app.include_router(admin_about.router, prefix=API_V1_PREFIX, tags=["admin_about"])
+app.include_router(admin_chat_keywords.router, prefix=API_V1_PREFIX, tags=["admin_chat_keywords"])
+app.include_router(admin_system.router, prefix=API_V1_PREFIX, tags=["admin_system"])
+app.include_router(admin_dashboard.router, prefix=API_V1_PREFIX, tags=["admin_dashboard"])
+app.include_router(admin_audit_logs.router, prefix=API_V1_PREFIX, tags=["admin_audit_logs"])
+app.include_router(admin_payments.router, prefix=API_V1_PREFIX, tags=["admin_payments"])
+app.include_router(upload.router, prefix=API_V1_PREFIX, tags=["upload"])
+
+
+# ===== 静态文件服务（图片上传目录）=====
+_STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+_STATIC_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
 
 @app.get("/")
