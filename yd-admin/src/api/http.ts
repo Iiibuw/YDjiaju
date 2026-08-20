@@ -3,6 +3,8 @@
  * - 适配后端 ApiEnvelope<T> 响应格式（与 shared/types/api-types.ts 一致）
  * - 自动注入 Bearer token
  * - 401 自动跳转 /login（M1 mock 阶段不处理）
+ * - baseURL = '/api/v1'：与后端 FastAPI 统一前缀对齐；具体端点路径写 '/admin/...'
+ *   或 '/auth/...' 等裸路径即可。
  */
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
 
@@ -31,7 +33,7 @@ export interface PageMeta {
 }
 
 export const http: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE ?? '/api',
+  baseURL: import.meta.env.VITE_API_BASE ?? '/api/v1',
   timeout: 30000,
 })
 

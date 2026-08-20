@@ -1,4 +1,4 @@
-/** 后台招聘管理 API（与后端 /api/v1/admin/jobs 对齐）。 */
+/** 后台招聘管理 API（与后端 /admin/jobs 对齐）。 */
 import { http, unwrap, type ApiEnvelope, type PageMeta } from './http'
 
 export interface JobItem {
@@ -78,19 +78,19 @@ export const jobsAdmin = {
     if (params?.keyword) qs.set('keyword', params.keyword)
     if (params?.page) qs.set('page', String(params.page))
     if (params?.page_size) qs.set('page_size', String(params.page_size))
-    const env = await http.get<ApiEnvelope<JobListResp>>(`/api/v1/admin/jobs?${qs.toString()}`)
+    const env = await http.get<ApiEnvelope<JobListResp>>(`/admin/jobs?${qs.toString()}`)
     return unwrap(env)
   },
   async create(payload: JobCreatePayload) {
-    const env = await http.post<ApiEnvelope<JobItem>>('/api/v1/admin/jobs', payload)
+    const env = await http.post<ApiEnvelope<JobItem>>('/admin/jobs', payload)
     return unwrap(env)
   },
   async update(id: number, payload: Partial<JobCreatePayload>) {
-    const env = await http.put<ApiEnvelope<JobItem>>(`/api/v1/admin/jobs/${id}`, payload)
+    const env = await http.put<ApiEnvelope<JobItem>>(`/admin/jobs/${id}`, payload)
     return unwrap(env)
   },
   async delete(id: number) {
-    const env = await http.delete<ApiEnvelope<{ id: number }>>(`/api/v1/admin/jobs/${id}`)
+    const env = await http.delete<ApiEnvelope<{ id: number }>>(`/admin/jobs/${id}`)
     return unwrap(env)
   },
   async listApplications(params?: { job_id?: number; stage?: string; page?: number; page_size?: number }) {
@@ -99,7 +99,7 @@ export const jobsAdmin = {
     if (params?.stage) qs.set('stage', params.stage)
     if (params?.page) qs.set('page', String(params.page))
     if (params?.page_size) qs.set('page_size', String(params.page_size))
-    const env = await http.get<ApiEnvelope<ApplicationListResp>>(`/api/v1/admin/jobs/applications?${qs.toString()}`)
+    const env = await http.get<ApiEnvelope<ApplicationListResp>>(`/admin/jobs/applications?${qs.toString()}`)
     return unwrap(env)
   },
 }

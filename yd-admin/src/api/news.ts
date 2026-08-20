@@ -1,4 +1,4 @@
-/** 后台资讯管理 API（与后端 /api/v1/admin/news 对齐）。 */
+/** 后台资讯管理 API（与后端 /admin/news 对齐）。 */
 import { http, unwrap, type ApiEnvelope, type PageMeta } from './http'
 
 export interface NewsItem {
@@ -56,23 +56,23 @@ export const newsAdmin = {
     if (params?.keyword) qs.set('keyword', params.keyword)
     if (params?.page) qs.set('page', String(params.page))
     if (params?.page_size) qs.set('page_size', String(params.page_size))
-    const env = await http.get<ApiEnvelope<NewsListResp>>(`/api/v1/admin/news?${qs.toString()}`)
+    const env = await http.get<ApiEnvelope<NewsListResp>>(`/admin/news?${qs.toString()}`)
     return unwrap(env)
   },
   async get(id: number) {
-    const env = await http.get<ApiEnvelope<NewsItem>>(`/api/v1/admin/news/${id}`)
+    const env = await http.get<ApiEnvelope<NewsItem>>(`/admin/news/${id}`)
     return unwrap(env)
   },
   async create(payload: NewsCreatePayload) {
-    const env = await http.post<ApiEnvelope<NewsItem>>('/api/v1/admin/news', payload)
+    const env = await http.post<ApiEnvelope<NewsItem>>('/admin/news', payload)
     return unwrap(env)
   },
   async update(id: number, payload: Partial<NewsCreatePayload>) {
-    const env = await http.put<ApiEnvelope<NewsItem>>(`/api/v1/admin/news/${id}`, payload)
+    const env = await http.put<ApiEnvelope<NewsItem>>(`/admin/news/${id}`, payload)
     return unwrap(env)
   },
   async delete(id: number) {
-    const env = await http.delete<ApiEnvelope<{ id: number }>>(`/api/v1/admin/news/${id}`)
+    const env = await http.delete<ApiEnvelope<{ id: number }>>(`/admin/news/${id}`)
     return unwrap(env)
   },
 }
