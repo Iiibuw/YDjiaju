@@ -19,6 +19,7 @@ import type { ColumnsType } from 'antd/es/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { casesAdmin, type CaseCreatePayload, type CaseItem } from '../api/cases'
+import RichTextEditor from '../components/RichTextEditor'
 
 interface FormValues {
   title: string
@@ -54,6 +55,7 @@ export default function Cases() {
   const [keyword, setKeyword] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<CaseItem | null>(null)
+  const [form] = Form.useForm<FormValues>()
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-cases', page, pageSize, keyword],
@@ -167,13 +169,18 @@ export default function Cases() {
       <Modal
         open={modalOpen}
         title={editing ? '编辑案例' : '新建案例'}
-        width={680}
-        onCancel={() => { setModalOpen(false); setEditing(null) }}
-        onOk={() => (document.getElementById('case-form-submit') as HTMLButtonElement | null)?.click()}
+        width={760}
+        onCancel={() => {
+          setModalOpen(false)
+          setEditing(null)
+          form.resetFields()
+        }}
+        onOk={() => form.submit()}
         confirmLoading={createMut.isPending || updateMut.isPending}
         destroyOnClose
       >
         <Form<FormValues>
+          form={form}
           layout="vertical"
           initialValues={formInitial}
           onFinish={(vals) => {
@@ -198,11 +205,24 @@ export default function Cases() {
             <InputNumber min={0} max={999} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="description" label="项目详情（HTML）">
-            <Input.TextArea rows={6} placeholder="<p>...</p>" />
+            <RichField name="description" placeholder="项目详情，支持加粗、颜色、对齐、图片..." minHeight={300} />
           </Form.Item>
-          <button id="case-form-submit" type="submit" style={{ display: 'none' }} />
         </Form>
       </Modal>
     </Card>
+  )
+}
+
+/** RichTextEditor wrapper for Form.Item in this file */
+function RichField({ name, placeholder, minHeight }: { name: string; placeholder?: string; minHeight?: number }) {
+  const f = Form.useFormInstance<FormValues>()
+  const v = (f.getFieldValue(name as never) as string | undefined) ?? ''
+  return (
+    <RichTextEditor
+      value={v}
+      onChange={(html) => f.setFieldValue(name as never, html as never)}
+      placeholder={placeholder}
+      minHeight={minHeight}
+    />
   )
 }

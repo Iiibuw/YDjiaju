@@ -43,7 +43,11 @@ export default function Footer() {
           <a
             href="/admin/login"
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              // 双重保险：onClick 也跳转，避免某些浏览器拦截 target=_blank
+              e.stopPropagation()
+            }}
             className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-colors"
             style={{ backgroundColor: GOLD, color: '#1a150c' }}
             onMouseEnter={(e) => {

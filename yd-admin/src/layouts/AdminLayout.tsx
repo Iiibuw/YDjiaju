@@ -36,14 +36,6 @@ const MENU = [
   { key: '/depts', label: '部门管理' },
 ]
 
-/** 根据当前路径找标题——和左侧选中菜单一致 */
-function resolveHeaderTitle(pathname: string): string {
-  const found = MENU.find((m) => m.key === pathname)
-  if (found) return `YD 家具 · ${found.label}`
-  if (pathname === '/' || pathname === '') return 'YD 家具 · 内容管理'
-  return 'YD 家具 · 后台管理'
-}
-
 export default function AdminLayout() {
   const nav = useNavigate()
   const loc = useLocation()
@@ -176,10 +168,29 @@ export default function AdminLayout() {
         theme="dark"
         style={{ backgroundColor: '#001529', minHeight: '100vh', height: '100vh' }}
       >
-        <div className="flex h-16 items-center justify-center border-b border-white/10">
-          <Link to="/" className="font-display text-lg font-semibold tracking-wide text-white">
-            YD · 管理后台
-          </Link>
+        {/* Logo 区域：图标 + 品牌名 + 副标题 */}
+        <div
+          className="flex h-16 items-center gap-3 border-b px-4"
+          style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+        >
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-base font-bold"
+            style={{
+              background: 'linear-gradient(135deg, #1677ff 0%, #4096ff 100%)',
+              color: '#fff',
+              boxShadow: '0 2px 8px rgba(22,119,255,0.4)',
+            }}
+          >
+            YD
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="font-display text-base font-semibold tracking-wide text-white">
+              管理后台
+            </span>
+            <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              YD Furniture · Admin
+            </span>
+          </div>
         </div>
         <Menu
           theme="dark"
@@ -194,9 +205,8 @@ export default function AdminLayout() {
       </Sider>
 
       <Layout className="flex flex-col">
-        <Header className="!flex !items-center !justify-between !bg-white !px-6 shadow-sm">
-          <h1 className="text-base font-medium text-gray-800">{resolveHeaderTitle(loc.pathname)}</h1>
-          {/* 右上角账号操作：下拉菜单包含修改密码 / 切换用户 / 退出登录 */}
+        <Header className="!flex !items-center !justify-end !bg-white !px-6 shadow-sm">
+          {/* 顶部 Header：账号菜单全部放到右上角头像下拉（删除原左侧标题） */}
           <Dropdown menu={userDropdown} placement="bottomRight" trigger={['click']}>
             <a
               onClick={(e) => e.preventDefault()}

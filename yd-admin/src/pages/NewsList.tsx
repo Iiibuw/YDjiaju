@@ -22,6 +22,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { newsAdmin, type NewsCreatePayload, type NewsItem } from '../api/news'
 import { uploadImage, validateImageUrl } from '../api/uploads'
+import RichTextEditor from '../components/RichTextEditor'
 
 const CATEGORY_LABELS: Record<string, string> = {
   company: '企业新闻',
@@ -431,10 +432,10 @@ export default function NewsListPage() {
           </Form.Item>
 
           <Form.Item name="summary" label="摘要">
-            <Input.TextArea rows={2} maxLength={500} showCount />
+            <RichField name="summary" placeholder="一句话摘要，支持加粗/链接/图片..." minHeight={100} />
           </Form.Item>
           <Form.Item name="content" label="正文（HTML）" rules={[{ required: true, min: 1 }]}>
-            <Input.TextArea rows={8} placeholder="<p>正文内容</p>" />
+            <RichField name="content" placeholder="<p>请输入正文内容，支持加粗、颜色、对齐、图片上传...</p>" minHeight={320} />
           </Form.Item>
           <div className="grid grid-cols-2 gap-4">
             <Form.Item name="author" label="作者">
@@ -461,6 +462,23 @@ export default function NewsListPage() {
         </Form>
       </Modal>
     </Card>
+  )
+}
+
+/**
+ * 富文本字段 wrapper：从父 form 实例拿值并写入，
+ * 避免直接嵌套到 Form.Item 内部导致 antd 不会自动注入 value。
+ */
+function RichField({ name, placeholder, minHeight }: { name: string; placeholder?: string; minHeight?: number }) {
+  const f = Form.useFormInstance<FormValues>()
+  const v = (f.getFieldValue(name as never) as string | undefined) ?? ''
+  return (
+    <RichTextEditor
+      value={v}
+      onChange={(html) => f.setFieldValue(name as never, html as never)}
+      placeholder={placeholder}
+      minHeight={minHeight}
+    />
   )
 }
 
