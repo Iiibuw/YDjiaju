@@ -1,10 +1,11 @@
+/** 后台登录页：调用真实后端 /api/v1/auth/*，登录成功时把 token 持久化到 localStorage。 */
 import { useState } from 'react'
 import { Button, Card, Form, Input, Typography, message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 import { getCaptcha, login } from '../api/auth'
+import { setToken } from '../api/http'
 
-/** 后台登录页（M1：mock 登录 admin/admin123；后端就绪后切真实）。 */
 export default function Login() {
   const [loading, setLoading] = useState(false)
   const [captcha, setCaptcha] = useState<Awaited<ReturnType<typeof getCaptcha>> | null>(null)
@@ -18,14 +19,16 @@ export default function Login() {
     if (!captcha) return
     setLoading(true)
     try {
-      await login({
+      const data = await login({
         username: values.username,
         password: values.password,
         captcha_id: captcha.captcha_id,
         captcha_code: values.captcha.toUpperCase(),
       })
+      // 关键修复：把 token 持久化到 localStorage('yd_admin_token')，否则后续所有 API 都会 401
+      setToken(data.access_token)
       message.success('登录成功')
-      nav('/dashboard')
+      nav('/depts')
     } catch (e: any) {
       message.error(e?.message ?? '登录失败')
       refreshCaptcha()

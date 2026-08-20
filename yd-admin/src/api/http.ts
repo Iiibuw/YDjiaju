@@ -2,7 +2,7 @@
  * 后台 HTTP 客户端。
  * - 适配后端 ApiEnvelope<T> 响应格式（与 shared/types/api-types.ts 一致）
  * - 自动注入 Bearer token
- * - 401 自动跳转 /login（M1 mock 阶段不处理）
+ * - 401 自动清除 token + 跳 /login
  * - baseURL = '/api/v1'：与后端 FastAPI 统一前缀对齐；具体端点路径写 '/admin/...'
  *   或 '/auth/...' 等裸路径即可。
  */
@@ -55,9 +55,13 @@ http.interceptors.response.use(
     return resp
   },
   (err) => {
-    // 401 未登录：清除 token 等待上层路由跳转
+    // 401 未登录 / token 失效：清 token 并跳 /login（避开 /login 自身和验证码接口避免重定向死循环）
     if (err?.response?.status === 401) {
       setToken(null)
+      const path = window.location.pathname
+      if (path !== '/login' && !path.startsWith('/auth/captcha')) {
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(err)
   },
