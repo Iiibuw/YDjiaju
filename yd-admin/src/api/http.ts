@@ -55,12 +55,18 @@ http.interceptors.response.use(
     return resp
   },
   (err) => {
-    // 401 未登录 / token 失效：清 token 并跳 /login（避开 /login 自身和验证码接口避免重定向死循环）
+    // 401 未登录 / token 失效：清 token 并跳 /admin/login（保持与浏览器地址栏一致，
+    // 配合 vite base='/admin/' 与 react-router basename='/admin'）。
+    // 必须用相对路径而非裸 '/login'，否则会被浏览器解析为 http://<host>/login，
+    // 落到 vite dev server 而非 React Router basename 内部。
     if (err?.response?.status === 401) {
       setToken(null)
       const path = window.location.pathname
-      if (path !== '/login' && !path.startsWith('/auth/captcha')) {
-        window.location.href = '/login'
+      if (path !== '/admin/login') {
+        // 同源跳转避免丢 token/hash 参数
+        const target = '/admin/login'
+        const here = window.location.pathname + window.location.search + window.location.hash
+        if (here !== target) window.location.href = target
       }
     }
     return Promise.reject(err)
