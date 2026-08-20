@@ -74,8 +74,12 @@ _session.SessionLocal.configure(bind=_session.engine)
 # ====== MySQL 模式：确保数据库存在 ======
 if not _cfg.settings.is_sqlite:
     from sqlalchemy import text
+    from urllib.parse import quote_plus
+
+    _u = quote_plus(_cfg.settings.DB_USER)
+    _p = quote_plus(_cfg.settings.DB_PASSWORD)
     server_url = (
-        f"mysql+pymysql://{_cfg.settings.DB_USER}:{_cfg.settings.DB_PASSWORD}"
+        f"mysql+pymysql://{_u}:{_p}"
         f"@{_cfg.settings.DB_HOST}:{_cfg.settings.DB_PORT}/?charset=utf8mb4"
     )
     try:
@@ -89,8 +93,20 @@ if not _cfg.settings.is_sqlite:
         srv.dispose()
         print(f"📍 MySQL 库 `{_cfg.settings.DB_NAME}` 已就绪")
     except Exception as e:
-        print(f"⚠️  无法自动建库（可能权限不足）：{e}")
-        print(f"   请手动执行：CREATE DATABASE {_cfg.settings.DB_NAME} CHARACTER SET utf8mb4;")
+        print(f"⚠️  自动建库失败（可能权限不足）：{e}")
+        print(f"    将尝试直接连接已存在的数据库 `{_cfg.settings.DB_NAME}` ...")
+
+    # 验证目标库可连接；连不上则明确报错退出，避免后面 drop_all 抛一堆堆栈
+    try:
+        test_engine = create_engine(_cfg.settings.database_url, future=True)
+        with test_engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        test_engine.dispose()
+    except Exception as e:
+        print(f"❌ 无法连接数据库 `{_cfg.settings.DB_NAME}`：{e}")
+        print(f"   请确认：1) 该库已存在；2) 用户 `{_cfg.settings.DB_USER}` 有该库权限；")
+        print(f"   或手动执行：CREATE DATABASE `{_cfg.settings.DB_NAME}` CHARACTER SET utf8mb4;")
+        sys.exit(1)
 
 # ====== 删除旧数据库 ======
 DB_FILE = ROOT / "yd_lite.db"

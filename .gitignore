@@ -39,6 +39,7 @@ htmlcov/
 .env.development
 .env.production
 .env.*.local
+.env.mysql
 
 # ----- 日志 -----
 *.log

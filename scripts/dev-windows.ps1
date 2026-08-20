@@ -11,8 +11,8 @@
 #   3) Initialize database (create yd_furniture + 14 tables + seed data)
 #   4) Launch backend (8000) / frontend (5180) / admin (5181) in 3 separate windows
 #
-# NOTE: If your MySQL user/password is NOT the default yd/yd_secret_2026,
-#       edit DB_USER/DB_PASSWORD in yd-backend/.env.mysql BEFORE running.
+# NOTE: MySQL creds default to the Docker MySQL container (Iiibuw / your password).
+#       If different, edit DB_USER/DB_PASSWORD in yd-backend/.env.mysql BEFORE running.
 
 $ErrorActionPreference = "Stop"
 $ROOT = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
@@ -62,10 +62,10 @@ HOST=0.0.0.0
 PORT=8000
 
 DB_TYPE=mysql
-DB_HOST=localhost
+DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_USER=yd
-DB_PASSWORD=yd_secret_2026
+DB_USER=Iiibuw
+DB_PASSWORD=Yd@1234567
 DB_NAME=yd_furniture
 
 # Redis (Lite/Dev mode: captcha uses in-memory dict, no real Redis needed)
@@ -126,7 +126,7 @@ if ($probeOut -notmatch "PING_OK") {
     Write-Host "Please check:" -ForegroundColor Yellow
     Write-Host "  1) MySQL service is running (check Services for MySQL80, or 'net start mysql')"
     Write-Host "  2) Port is 3306 (DB_PORT)"
-    Write-Host "  3) User/password correct. Default: yd / yd_secret_2026"
+    Write-Host "  3) User/password correct. Default: Iiibuw / (your Docker MySQL password)"
     Write-Host "     If different, edit DB_USER/DB_PASSWORD in yd-backend/.env.mysql and re-run"
     Write-Host ""
     pause

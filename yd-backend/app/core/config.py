@@ -1,6 +1,7 @@
 """应用配置。pydantic-settings 读环境变量。"""
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import quote_plus
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -55,9 +56,12 @@ class Settings(BaseSettings):
             # Lite 模式：用本地 SQLite 文件，零依赖
             db_path = Path(self.DB_PATH).resolve()
             return f"sqlite:///{db_path}"
-        # MySQL 模式（生产）
+        # MySQL 模式（生产）。账号/密码含特殊字符（如 @）必须用 quote_plus 编码，
+        # 否则 SQLAlchemy 会把 @ 误判为「主机分隔符」而解析出错误的连接串。
+        user = quote_plus(self.DB_USER)
+        pw = quote_plus(self.DB_PASSWORD)
         return (
-            f"mysql+pymysql://{self.DB_USER}:{self.DB_PASSWORD}"
+            f"mysql+pymysql://{user}:{pw}"
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
             f"?charset=utf8mb4"
         )
