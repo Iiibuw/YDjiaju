@@ -1,59 +1,60 @@
-﻿# YD 家具 — Windows 原生开发启动脚本（MySQL 模式，无 Docker 依赖）
-# 用法：双击根目录 run-dev.bat（推荐）；或右键本脚本「使用 PowerShell 运行」
-# 前提：
-#   1) 本机已安装并启动 MySQL 8.0（默认端口 3306）
-#   2) 本机已安装 Python(含 uv) 与 Node.js(含 npm)
+﻿# YD Furniture - Windows Dev Starter (MySQL mode, no Docker required)
+# Usage: double-click run-dev.bat in project root (recommended);
+#        or right-click this script and "Run with PowerShell".
+# Prerequisites:
+#   1) MySQL 8.0 installed and running locally (default port 3306)
+#   2) Python (with uv) and Node.js (with npm) installed
 #
-# 本脚本会：
-#   1) 生成 yd-backend/.env.mysql 并复制为 .env（指向本机 MySQL）
-#   2) 预检 MySQL 连通性（连不上会给出明确修改指引）
-#   3) 初始化数据库（建库 yd_furniture + 14 张表 + 种子数据）
-#   4) 启动后端(8000) / 前台(5180) / 后台(5181) 三个独立窗口
+# This script will:
+#   1) Generate yd-backend/.env.mysql and copy to .env (pointing to local MySQL)
+#   2) Probe MySQL connectivity (clear fix guidance if unreachable)
+#   3) Initialize database (create yd_furniture + 14 tables + seed data)
+#   4) Launch backend (8000) / frontend (5180) / admin (5181) in 3 separate windows
 #
-# ⚠️ 若你的 MySQL 账号/密码不是默认的 yd / yd_secret_2026，
-#    请先编辑 yd-backend/.env.mysql 中的 DB_USER / DB_PASSWORD 再运行本脚本。
+# NOTE: If your MySQL user/password is NOT the default yd/yd_secret_2026,
+#       edit DB_USER/DB_PASSWORD in yd-backend/.env.mysql BEFORE running.
 
 $ErrorActionPreference = "Stop"
 $ROOT = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
 
 Write-Host ""
-Write-Host "=== YD 家具 — Windows 原生启动（MySQL 模式，无 Docker）==="
+Write-Host "=== YD Furniture - Windows Dev Starter (MySQL mode, no Docker) ==="
 Write-Host ""
 
-# ===== 0. 工具链预检 =====
+# ===== 0. Toolchain preflight =====
 function Test-Tool {
     param([string]$Name, [string]$Hint)
     if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
-        Write-Host "❌ 未找到命令: $Name" -ForegroundColor Red
-        Write-Host "   $Hint" -ForegroundColor Yellow
+        Write-Host "[ERROR] Command not found: $Name" -ForegroundColor Red
+        Write-Host "        $Hint" -ForegroundColor Yellow
         return $false
     }
     return $true
 }
 $toolsOk = $true
-if (-not (Test-Tool "uv"   "请安装 uv 并加入 PATH：https://docs.astral.sh/uv/getting-started/installation/ （或执行 'pip install uv'）")) { $toolsOk = $false }
-if (-not (Test-Tool "node" "请安装 Node.js（含 npm）：https://nodejs.org/")) { $toolsOk = $false }
-if (-not (Test-Tool "npm"  "请安装 Node.js（含 npm）：https://nodejs.org/")) { $toolsOk = $false }
+if (-not (Test-Tool "uv"   "Install uv and add to PATH: https://docs.astral.sh/uv/getting-started/installation/ (or 'pip install uv')")) { $toolsOk = $false }
+if (-not (Test-Tool "node" "Install Node.js (with npm): https://nodejs.org/")) { $toolsOk = $false }
+if (-not (Test-Tool "npm"  "Install Node.js (with npm): https://nodejs.org/")) { $toolsOk = $false }
 if (-not $toolsOk) {
     Write-Host ""
-    Write-Host "请安装上述工具后重跑 run-dev.bat。" -ForegroundColor Yellow
+    Write-Host "Please install the missing tools, then re-run run-dev.bat." -ForegroundColor Yellow
     pause
     exit 1
 }
 
-# ===== 0.5 选择包管理器（优先 pnpm，缺失则回落 npm）=====
+# ===== 0.5 Choose package manager (pnpm preferred, npm fallback) =====
 if (Get-Command pnpm -ErrorAction SilentlyContinue) { $pkg = "pnpm" } else { $pkg = "npm" }
-Write-Host "📦 检测到包管理器：$pkg （前端将用 '$pkg run dev' 启动）"
+Write-Host "[INFO] Package manager: $pkg (frontend will use '$pkg run dev')"
 
-# ===== 1. 配置 .env 指向本地 MySQL =====
+# ===== 1. Configure .env to point to local MySQL =====
 $envFile  = Join-Path $ROOT "yd-backend\.env"
 $envMysql = Join-Path $ROOT "yd-backend\.env.mysql"
 
 if (-not (Test-Path $envMysql)) {
-    Write-Host "📝 生成 .env.mysql 模板..."
+    Write-Host "[INFO] Generating .env.mysql template..."
     @"
-# MySQL 模式 — 指向本机 localhost
-# ⚠️ 若你的 MySQL 账号/密码不是下面的值，请修改 DB_USER / DB_PASSWORD 后重跑本脚本
+# MySQL mode - pointing to localhost
+# NOTE: If your MySQL user/password is NOT the values below, edit DB_USER/DB_PASSWORD before re-running this script.
 APP_NAME=YD Furniture API
 APP_ENV=development
 DEBUG=true
@@ -67,7 +68,7 @@ DB_USER=yd
 DB_PASSWORD=yd_secret_2026
 DB_NAME=yd_furniture
 
-# Redis（Lite/Dev 模式：验证码走内存字典，无需真实 Redis）
+# Redis (Lite/Dev mode: captcha uses in-memory dict, no real Redis needed)
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_DB=0
@@ -85,13 +86,12 @@ CORS_ORIGINS=http://localhost:5180,http://localhost:5181
 }
 
 Copy-Item $envMysql $envFile -Force
-Write-Host "✅ .env 已指向本地 MySQL (localhost)"
+Write-Host "[OK] .env -> local MySQL (localhost)"
 
-# ===== 2. MySQL 连通性预检 =====
+# ===== 2. MySQL connectivity probe =====
 Write-Host ""
-Write-Host "🔌 预检 MySQL 连通性..."
+Write-Host "[PROBE] Testing MySQL connectivity..."
 
-# 解析 .env.mysql 中的连接参数
 $cfg = @{}
 Get-Content $envMysql | ForEach-Object {
     if ($_ -match '^\s*([A-Z_]+)\s*=\s*(.*)\s*$') { $cfg[$matches[1]] = $matches[2] }
@@ -110,7 +110,7 @@ except Exception as e:
     print("PING_FAIL", repr(e))
 "@ | Out-File -FilePath $probe -Encoding utf8
 
-# 必须在 yd-backend 目录下执行，否则 uv run 找不到 pyproject 依赖
+# Must run in yd-backend so uv run finds pyproject deps
 Push-Location (Join-Path $ROOT "yd-backend")
 try {
     $probeOut = & uv run python $probe $dbHost $dbPort $dbUser $dbPass 2>&1
@@ -120,63 +120,63 @@ try {
 Remove-Item $probe -Force -ErrorAction SilentlyContinue
 
 if ($probeOut -notmatch "PING_OK") {
-    Write-Host "❌ 无法连接到本机 MySQL：" -ForegroundColor Red
-    Write-Host "   $probeOut" -ForegroundColor Red
+    Write-Host "[ERROR] Cannot connect to local MySQL:" -ForegroundColor Red
+    Write-Host "        $probeOut" -ForegroundColor Red
     Write-Host ""
-    Write-Host "请检查：" -ForegroundColor Yellow
-    Write-Host "  1) MySQL 服务是否已启动（可在『服务』里看 MySQL80，或命令行 net start mysql）"
-    Write-Host "  2) 端口是否为 3306（对应 DB_PORT）"
-    Write-Host "  3) 账号密码是否正确：默认 yd / yd_secret_2026"
-    Write-Host "     若不同，请编辑 yd-backend/.env.mysql 的 DB_USER / DB_PASSWORD 后重跑"
+    Write-Host "Please check:" -ForegroundColor Yellow
+    Write-Host "  1) MySQL service is running (check Services for MySQL80, or 'net start mysql')"
+    Write-Host "  2) Port is 3306 (DB_PORT)"
+    Write-Host "  3) User/password correct. Default: yd / yd_secret_2026"
+    Write-Host "     If different, edit DB_USER/DB_PASSWORD in yd-backend/.env.mysql and re-run"
     Write-Host ""
     pause
     exit 1
 }
-Write-Host "✅ MySQL 连通正常"
+Write-Host "[OK] MySQL reachable"
 
-# ===== 3. 初始化 MySQL（建库 + 建表 + 种子）=====
+# ===== 3. Initialize MySQL (create db + tables + seed) =====
 Write-Host ""
-Write-Host "🗄️  初始化 MySQL 数据..."
+Write-Host "[INIT] Initializing MySQL database..."
 Push-Location (Join-Path $ROOT "yd-backend")
 try {
     & uv run python scripts/init_lite.py --type=mysql
 } catch {
-    Write-Host "❌ MySQL 初始化失败：$_" -ForegroundColor Red
-    Write-Host "   常见原因：该账号无建库权限，或数据库已存在但表结构不兼容。" -ForegroundColor Yellow
-    Write-Host "   如需重建，可手动 DROP DATABASE yd_furniture 后重跑本脚本。" -ForegroundColor Yellow
+    Write-Host "[ERROR] MySQL init failed: $_" -ForegroundColor Red
+    Write-Host "        Common causes: account lacks CREATE DATABASE permission, or existing db schema is incompatible." -ForegroundColor Yellow
+    Write-Host "        To rebuild: DROP DATABASE yd_furniture manually, then re-run this script." -ForegroundColor Yellow
     Pop-Location
     pause
     exit 1
 }
 Pop-Location
 
-# ===== 4. 启动后端 =====
+# ===== 4. Launch backend =====
 Write-Host ""
-Write-Host "🚀 启动后端（8000）..."
+Write-Host "[START] Backend (port 8000)..."
 $backendScript = "uv run uvicorn app.main:app --host 0.0.0.0 --port 8000"
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$ROOT\yd-backend'; $backendScript" -WindowStyle Normal
 
-# ===== 5. 启动前台 =====
-Write-Host "🌐 启动前台（5180）..."
+# ===== 5. Launch frontend =====
+Write-Host "[START] Frontend (port 5180)..."
 $frontendScript = "cd '$ROOT\yd-frontend'; $pkg run dev"
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $frontendScript -WindowStyle Normal
 
-# ===== 6. 启动后台 =====
-Write-Host "🔧 启动后台（5181）..."
+# ===== 6. Launch admin =====
+Write-Host "[START] Admin (port 5181)..."
 $adminScript = "cd '$ROOT\yd-admin'; $pkg run dev"
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $adminScript -WindowStyle Normal
 
 Write-Host ""
 Write-Host "============================================="
-Write-Host "✅ 全栈启动中，请等待约 10 秒后访问："
-Write-Host "   前台：  http://localhost:5180"
-Write-Host "   后台：  http://localhost:5181"
-Write-Host "   后端：  http://localhost:8000"
-Write-Host "   API 文档：http://localhost:8000/docs"
+Write-Host "[OK] All services starting. Wait ~10 seconds then visit:"
+Write-Host "   Frontend : http://localhost:5180"
+Write-Host "   Admin    : http://localhost:5181"
+Write-Host "   Backend  : http://localhost:8000"
+Write-Host "   API docs : http://localhost:8000/docs"
 Write-Host ""
-Write-Host "   后台账号： admin / admin123"
-Write-Host "   会员账号： 13800138001 / member123"
+Write-Host "   Admin login   : admin / admin123"
+Write-Host "   Member login  : 13800138001 / member123"
 Write-Host ""
-Write-Host "3 个独立 PowerShell 窗口已弹出，关闭此窗口不会停服务"
+Write-Host "3 separate PowerShell windows opened. Closing this window will not stop them."
 Write-Host "============================================="
 pause
