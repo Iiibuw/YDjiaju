@@ -62,7 +62,7 @@ def list_members_admin(
     page: int = 1,
     page_size: int = 20,
 ) -> tuple[list[MemberListItem], int]:
-    q = select(User)
+    q = select(User).where(User.is_deleted == 0)
     if keyword:
         like = f"%{keyword}%"
         q = q.where((User.phone.like(like)) | (User.nickname.like(like)))
