@@ -58,7 +58,7 @@ export default function Login() {
     >
       <Card style={{ width: 420 }} title="YD 后台管理系统">
         <Typography.Paragraph type="secondary">
-          演示账号：<b>admin / admin123</b> · 验证码任意 4 位字符
+          演示账号：<b>admin / admin123</b> · 验证码以图片为准
         </Typography.Paragraph>
 
         {!captcha && (
