@@ -50,6 +50,11 @@ export default function Members() {
   const [viewing, setViewing] = useState<MemberItem | null>(null)
   const [viewOpen, setViewOpen] = useState(false)
   const [addingOpen, setAddingOpen] = useState(false)
+  // 受控二次确认弹窗(替代 Modal.confirm,避免 React 19 + antd 5 静态函数失效)
+  const [confirmModal, setConfirmModal] = useState<
+    | { open: boolean; type: 'disable' | 'enable' | 'delete'; record: MemberItem | null }
+    | null
+  >(null)
   const [editForm] = Form.useForm<{ nickname?: string; email?: string; gender?: number }>()
   const [addForm] = Form.useForm<{ phone: string; password: string; nickname?: string; email?: string }>()
 
@@ -220,16 +225,9 @@ export default function Members() {
               type="link"
               icon={<StopOutlined />}
               style={{ color: '#fa8c16' }}
-              onClick={() => {
-                Modal.confirm({
-                  title: '确认禁用该会员？',
-                  content: '禁用后该会员将无法登录前台',
-                  okText: '禁用',
-                  cancelText: '取消',
-                  okButtonProps: { style: { backgroundColor: '#fa8c16', borderColor: '#fa8c16' } },
-                  onOk: () => statusMut.mutate({ id: r.id, is_activate: false }),
-                })
-              }}
+              onClick={() =>
+                setConfirmModal({ open: true, type: 'disable', record: r })
+              }
             >
               禁用
             </Button>
@@ -239,14 +237,9 @@ export default function Members() {
               type="link"
               icon={<CheckCircleOutlined />}
               style={{ color: '#52c41a' }}
-              onClick={() => {
-                Modal.confirm({
-                  title: '确认启用该会员？',
-                  okText: '启用',
-                  cancelText: '取消',
-                  onOk: () => statusMut.mutate({ id: r.id, is_activate: true }),
-                })
-              }}
+              onClick={() =>
+                setConfirmModal({ open: true, type: 'enable', record: r })
+              }
             >
               启用
             </Button>
@@ -256,16 +249,9 @@ export default function Members() {
             type="link"
             danger
             icon={<DeleteOutlined />}
-            onClick={() => {
-              Modal.confirm({
-                title: '确认删除该会员？',
-                content: '删除后数据无法恢复',
-                okText: '删除',
-                cancelText: '取消',
-                okButtonProps: { danger: true },
-                onOk: () => deleteMut.mutate(r.id),
-              })
-            }}
+            onClick={() =>
+              setConfirmModal({ open: true, type: 'delete', record: r })
+            }
           >
             删除
           </Button>
@@ -494,6 +480,49 @@ export default function Members() {
           </Form.Item>
         </Form>
       </Modal>
+      {/* ===== 受控二次确认弹窗(替代 Modal.confirm,绕开 React 19 + antd 5 静态函数失效) ===== */}
+      <Modal
+        open={!!confirmModal?.open}
+        title={
+          confirmModal?.type === "delete"
+            ? "确认删除该会员?"
+            : confirmModal?.type === "disable"
+              ? "确认禁用该会员?"
+              : "确认启用该会员?"
+        }
+        okText={
+          confirmModal?.type === "delete"
+            ? "删除"
+            : confirmModal?.type === "disable"
+              ? "禁用"
+              : "启用"
+        }
+        cancelText="取消"
+        okButtonProps={
+          confirmModal?.type === "delete"
+            ? { danger: true }
+            : confirmModal?.type === "disable"
+              ? { style: { backgroundColor: "#fa8c16", borderColor: "#fa8c16" } }
+              : undefined
+        }
+        onOk={() => {
+          if (!confirmModal?.record) return
+          if (confirmModal.type === "delete") {
+            deleteMut.mutate(confirmModal.record.id)
+          } else {
+            statusMut.mutate({
+              id: confirmModal.record.id,
+              is_activate: confirmModal.type === "enable",
+            })
+          }
+          setConfirmModal(null)
+        }}
+        onCancel={() => setConfirmModal(null)}
+      >
+        {confirmModal?.type === "disable" && "禁用后该会员将无法登录前台"}
+        {confirmModal?.type === "delete" && "删除后数据无法恢复"}
+      </Modal>
+
     </div>
   )
 }
