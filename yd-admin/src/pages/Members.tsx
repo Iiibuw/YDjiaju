@@ -9,7 +9,6 @@ import {
   Form,
   Input,
   Modal,
-  Popconfirm,
   Radio,
   Row,
   Select,
@@ -216,42 +215,60 @@ export default function Members() {
             编辑
           </Button>
           {r.is_activate === STATUS_ACTIVE ? (
-            <Popconfirm
-              title="确认禁用该会员？"
-              description="禁用后该会员将无法登录前台"
-              okText="禁用"
-              cancelText="取消"
-              okButtonProps={{ danger: false, style: { background: '#fa8c16', borderColor: '#fa8c16' } }}
-              onConfirm={() => statusMut.mutate({ id: r.id, is_activate: false })}
+            <Button
+              size="small"
+              type="link"
+              icon={<StopOutlined />}
+              style={{ color: '#fa8c16' }}
+              onClick={() => {
+                Modal.confirm({
+                  title: '确认禁用该会员？',
+                  content: '禁用后该会员将无法登录前台',
+                  okText: '禁用',
+                  cancelText: '取消',
+                  okButtonProps: { style: { backgroundColor: '#fa8c16', borderColor: '#fa8c16' } },
+                  onOk: () => statusMut.mutate({ id: r.id, is_activate: false }),
+                })
+              }}
             >
-              <Button size="small" type="link" icon={<StopOutlined />} style={{ color: '#fa8c16' }}>
-                禁用
-              </Button>
-            </Popconfirm>
-          ) : (
-            <Popconfirm
-              title="确认启用该会员？"
-              okText="启用"
-              cancelText="取消"
-              onConfirm={() => statusMut.mutate({ id: r.id, is_activate: true })}
-            >
-              <Button size="small" type="link" icon={<CheckCircleOutlined />} style={{ color: '#52c41a' }}>
-                启用
-              </Button>
-            </Popconfirm>
-          )}
-          <Popconfirm
-            title="确认删除该会员？"
-            description="删除后数据无法恢复"
-            okText="删除"
-            cancelText="取消"
-            okButtonProps={{ danger: true }}
-            onConfirm={() => deleteMut.mutate(r.id)}
-          >
-            <Button size="small" type="link" danger icon={<DeleteOutlined />}>
-              删除
+              禁用
             </Button>
-          </Popconfirm>
+          ) : (
+            <Button
+              size="small"
+              type="link"
+              icon={<CheckCircleOutlined />}
+              style={{ color: '#52c41a' }}
+              onClick={() => {
+                Modal.confirm({
+                  title: '确认启用该会员？',
+                  okText: '启用',
+                  cancelText: '取消',
+                  onOk: () => statusMut.mutate({ id: r.id, is_activate: true }),
+                })
+              }}
+            >
+              启用
+            </Button>
+          )}
+          <Button
+            size="small"
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              Modal.confirm({
+                title: '确认删除该会员？',
+                content: '删除后数据无法恢复',
+                okText: '删除',
+                cancelText: '取消',
+                okButtonProps: { danger: true },
+                onOk: () => deleteMut.mutate(r.id),
+              })
+            }}
+          >
+            删除
+          </Button>
         </Space>
       ),
     },
