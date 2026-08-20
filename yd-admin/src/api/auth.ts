@@ -32,6 +32,7 @@ export interface AdminProfile {
   real_name: string | null
   nickname: string | null
   avatar_url: string | null
+  email: string | null
   role: string | null
   dept_name: string | null
   data_scope: string

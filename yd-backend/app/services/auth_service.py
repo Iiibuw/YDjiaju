@@ -172,6 +172,7 @@ def get_admin_profile(admin: AdminUser, db: Session) -> dict:
         "real_name": admin.real_name,
         "nickname": admin.nickname,
         "avatar_url": admin.avatar_url,
+        "email": admin.email,
         "role": role_code,
         "dept_name": dept_name,
         "data_scope": admin.data_scope,

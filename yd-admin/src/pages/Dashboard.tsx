@@ -1,4 +1,11 @@
-/** 后台仪表盘：数据卡片 + 趋势图 + 订单占比 + 待办事项。 */
+/**
+ * 后台仪表盘（24 栅格固定布局）：
+ * - 顶部 4 张数据卡等宽(span 6)等高
+ * - 中间 3 张图表卡(10/8/6)，图表固定高度不拉伸
+ * - 右侧订单占比卡正方形，环形图保持正圆
+ * - 底部待办/最新会员等高，内容超出内部滚动
+ * 间距统一 16px，全部由 Row/Col 栅格管理，无绝对定位。
+ */
 import { useMemo } from 'react'
 import { Card, Col, List, Row, Tag } from 'antd'
 import {
@@ -6,7 +13,6 @@ import {
   CalendarOutlined,
   TeamOutlined,
   ShoppingCartOutlined,
-  MessageOutlined,
   RightOutlined,
 } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
@@ -24,116 +30,118 @@ const ORDER_STATUS_LABELS: Record<string, string> = {
   closed: '已关闭',
 }
 
-// ============ 迷你折线图（SVG） ============
+// ============ 迷你折线图（SVG，固定高度 180，不拉伸） ============
 function MiniLineChart({ data, color = '#1677ff' }: { data: number[]; color?: string }) {
-  const W = 320
-  const H = 110
-  const pad = 8
+  const W = 360
+  const H = 180
+  const pad = 12
   const max = Math.max(...data, 1)
   const step = (W - pad * 2) / Math.max(data.length - 1, 1)
-  const pts = data.map((v, i) => [
-    pad + i * step,
-    H - pad - ((H - pad * 2) * v) / max,
-  ])
+  const pts = data.map((v, i) => [pad + i * step, H - pad - ((H - pad * 2) * v) / max])
   const path = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]},${p[1]}`).join(' ')
   const area = `${path} L${pts[pts.length - 1][0]},${H - pad} L${pts[0][0]},${H - pad} Z`
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 110 }}>
-      <defs>
-        <linearGradient id={`grad-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.25" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill={`url(#grad-${color.replace('#', '')})`} />
-      <path d={path} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      {pts.map((p, i) => (
-        <circle key={i} cx={p[0]} cy={p[1]} r="3" fill="#fff" stroke={color} strokeWidth="1.5" />
-      ))}
-    </svg>
+    <div className="flex items-center justify-center" style={{ height: 180 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id={`grad-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.22" />
+            <stop offset="100%" stopColor={color} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={area} fill={`url(#grad-${color.replace('#', '')})`} />
+        <path d={path} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        {pts.map((p, i) => (
+          <circle key={i} cx={p[0]} cy={p[1]} r="3.5" fill="#fff" stroke={color} strokeWidth="1.5" />
+        ))}
+      </svg>
+    </div>
   )
 }
 
-// ============ 迷你柱状图（SVG） ============
+// ============ 迷你柱状图（SVG，固定高度 180，不拉伸） ============
 function MiniBarChart({ data, color = '#52c41a' }: { data: number[]; color?: string }) {
-  const W = 320
-  const H = 110
-  const pad = 8
+  const W = 360
+  const H = 180
+  const pad = 12
   const max = Math.max(...data, 1)
   const bw = (W - pad * 2) / data.length
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 110 }}>
-      {data.map((v, i) => {
-        const h = ((H - pad * 2) * v) / max
-        return (
-          <g key={i}>
-            <rect
-              x={pad + i * bw + bw * 0.2}
-              y={H - pad - h}
-              width={bw * 0.6}
-              height={Math.max(h, 1)}
-              rx="3"
-              fill={color}
-              opacity="0.85"
-            />
-            <text
-              x={pad + i * bw + bw / 2}
-              y={H - pad - h - 4}
-              textAnchor="middle"
-              fontSize="10"
-              fill="#8c8c8c"
-            >
-              {v}
-            </text>
-          </g>
-        )
-      })}
-    </svg>
+    <div className="flex items-center justify-center" style={{ height: 180 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" preserveAspectRatio="none">
+        {data.map((v, i) => {
+          const h = ((H - pad * 2) * v) / max
+          return (
+            <g key={i}>
+              <rect
+                x={pad + i * bw + bw * 0.2}
+                y={H - pad - h}
+                width={bw * 0.6}
+                height={Math.max(h, 1)}
+                rx="4"
+                fill={color}
+                opacity="0.88"
+              />
+              <text
+                x={pad + i * bw + bw / 2}
+                y={H - pad - h - 4}
+                textAnchor="middle"
+                fontSize="11"
+                fill="#8c8c8c"
+              >
+                {v}
+              </text>
+            </g>
+          )
+        })}
+      </svg>
+    </div>
   )
 }
 
-// ============ 环形占比图（SVG） ============
+// ============ 环形占比图（正方形容器，正圆） ============
 function DonutChart({ data }: { data: { label: string; value: number; color: string }[] }) {
   const total = data.reduce((s, d) => s + d.value, 0) || 1
   const R = 54
   const C = 2 * Math.PI * R
   let offset = 0
   return (
-    <div className="flex items-center gap-4">
-      <svg viewBox="0 0 140 140" className="h-32 w-32 shrink-0">
-        <circle cx="70" cy="70" r={R} fill="none" stroke="#f0f0f0" strokeWidth="14" />
-        {data.map((d, i) => {
-          const frac = d.value / total
-          const len = frac * C
-          const el = (
-            <circle
-              key={i}
-              cx="70"
-              cy="70"
-              r={R}
-              fill="none"
-              stroke={d.color}
-              strokeWidth="14"
-              strokeDasharray={`${len} ${C - len}`}
-              strokeDashoffset={-offset}
-              transform="rotate(-90 70 70)"
-              strokeLinecap="butt"
-            />
-          )
-          offset += len
-          return el
-        })}
-        <text x="70" y="66" textAnchor="middle" fontSize="20" fontWeight="700" fill="#333">
-          {data.reduce((s, d) => s + d.value, 0)}
-        </text>
-        <text x="70" y="84" textAnchor="middle" fontSize="11" fill="#999">
-          订单总数
-        </text>
-      </svg>
+    <div className="flex flex-col items-center justify-center gap-3" style={{ height: 220 }}>
+      <div className="relative" style={{ width: 140, height: 140 }}>
+        <svg viewBox="0 0 140 140" className="h-full w-full">
+          <circle cx="70" cy="70" r={R} fill="none" stroke="#f0f0f0" strokeWidth="14" />
+          {data.map((d, i) => {
+            const frac = d.value / total
+            const len = frac * C
+            const el = (
+              <circle
+                key={i}
+                cx="70"
+                cy="70"
+                r={R}
+                fill="none"
+                stroke={d.color}
+                strokeWidth="14"
+                strokeDasharray={`${len} ${C - len}`}
+                strokeDashoffset={-offset}
+                transform="rotate(-90 70 70)"
+              />
+            )
+            offset += len
+            return el
+          })}
+          <text x="70" y="66" textAnchor="middle" fontSize="22" fontWeight="700" fill="#333">
+            {data.reduce((s, d) => s + d.value, 0)}
+          </text>
+          <text x="70" y="84" textAnchor="middle" fontSize="11" fill="#999">
+            订单总数
+          </text>
+        </svg>
+      </div>
       <div className="flex flex-col gap-1.5">
         {data.map((d, i) => (
           <div key={i} className="flex items-center gap-2 text-xs">
-            <span className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: d.color }} />
+            <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ backgroundColor: d.color }} />
             <span className="text-gray-600">{d.label}</span>
             <b className="text-gray-800">{d.value}</b>
           </div>
@@ -143,27 +151,27 @@ function DonutChart({ data }: { data: { label: string; value: number; color: str
   )
 }
 
-// ============ 主页面 ============
+// ============ 主页面（24 栅格） ============
 export default function Dashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: fetchDashboardStats,
     staleTime: 60_000,
-    refetchInterval: 120_000, // 2 分钟自动刷新
+    refetchInterval: 120_000,
   })
 
   const c = data?.counts
   const todos = data?.todos
 
+  // 顶部 4 张数据卡（等宽 span=6）
   const cards = useMemo(
     () => [
       { key: 'news', label: '总资讯数', value: c?.news ?? 0, icon: <FileTextOutlined />, color: '#1677ff', link: '/news' },
       { key: 'appts', label: '今日预约', value: c?.appointments ?? 0, icon: <CalendarOutlined />, color: '#fa8c16', link: '/appointments' },
       { key: 'members', label: '会员总数', value: c?.members ?? 0, icon: <TeamOutlined />, color: '#52c41a', link: '/members' },
       { key: 'orders', label: '订单总数', value: c?.orders ?? 0, icon: <ShoppingCartOutlined />, color: '#722ed1', link: '/orders' },
-      { key: 'messages', label: '留言待处理', value: todos?.pending_messages ?? 0, icon: <MessageOutlined />, color: '#eb2f96', link: '/messages' },
     ],
-    [c, todos],
+    [c],
   )
 
   const donutData = (data?.order_status_dist ?? []).map((d, i) => ({
@@ -182,25 +190,25 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ===== 顶部数据卡片 ===== */}
+      {/* ===== 顶部 4 数据卡（24 栅格，等宽等高） ===== */}
       <Row gutter={[16, 16]}>
         {cards.map((card) => (
-          <Col xs={24} sm={12} md={8} lg={4} key={card.key}>
+          <Col xs={24} sm={12} lg={6} key={card.key}>
             <Link to={card.link}>
               <Card
                 className="!rounded-xl !shadow-sm transition-shadow hover:!shadow-md"
                 styles={{ body: { padding: 16 } }}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3" style={{ height: 56 }}>
                   <div
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl"
                     style={{ backgroundColor: `${card.color}14`, color: card.color }}
                   >
                     {card.icon}
                   </div>
                   <div className="min-w-0">
                     <div className="truncate text-xs text-gray-500">{card.label}</div>
-                    <div className="text-2xl font-bold" style={{ color: '#1f1f1f' }}>
+                    <div className="text-2xl font-bold leading-tight" style={{ color: '#1f1f1f' }}>
                       {card.value}
                     </div>
                   </div>
@@ -211,7 +219,7 @@ export default function Dashboard() {
         ))}
       </Row>
 
-      {/* ===== 中间图表 ===== */}
+      {/* ===== 中间图表区（10/8/6 栅格，统一间距） ===== */}
       <Row gutter={[16, 16]}>
         {/* 近7天预约趋势 */}
         <Col xs={24} lg={10}>
@@ -220,6 +228,7 @@ export default function Dashboard() {
             className="!rounded-xl !shadow-sm"
             extra={<Tag color="orange"><CalendarOutlined /> 预约</Tag>}
             loading={isLoading}
+            styles={{ body: { padding: 12 } }}
           >
             <MiniLineChart data={data?.appointments ?? []} color="#fa8c16" />
             <div className="mt-1 flex justify-between px-1 text-[10px] text-gray-400">
@@ -234,6 +243,7 @@ export default function Dashboard() {
             className="!rounded-xl !shadow-sm"
             extra={<Tag color="blue"><FileTextOutlined /> 近 7 日</Tag>}
             loading={isLoading}
+            styles={{ body: { padding: 12 } }}
           >
             <MiniBarChart data={data?.news_trend ?? []} color="#1677ff" />
             <div className="mt-1 flex justify-between px-1 text-[10px] text-gray-400">
@@ -241,21 +251,27 @@ export default function Dashboard() {
             </div>
           </Card>
         </Col>
-        {/* 订单状态占比 */}
+        {/* 订单状态占比（正方形容器 + 正圆） */}
         <Col xs={24} lg={6}>
-          <Card title="订单状态占比" className="!rounded-xl !shadow-sm" loading={isLoading}>
+          <Card
+            title="订单状态占比"
+            className="!rounded-xl !shadow-sm"
+            loading={isLoading}
+            styles={{ body: { padding: 12 } }}
+          >
             <DonutChart data={donutData} />
           </Card>
         </Col>
       </Row>
 
-      {/* ===== 底部待办事项 ===== */}
+      {/* ===== 底部列表区（8/16 栅格，等高，内部滚动） ===== */}
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={8}>
           <Card
             title="待处理事项"
             className="!rounded-xl !shadow-sm"
             extra={<Link to="/news" className="text-xs text-gray-400">全部 →</Link>}
+            styles={{ body: { padding: 12, height: 240, overflowY: 'auto' } }}
           >
             <List
               size="small"
@@ -271,7 +287,7 @@ export default function Dashboard() {
                   }
                 >
                   <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: it.color }} />
+                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: it.color }} />
                     <span className="text-sm text-gray-700">{it.label}</span>
                     {it.value > 0 && <Tag color="red">{it.value}</Tag>}
                   </span>
@@ -286,6 +302,7 @@ export default function Dashboard() {
             title="最新会员"
             className="!rounded-xl !shadow-sm"
             extra={<Link to="/members" className="text-xs text-gray-400">全部 →</Link>}
+            styles={{ body: { padding: 12, height: 240, overflowY: 'auto' } }}
           >
             <List
               size="small"
@@ -299,11 +316,11 @@ export default function Dashboard() {
                   }
                 >
                   <span className="flex items-center gap-2">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 text-xs font-semibold text-blue-500">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-semibold text-blue-500">
                       {(m.nickname || m.phone || '?').slice(0, 1)}
                     </span>
-                    <span className="text-sm text-gray-700">{m.nickname || '未设置昵称'}</span>
-                    <span className="text-xs text-gray-400">{m.phone}</span>
+                    <span className="truncate text-sm text-gray-700">{m.nickname || '未设置昵称'}</span>
+                    <span className="hidden text-xs text-gray-400 sm:inline">{m.phone}</span>
                   </span>
                 </List.Item>
               )}

@@ -73,3 +73,23 @@ body {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ===== 左侧导航菜单对比度增强 ===== */
+.yd-admin-menu.ant-menu-dark {
+  background: transparent;
+}
+.yd-admin-menu.ant-menu-dark .ant-menu-item {
+  color: rgba(255, 255, 255, 0.78);
+  border-radius: 6px;
+  margin-inline: 8px;
+  width: calc(100% - 16px);
+}
+.yd-admin-menu.ant-menu-dark .ant-menu-item:hover {
+  color: #fff !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+.yd-admin-menu.ant-menu-dark .ant-menu-item-selected {
+  color: #fff !important;
+  background-color: #1677ff !important;
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.4);
+}

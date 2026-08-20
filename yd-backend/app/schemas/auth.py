@@ -42,6 +42,7 @@ class AdminProfileOut(BaseModel):
     real_name: str | None
     nickname: str | None
     avatar_url: str | None
+    email: str | None = Field(default=None, description="邮箱")
     role: str | None = Field(description="主角色代码（来自 admin_users.role_id → roles.code）")
     dept_name: str | None = Field(default=None, description="部门名")
     data_scope: str = Field(description="ALL/REGION/STORE/SELF")
