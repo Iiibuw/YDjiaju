@@ -19,6 +19,7 @@ import {
 import { PlusOutlined, UploadOutlined, EyeOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 import { newsAdmin, type NewsCreatePayload, type NewsItem } from '../api/news'
 import { uploadImage, validateImageUrl } from '../api/uploads'
@@ -140,6 +141,7 @@ function CoverUrlField({
 
 export default function NewsListPage() {
   const qc = useQueryClient()
+  const nav = useNavigate()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [keyword, setKeyword] = useState('')
@@ -344,10 +346,7 @@ export default function NewsListPage() {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => {
-              setEditing(null)
-              setModalOpen(true)
-            }}
+            onClick={() => nav('/news/new')}
           >
             新建资讯
           </Button>

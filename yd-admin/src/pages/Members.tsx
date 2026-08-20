@@ -30,6 +30,7 @@ import {
 } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 import { membersAdmin, type MemberItem } from '../api/members'
 
@@ -39,6 +40,7 @@ const STATUS_DISABLED = 0
 
 export default function Members() {
   const qc = useQueryClient()
+  const nav = useNavigate()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [keyword, setKeyword] = useState('')
@@ -314,7 +316,7 @@ export default function Members() {
                 { value: false, label: '已禁用' },
               ]}
             />
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => setAddingOpen(true)}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => nav('/members/new')}>
               添加会员
             </Button>
           </Space>

@@ -20,6 +20,7 @@ import {
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 import {
   jobsAdmin,
@@ -63,6 +64,7 @@ const empty: FormValues = {
 
 function JobsTab() {
   const qc = useQueryClient()
+  const nav = useNavigate()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [keyword, setKeyword] = useState('')
@@ -188,7 +190,7 @@ function JobsTab() {
                 { value: 'campus', label: '校招' },
               ]}
             />
-            <Button type="primary" onClick={() => { setEditing(null); setModalOpen(true) }}>新建岗位</Button>
+            <Button type="primary" onClick={() => nav('/jobs/new')}>新建岗位</Button>
           </Space>
         }
       >

@@ -42,6 +42,8 @@ interface Props {
   onChange?: (html: string) => void
   placeholder?: string
   minHeight?: number
+  /** simple=简易(摘要类短文本:加粗/斜体/颜色/对齐/图片)；full=完整(正文/详情,含列表/链接/字号/高亮) */
+  mode?: 'simple' | 'full'
 }
 
 const PRESET_COLORS = [
@@ -49,13 +51,15 @@ const PRESET_COLORS = [
   '#f5222d', '#722ed1', '#13c2c2', '#eb2f96', '#ffffff',
 ]
 
-export default function RichTextEditor({ value, onChange, placeholder = '请输入内容...', minHeight = 200 }: Props) {
+export default function RichTextEditor({ value, onChange, placeholder = '请输入内容...', minHeight = 200, mode = 'full' }: Props) {
   const editorRef = useRef<HTMLDivElement>(null)
   const isInternalChange = useRef(false)
   const [uploading, setUploading] = useState(false)
   const [textColor, setTextColor] = useState<string>('#000000')
   const [bgColor, setBgColor] = useState<string>('#ffffff')
   const [fontSize, setFontSize] = useState<number>(14)
+
+  const isSimple = mode === 'simple'
 
   // ===== 受控同步：外部 value 变化时写入编辑器 =====
   useEffect(() => {
@@ -135,7 +139,7 @@ export default function RichTextEditor({ value, onChange, placeholder = '请输�
         {tool('bold', undefined, <BoldOutlined />, '加粗 (Ctrl+B)')}
         {tool('italic', undefined, <ItalicOutlined />, '斜体 (Ctrl+I)')}
         {tool('underline', undefined, <UnderlineOutlined />, '下划线 (Ctrl+U)')}
-        {tool('strikeThrough', undefined, <StrikethroughOutlined />, '删除线')}
+        {!isSimple && tool('strikeThrough', undefined, <StrikethroughOutlined />, '删除线')}
 
         <span className="mx-1 h-4 w-px bg-gray-300" />
 
@@ -168,54 +172,58 @@ export default function RichTextEditor({ value, onChange, placeholder = '请输�
           </Tooltip>
         </Popover>
 
-        {/* 高亮颜色 */}
-        <Popover
-          trigger="click"
-          content={
-            <div>
-              <ColorPicker
-                value={bgColor}
-                onChange={(c) => setBgColor(c.toHexString())}
-                presets={[{ label: '预设', colors: PRESET_COLORS }]}
-              />
-              <div className="mt-2 text-center">
-                <Button size="small" type="primary" onClick={() => exec('hiliteColor', bgColor)}>
-                  应用
-                </Button>
+        {/* 高亮颜色（仅完整版） */}
+        {!isSimple && (
+          <Popover
+            trigger="click"
+            content={
+              <div>
+                <ColorPicker
+                  value={bgColor}
+                  onChange={(c) => setBgColor(c.toHexString())}
+                  presets={[{ label: '预设', colors: PRESET_COLORS }]}
+                />
+                <div className="mt-2 text-center">
+                  <Button size="small" type="primary" onClick={() => exec('hiliteColor', bgColor)}>
+                    应用
+                  </Button>
+                </div>
               </div>
-            </div>
-          }
-        >
-          <Tooltip title="背景高亮">
-            <Button type="text" size="small" onMouseDown={(e) => e.preventDefault()}>
-              <span style={{ backgroundColor: bgColor, padding: '0 4px' }}>A</span>
-            </Button>
-          </Tooltip>
-        </Popover>
-
-        {/* 字号 */}
-        <Popover
-          trigger="click"
-          content={
-            <Space direction="vertical">
-              <InputNumber
-                min={10}
-                max={72}
-                value={fontSize}
-                onChange={(v) => v && setFontSize(v)}
-              />
-              <Button size="small" type="primary" onClick={() => exec('fontSize', String(Math.max(1, Math.min(7, Math.ceil(fontSize / 6)))))}>
-                应用（实际 HTML 1-7）
+            }
+          >
+            <Tooltip title="背景高亮">
+              <Button type="text" size="small" onMouseDown={(e) => e.preventDefault()}>
+                <span style={{ backgroundColor: bgColor, padding: '0 4px' }}>A</span>
               </Button>
-            </Space>
-          }
-        >
-          <Tooltip title="字号">
-            <Button type="text" size="small" onMouseDown={(e) => e.preventDefault()}>
-              {fontSize}px
-            </Button>
-          </Tooltip>
-        </Popover>
+            </Tooltip>
+          </Popover>
+        )}
+
+        {/* 字号（仅完整版） */}
+        {!isSimple && (
+          <Popover
+            trigger="click"
+            content={
+              <Space direction="vertical">
+                <InputNumber
+                  min={10}
+                  max={72}
+                  value={fontSize}
+                  onChange={(v) => v && setFontSize(v)}
+                />
+                <Button size="small" type="primary" onClick={() => exec('fontSize', String(Math.max(1, Math.min(7, Math.ceil(fontSize / 6)))))}>
+                  应用（实际 HTML 1-7）
+                </Button>
+              </Space>
+            }
+          >
+            <Tooltip title="字号">
+              <Button type="text" size="small" onMouseDown={(e) => e.preventDefault()}>
+                {fontSize}px
+              </Button>
+            </Tooltip>
+          </Popover>
+        )}
 
         <span className="mx-1 h-4 w-px bg-gray-300" />
 
@@ -224,11 +232,14 @@ export default function RichTextEditor({ value, onChange, placeholder = '请输�
         {tool('justifyCenter', undefined, <AlignCenterOutlined />, '居中')}
         {tool('justifyRight', undefined, <AlignRightOutlined />, '右对齐')}
 
-        <span className="mx-1 h-4 w-px bg-gray-300" />
-
-        {/* 列表 */}
-        {tool('insertOrderedList', undefined, <OrderedListOutlined />, '有序列表')}
-        {tool('insertUnorderedList', undefined, <UnorderedListOutlined />, '无序列表')}
+        {/* 列表（仅完整版） */}
+        {!isSimple && (
+          <>
+            <span className="mx-1 h-4 w-px bg-gray-300" />
+            {tool('insertOrderedList', undefined, <OrderedListOutlined />, '有序列表')}
+            {tool('insertUnorderedList', undefined, <UnorderedListOutlined />, '无序列表')}
+          </>
+        )}
 
         <span className="mx-1 h-4 w-px bg-gray-300" />
 

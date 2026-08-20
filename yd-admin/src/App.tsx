@@ -9,6 +9,11 @@ import Members from './pages/Members'
 import Messages from './pages/Messages'
 import Orders from './pages/Orders'
 import Appointments from './pages/Appointments'
+import NewsNewPage from './pages/NewsNew'
+import JobNewPage from './pages/JobNew'
+import CaseNewPage from './pages/CaseNew'
+import MemberNewPage from './pages/MemberNew'
+import DeptNewPage from './pages/DeptNew'
 import AdminLayout from './layouts/AdminLayout'
 import { getToken } from './api/http'
 
@@ -36,10 +41,15 @@ const router = createBrowserRouter(
       children: [
         { index: true, element: <NewsListPage /> },
         { path: 'news', element: <NewsListPage />, loader: requireAuth },
+        { path: 'news/new', element: <NewsNewPage />, loader: requireAuth },
         { path: 'jobs', element: <JobsPage />, loader: requireAuth },
+        { path: 'jobs/new', element: <JobNewPage />, loader: requireAuth },
         { path: 'cases', element: <Cases />, loader: requireAuth },
+        { path: 'cases/new', element: <CaseNewPage />, loader: requireAuth },
         { path: 'depts', element: <Departments />, loader: requireAuth },
+        { path: 'depts/new', element: <DeptNewPage />, loader: requireAuth },
         { path: 'members', element: <Members />, loader: requireAuth },
+        { path: 'members/new', element: <MemberNewPage />, loader: requireAuth },
         { path: 'messages', element: <Messages />, loader: requireAuth },
         { path: 'orders', element: <Orders />, loader: requireAuth },
         { path: 'appointments', element: <Appointments />, loader: requireAuth },

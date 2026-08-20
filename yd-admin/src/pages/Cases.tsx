@@ -17,6 +17,7 @@ import {
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 import { casesAdmin, type CaseCreatePayload, type CaseItem } from '../api/cases'
 import RichTextEditor from '../components/RichTextEditor'
@@ -50,6 +51,7 @@ const STYLE_OPTIONS = [
 
 export default function Cases() {
   const qc = useQueryClient()
+  const nav = useNavigate()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [keyword, setKeyword] = useState('')
@@ -153,7 +155,7 @@ export default function Cases() {
       extra={
         <Space>
           <Input.Search placeholder="搜索标题" allowClear onSearch={setKeyword} style={{ width: 220 }} />
-          <Button type="primary" onClick={() => { setEditing(null); setModalOpen(true) }}>新建案例</Button>
+          <Button type="primary" onClick={() => nav('/cases/new')}>新建案例</Button>
         </Space>
       }
     >

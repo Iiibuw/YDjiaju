@@ -18,6 +18,7 @@ import {
 import type { DataNode } from 'antd/es/tree'
 import type { ColumnsType } from 'antd/es/table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 import { deptsAdmin, type DeptCreatePayload, type DeptNode, type DeptTreeNode } from '../api/depts'
 
@@ -54,6 +55,7 @@ const empty: FormValues = { name: '', code: '', parent_id: undefined, is_activat
 
 export default function Departments() {
   const qc = useQueryClient()
+  const nav = useNavigate()
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<DeptNode | null>(null)
   const [parentHint, setParentHint] = useState<DeptNode | null>(null)
@@ -145,11 +147,7 @@ export default function Departments() {
           <Button
             size="small"
             type="link"
-            onClick={() => {
-              setParentHint(r)
-              setEditing(null)
-              setModalOpen(true)
-            }}
+            onClick={() => nav(`/depts/new?parent=${r.id}`)}
           >
             + 子部门
           </Button>
@@ -185,7 +183,7 @@ export default function Departments() {
       <Card
         title="部门树"
         extra={
-          <Button type="primary" onClick={() => { setEditing(null); setParentHint(null); setModalOpen(true) }}>
+          <Button type="primary" onClick={() => nav('/depts/new')}>
             新建顶层部门
           </Button>
         }
