@@ -22,7 +22,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { setToken } from '../api/http'
 import { changePassword, fetchProfile, getCaptcha, login, type AdminProfile } from '../api/auth'
 
-const { Sider, Header, Content, Footer } = Layout
+const { Sider, Header, Content } = Layout
 
 /** 品牌标题：仅文字（无图标） */
 const MENU = [
@@ -181,6 +181,41 @@ export default function AdminLayout() {
             className="yd-admin-menu"
           />
         </div>
+        {/* ===== Sider 底部用户区:菜单滚动时固定显示在最底部 ===== */}
+        <div
+          className="shrink-0 border-t px-4 py-3"
+          style={{
+            borderColor: 'rgba(255,255,255,0.08)',
+            backgroundColor: 'rgba(0,0,0,0.25)',
+            position: 'sticky',
+            bottom: 0,
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            <Avatar size={36} icon={<UserOutlined />} src={profile?.avatar_url || undefined} style={{ backgroundColor: '#1677ff', flexShrink: 0 }}>
+              {displayName[0]}
+            </Avatar>
+            <div className="min-w-0 flex-1 leading-tight">
+              <div className="truncate text-[13px] font-bold" style={{ color: '#ffffff' }}>
+                {displayName}
+              </div>
+              <div className="mt-0.5 truncate text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                {profile?.email || '@' + (profile?.username || 'admin')}
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 flex items-center gap-1.5">
+            <Button size="small" type="text" icon={<KeyOutlined />} onClick={() => setPwdOpen(true)} className="!flex-1 !text-[11px]" style={{ color: 'rgba(255,255,255,0.75)' }}>
+              修改密码
+            </Button>
+            <Button size="small" type="text" icon={<SwapOutlined />} onClick={() => setSwitchOpen(true)} className="!flex-1 !text-[11px]" style={{ color: 'rgba(255,255,255,0.75)' }}>
+              切换
+            </Button>
+            <Button size="small" type="text" danger icon={<LogoutOutlined />} onClick={handleLogout} className="!flex-1 !text-[11px]">
+              退出
+            </Button>
+          </div>
+        </div>
 
         {/* ===== 左下角用户区：头像 + 用户名 + 下拉菜单（截图 2 风格） ===== */}
         </Sider>
@@ -192,31 +227,7 @@ export default function AdminLayout() {
         <Content className="!bg-gray-50 flex-1 p-6">
           <Outlet />
         </Content>
-        {/* ===== 底部用户信息区（内容区下方，左下角→下方） ===== */}
-        <Footer className="!border-t !border-gray-200 !bg-white px-6 py-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
-            <div className="flex items-center gap-3">
-              <Avatar size={36} icon={<UserOutlined />} src={profile?.avatar_url || undefined} style={{ backgroundColor: '#1677ff' }}>
-                {displayName[0]}
-              </Avatar>
-              <div className="leading-tight">
-                <div className="font-bold text-gray-800">{displayName}</div>
-                <div className="text-xs text-gray-400">{profile?.email || (profile?.username ? '@' + profile.username : 'admin@yd.com')}</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button size="small" icon={<KeyOutlined />} onClick={() => setPwdOpen(true)}>
-                修改密码
-              </Button>
-              <Button size="small" icon={<SwapOutlined />} onClick={() => setSwitchOpen(true)}>
-                切换用户
-              </Button>
-              <Button size="small" danger icon={<LogoutOutlined />} onClick={handleLogout}>
-                退出登录
-              </Button>
-            </div>
-          </div>
-        </Footer>
+        
       </Layout>
 
       {/* 修改密码 Modal */}
