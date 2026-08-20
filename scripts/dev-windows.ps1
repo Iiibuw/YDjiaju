@@ -1,4 +1,4 @@
-# YD 家具 — Windows 原生开发启动脚本（MySQL 模式，无 Docker 依赖）
+﻿# YD 家具 — Windows 原生开发启动脚本（MySQL 模式，无 Docker 依赖）
 # 用法：双击根目录 run-dev.bat（推荐）；或右键本脚本「使用 PowerShell 运行」
 # 前提：
 #   1) 本机已安装并启动 MySQL 8.0（默认端口 3306）
