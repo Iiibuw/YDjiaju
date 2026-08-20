@@ -5,11 +5,9 @@ import {
   Menu,
   Avatar,
   Dropdown,
-  Button,
   Modal,
   Form,
   Input,
-  Space,
   message,
 } from 'antd'
 import {
@@ -25,7 +23,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { setToken } from '../api/http'
 import { changePassword, fetchProfile, getCaptcha, login, type AdminProfile } from '../api/auth'
 
-const { Sider, Header, Content, Footer } = Layout
+const { Sider, Header, Content } = Layout
 
 const MENU = [
   { key: '/news', label: '资讯管理' },
@@ -146,8 +144,6 @@ export default function AdminLayout() {
   }, [switchOpen])
 
   const displayName = profile?.real_name || profile?.username || '管理员'
-  const displayRole = (profile?.role || 'admin').toUpperCase()
-
   const userDropdown = {
     items: [
       {
@@ -195,16 +191,27 @@ export default function AdminLayout() {
       <Layout className="flex flex-col">
         <Header className="!flex !items-center !justify-between !bg-white !px-6 shadow-sm">
           <h1 className="text-base font-medium text-gray-800">{resolveHeaderTitle(loc.pathname)}</h1>
+          {/* 右上角账号操作：下拉菜单包含修改密码 / 切换用户 / 退出登录 */}
           <Dropdown menu={userDropdown} placement="bottomRight" trigger={['click']}>
             <a
               onClick={(e) => e.preventDefault()}
-              className="flex items-center gap-2 text-sm text-gray-700 hover:text-blue-600"
+              className="group flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm text-gray-700 transition-all hover:border-blue-200 hover:bg-blue-50/50"
             >
-              <Avatar size="small" icon={<UserOutlined />} src={profile?.avatar_url || undefined}>
+              <Avatar
+                size="small"
+                icon={<UserOutlined />}
+                src={profile?.avatar_url || undefined}
+                style={{ backgroundColor: '#1677ff' }}
+              >
                 {displayName[0]}
               </Avatar>
-              <span>{displayName}</span>
-              <DownOutlined style={{ fontSize: 10 }} />
+              <div className="flex flex-col leading-tight">
+                <span className="font-medium">{displayName}</span>
+                <span className="text-[10px] text-gray-400">
+                  {(profile?.role || 'admin').toUpperCase()}
+                </span>
+              </div>
+              <DownOutlined style={{ fontSize: 10 }} className="text-gray-400 transition-transform group-hover:rotate-180" />
             </a>
           </Dropdown>
         </Header>
@@ -212,58 +219,7 @@ export default function AdminLayout() {
         <Content className="!bg-gray-50 flex-1 p-6">
           <Outlet />
         </Content>
-
-        <Footer className="!bg-white !border-t !border-gray-200 px-6 py-3">
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-gray-500">
-            {/* ===== 左侧：版本信息 ===== */}
-            <Space size="middle" wrap>
-              <span>YD 家具管理系统 · v1.0</span>
-              <span className="text-gray-300">|</span>
-              <span>
-                角色: <b className="text-gray-700">{displayRole}</b>
-              </span>
-              <span className="text-gray-300">|</span>
-              <span>
-                部门: <b className="text-gray-700">{profile?.dept_name || '—'}</b>
-              </span>
-              <span className="text-gray-300">|</span>
-              <span>
-                数据权限: <b className="text-gray-700">{profile?.data_scope || 'ALL'}</b>
-              </span>
-            </Space>
-            {/* ===== 右侧：三个功能按钮（增加间距，退出红色） ===== */}
-            <Space size="middle">
-              <Button size="small" icon={<KeyOutlined />} onClick={() => setPwdOpen(true)}>
-                修改密码
-              </Button>
-              <Button size="small" icon={<SwapOutlined />} onClick={() => setSwitchOpen(true)}>
-                切换用户
-              </Button>
-              <Button size="small" danger icon={<LogoutOutlined />} onClick={handleLogout}>
-                退出登录
-              </Button>
-            </Space>
-          </div>
-        </Footer>
       </Layout>
-
-      {/* 浮动左下角管理员入口（截图 3 风格：简洁圆形头像 + 用户名 + 退出） */}
-      <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-md bg-white px-1.5 py-1 shadow-md ring-1 ring-black/5">
-        <Avatar
-          size={32}
-          style={{ backgroundColor: '#1677ff', flexShrink: 0 }}
-          icon={<UserOutlined />}
-        >
-          {displayName[0]}
-        </Avatar>
-        <div className="flex flex-col pr-2 leading-tight">
-          <span className="text-xs font-medium text-gray-800">{displayName}</span>
-          <span className="text-[10px] text-gray-400">({profile?.username})</span>
-        </div>
-        <Button size="small" type="text" danger onClick={handleLogout}>
-          退出
-        </Button>
-      </div>
 
       {/* 修改密码 Modal */}
       <Modal

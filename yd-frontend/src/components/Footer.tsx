@@ -7,9 +7,10 @@ import { Link } from 'react-router-dom'
 
 const GOLD = '#c9a227'
 const INK_LIGHT = '#ece5d8'
-const SUB = '#bdb5a2'
-const DEEP_BG = '#0d0b09'
-const BORDER = '#2c2720'
+const SUB = '#d4ccb8'
+// v2.2：从 #0d0b09 提到 #2c2520，让米白文字更清晰
+const DEEP_BG = '#2c2520'
+const BORDER = '#4a3f32'
 
 export default function Footer() {
   return (
@@ -20,7 +21,7 @@ export default function Footer() {
       {/* ===== 管理入口条幅 ===== */}
       <div
         className="border-b"
-        style={{ borderColor: BORDER, backgroundColor: '#0a0807' }}
+        style={{ borderColor: BORDER, backgroundColor: '#221c17' }}
       >
         <div className="container-yf flex flex-col items-center justify-between gap-3 py-5 sm:flex-row">
           <div className="flex items-center gap-3">
