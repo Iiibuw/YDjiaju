@@ -207,7 +207,7 @@ export default function AdminLayout() {
           />
         </div>
 
-        {/* ===== 左下角用户区：背景加深 + 用户名/账号/退出（全部浅色系） ===== */}
+        {/* ===== 左下角用户区：头像 + 用户名 + 下拉菜单（截图 2 风格） ===== */}
         <div
           className="border-t px-4 py-3"
           style={{
@@ -215,78 +215,39 @@ export default function AdminLayout() {
             backgroundColor: 'rgba(0,0,0,0.25)',
           }}
         >
-          <div className="flex items-center gap-2.5">
-            <Avatar
-              size={36}
-              icon={<UserOutlined />}
-              src={profile?.avatar_url || undefined}
-              style={{ backgroundColor: '#1677ff', flexShrink: 0 }}
-            >
-              {displayName[0]}
-            </Avatar>
-            <div className="min-w-0 flex-1 leading-tight">
-              <div className="truncate text-[13px] font-bold" style={{ color: '#ffffff' }}>
-                {displayName}
-              </div>
-              <div className="mt-0.5 truncate text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                {profile?.email || `@{profile?.username || 'admin'}`}
-              </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              title="退出登录"
-              className="flex h-7 shrink-0 items-center gap-1 rounded-md px-2 text-[11px] transition-colors"
-              style={{
-                color: 'rgba(255,255,255,0.75)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                backgroundColor: 'rgba(255,255,255,0.06)',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.color = '#ff4d4f'
-                el.style.borderColor = 'rgba(255,77,79,0.5)'
-                el.style.backgroundColor = 'rgba(255,77,79,0.12)'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.color = 'rgba(255,255,255,0.75)'
-                el.style.borderColor = 'rgba(255,255,255,0.2)'
-                el.style.backgroundColor = 'rgba(255,255,255,0.06)'
-              }}
-            >
-              <LogoutOutlined style={{ fontSize: 12 }} />
-              退出
-            </button>
-          </div>
-        </div>
-      </Sider>
-
-      <Layout className="flex flex-col">
-        <Header className="!flex !items-center !justify-end !bg-white !px-6 shadow-sm">
-          {/* 顶部 Header：账号菜单全部放到右上角头像下拉（删除原左侧标题） */}
-          <Dropdown menu={userDropdown} placement="bottomRight" trigger={['click']}>
+          <Dropdown menu={userDropdown} placement="topRight" trigger={['click']}>
             <a
               onClick={(e) => e.preventDefault()}
-              className="group flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm text-gray-700 transition-all hover:border-blue-200 hover:bg-blue-50/50"
+              className="group flex cursor-pointer items-center gap-2.5"
+              title="账号菜单"
             >
               <Avatar
-                size="small"
+                size={32}
                 icon={<UserOutlined />}
                 src={profile?.avatar_url || undefined}
-                style={{ backgroundColor: '#1677ff' }}
+                style={{ backgroundColor: '#1677ff', flexShrink: 0 }}
               >
                 {displayName[0]}
               </Avatar>
-              <div className="flex flex-col leading-tight">
-                <span className="font-medium">{displayName}</span>
-                <span className="text-[10px] text-gray-400">
-                  {(profile?.role || 'admin').toUpperCase()}
-                </span>
+              <div className="min-w-0 flex-1 leading-tight">
+                <div className="truncate text-[13px] font-bold" style={{ color: '#ffffff' }}>
+                  {displayName}
+                </div>
+                <div className="mt-0.5 truncate text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  {profile?.email || `@${profile?.username || 'admin'}`}
+                </div>
               </div>
-              <DownOutlined style={{ fontSize: 10 }} className="text-gray-400 transition-transform group-hover:rotate-180" />
+              <DownOutlined
+                style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}
+                className="transition-transform group-hover:translate-y-[-1px]"
+              />
             </a>
           </Dropdown>
-        </Header>
+        </div></Sider>
+
+      <Layout className="flex flex-col">
+        {/* ===== 顶部 Header：清空（账号操作全部移到左下角） ===== */}
+        <Header className="!bg-white" style={{ minHeight: 0, height: 0, padding: 0, borderBottom: 'none' }} />
 
         <Content className="!bg-gray-50 flex-1 p-6">
           <Outlet />
