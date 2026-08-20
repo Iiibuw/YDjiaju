@@ -484,40 +484,46 @@ export default function Members() {
       <Modal
         open={!!confirmModal?.open}
         title={
-          confirmModal?.type === "delete"
-            ? "确认删除该会员?"
-            : confirmModal?.type === "disable"
-              ? "确认禁用该会员?"
-              : "确认启用该会员?"
+          confirmModal?.type === 'delete'
+            ? '确认删除该会员?'
+            : confirmModal?.type === 'disable'
+              ? '确认禁用该会员?'
+              : '确认启用该会员?'
         }
-        okText={
-          confirmModal?.type === "delete"
-            ? "删除"
-            : confirmModal?.type === "disable"
-              ? "禁用"
-              : "启用"
-        }
-        cancelText="取消"
-        okButtonProps={
-          confirmModal?.type === "delete"
-            ? { danger: true }
-            : confirmModal?.type === "disable"
-              ? { style: { backgroundColor: "#fa8c16", borderColor: "#fa8c16" } }
-              : undefined
-        }
-        onOk={() => {
-          if (!confirmModal?.record) return
-          if (confirmModal.type === "delete") {
-            deleteMut.mutate(confirmModal.record.id)
-          } else {
-            statusMut.mutate({
-              id: confirmModal.record.id,
-              is_activate: confirmModal.type === "enable",
-            })
-          }
-          setConfirmModal(null)
-        }}
         onCancel={() => setConfirmModal(null)}
+        footer={[
+          <Button key="cancel" onClick={() => setConfirmModal(null)}>
+            取消
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            danger={confirmModal?.type === 'delete'}
+            style={
+              confirmModal?.type === 'disable'
+                ? { backgroundColor: '#fa8c16', borderColor: '#fa8c16' }
+                : undefined
+            }
+            onClick={() => {
+              const rec = confirmModal?.record
+              const type = confirmModal?.type
+              // 先关闭弹窗，再用局部变量执行（避免 React 19 + antd Modal 闭包问题）
+              setConfirmModal(null)
+              if (!rec || !type) return
+              if (type === 'delete') {
+                deleteMut.mutate(rec.id)
+              } else {
+                statusMut.mutate({ id: rec.id, is_activate: type === 'enable' })
+              }
+            }}
+          >
+            {confirmModal?.type === 'delete'
+              ? '删除'
+              : confirmModal?.type === 'disable'
+                ? '禁用'
+                : '启用'}
+          </Button>,
+        ]}
       >
         {confirmModal?.type === "disable" && "禁用后该会员将无法登录前台"}
         {confirmModal?.type === "delete" && "删除后数据无法恢复"}
