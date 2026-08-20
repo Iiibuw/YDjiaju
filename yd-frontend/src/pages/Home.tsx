@@ -87,7 +87,7 @@ export default function Home() {
             {hero?.title}
           </h1>
           <div className="mt-8 flex gap-4">
-            <Link to="/products" className="inline-flex items-center justify-center bg-gold px-8 py-3 font-medium text-[#1a150c] transition-colors hover:bg-gold/90">
+            <Link to="/products" className="inline-flex items-center justify-center bg-white px-8 py-3 font-medium text-ink transition-colors hover:bg-white/90">
               浏览产品
             </Link>
             <Link to="/contact" className="inline-flex items-center justify-center border border-white/40 px-8 py-3 text-white transition-colors hover:bg-white/10">
@@ -101,7 +101,7 @@ export default function Home() {
               key={i}
               aria-label={`轮播 ${i + 1}`}
               onClick={() => setHeroIdx(i)}
-              className={`h-0.5 w-8 transition-colors ${i === heroIdx % heroBanners.length ? 'bg-gold' : 'bg-white/40'}`}
+              className={`h-0.5 w-8 transition-colors ${i === heroIdx % heroBanners.length ? 'bg-white' : 'bg-white/40'}`}
             />
           ))}
         </div>
@@ -133,7 +133,7 @@ export default function Home() {
       </section>
 
       {/* ===== 品牌承诺 ===== */}
-      <section className="bg-card py-20">
+      <section className="bg-white py-20">
         <div className="container-yf">
           <div className="grid md:grid-cols-3 gap-12 text-center">
             {PROMISES.map((it) => (
@@ -159,7 +159,7 @@ export default function Home() {
       </section>
 
       {/* ===== 最新资讯 ===== */}
-      <section className="bg-card py-20">
+      <section className="bg-white py-20">
         <div className="container-yf">
           <div className="mb-10 flex items-end justify-between">
             <div>
@@ -178,7 +178,7 @@ export default function Home() {
                 <Link
                   key={n.id}
                   to={`/news/${n.id}`}
-                  className="group block overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
+                  className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
                 >
                   <div className="aspect-[16/9] overflow-hidden bg-sand">
                     {n.cover_url ? (
@@ -226,7 +226,7 @@ export default function Home() {
                 <Link
                   key={c.id}
                   to={`/cases/${c.id}`}
-                  className="group block overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
+                  className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-coal/5 transition hover:shadow-lg"
                 >
                   <div className="aspect-[4/3] overflow-hidden bg-coal/5">
                     {c.cover_url ? (

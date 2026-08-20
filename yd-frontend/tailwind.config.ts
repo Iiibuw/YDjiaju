@@ -4,13 +4,14 @@ import type { Config } from 'tailwindcss'
  * 设计 Token（与 UI/UX 设计规格文档 §第二篇 对齐）
  * 前台：stone/gold 暖色调 + Lexend + Source Sans 3
  *
- * v2.0（黑金奢华版，2026-08-20 用户要求）：
- * - sand → 深黑 #0d0b09（奢华黑底，替代原米白 #FAFAF9）
- * - coal / ink → 暖米白 #ece5d8（深色底上的正文色）
- * - gold → 明亮金 #c9a227（品牌强调色）
- * - walnut → 金色系 #c9a227（强调钮黑金化）
- * - stone 系列整体压暗（浅色边框/次级文本适配深色底）
- * - card #1c1812：全局卡片底色（替代 bg-white）
+ * v1.1（M4）对齐说明（UI 文档 §5/§6）：
+ * - gold DEFAULT #CA8A04（品牌强调色琥珀金，原 #b08d57 偏暗）
+ * - sand #FAFAF9（页面背景，等同 stone-50；原 #f5efe6 偏米）
+ * - fontFamily 增加 head（Lexend 标题字体，文档 §6.1 命名）
+ * - walnut：原型黑胡桃色（UI 文档未列，用于「预约到店」等强调钮）
+ *
+ * 注意：v2.0 临时改成黑金版（commit 0f6deb5）后被回滚（v2.1），
+ *       NavBar / Footer 仍走硬编码黑金色独立区段。
  */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
@@ -19,29 +20,28 @@ export default {
       colors: {
         // UI/UX §2.1 品牌色
         ink: {
-          DEFAULT: '#ece5d8', // 暖米白主文本（深色底）
-          soft: '#bdb5a2',
+          DEFAULT: '#1c1917', // stone-900 主文本
+          soft: '#44403c',
         },
         stone: {
-          50: '#17140f',
-          100: '#1d1a14',
-          200: '#2a251c',
-          300: '#3d362a',
-          400: '#6b6150',
-          500: '#9a917d',
-          600: '#b3aa94',
-          700: '#cec5b2',
+          50: '#fafaf9',
+          100: '#f5f5f4',
+          200: '#e7e5e4',
+          300: '#d6d3d1',
+          400: '#a8a29e',
+          500: '#78716c',
+          600: '#57534e',
+          700: '#44403c',
         },
         gold: {
-          DEFAULT: '#c9a227', // 品牌金（明亮金，奢华感）
-          light: '#e0c77e',
+          DEFAULT: '#ca8a04', // 品牌金（UI 文档 §5.1 #CA8A04）
+          light: '#d4b78a',
           dark: '#8a6c3f',
-          50: '#2a2417',
+          50: '#fbf7f0',
         },
-        sand: '#0d0b09', // 页面背景（深黑褐，替代原米白）
-        coal: '#ece5d8', // 主文本（暖米白）
-        walnut: '#c9a227', // 强调钮（黑金化：胡桃 → 金）
-        card: '#1c1812', // 全局卡片底色（替代 bg-white）
+        sand: '#fafaf9', // 页面背景（UI 文档 §5.1 #FAFAF9）
+        coal: '#0c0a09', // 深色文字
+        walnut: '#6b4a2f', // 黑胡桃（原型强调钮）
       },
       fontFamily: {
         head: ['"Lexend"', 'system-ui', 'sans-serif'], // UI 文档 §6.1 标题字体

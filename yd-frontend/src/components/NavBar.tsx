@@ -2,6 +2,9 @@
  * 顶部导航（UI 文档 §16.1/§16.2）。
  * - PC(lg+)：6 项一级导航 + 二级下拉 + 右侧操作区（🔍搜索 / 📅预约 / 🛒购物车 badge / 会员）
  * - 移动端(<lg)：汉堡按钮 → 折叠面板（<details> 手风琴）
+ *
+ * 黑金色独立区段：v2.1 回滚时 NavBar/Footer 保留奢华配色（不依赖 token），
+ * 其他页面已恢复浅色（commit f57cebc 之前的风格）。
  */
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
@@ -56,33 +59,48 @@ const NAV = [
   },
 ]
 
+// 黑金色 hardcoded（不依赖 token）—— NavBar/Footer 是固定奢华区
+const GOLD = '#c9a227'
+const INK_LIGHT = '#ece5d8'
+const SUB = '#bdb5a2'
+const DEEPER_BG = '#1a1714'
+const BORDER = '#2c2720'
+
 const navCls = ({ isActive }: { isActive: boolean }) =>
-  `relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-gold after:transition-all ${
-    isActive ? 'font-medium text-ink after:w-full' : 'text-stone-600 hover:text-ink after:w-0 hover:after:w-full'
+  `relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[${GOLD}] after:transition-all ${
+    isActive
+      ? `font-medium text-[${INK_LIGHT}] after:w-full`
+      : `text-[${SUB}] hover:text-[${INK_LIGHT}] after:w-0 hover:after:w-full`
   }`
 
 export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const count = useCartCount()
 
-  // 会员登录态（阶段 5：读 localStorage yd_member_info；脏数据安全兜底）
+  // 会员登录态
   let member: { nickname?: string | null; phone?: string } | null = null
   try {
     const raw = localStorage.getItem('yd_member_info')
     member = raw ? (JSON.parse(raw) as { nickname?: string | null; phone?: string }) : null
   } catch {
-    localStorage.removeItem('yd_member_info') // 脏数据清理，避免整棵树崩溃
+    localStorage.removeItem('yd_member_info')
     member = null
   }
   const memberLabel = member ? (member.nickname || member.phone || '会员').slice(0, 8) : '登录'
 
   return (
-    <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-sand/95 backdrop-blur supports-[backdrop-filter]:bg-sand/80">
+    <header
+      className="sticky top-0 z-50 border-b backdrop-blur"
+      style={{
+        backgroundColor: 'rgba(13,11,9,0.95)',
+        borderColor: BORDER,
+      }}
+    >
       <div className="container-yf flex h-16 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <span className="font-display text-xl font-semibold tracking-wide text-ink">
-            YD <span className="text-gold">·</span> 家具
+          <span className="font-display text-xl font-semibold tracking-wide" style={{ color: INK_LIGHT }}>
+            YD <span style={{ color: GOLD }}>·</span> 家具
           </span>
         </Link>
 
@@ -95,16 +113,26 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
             <div key={item.to} className="group relative">
               <NavLink to={item.to} className={navCls}>
                 {item.label}
-                {item.children && <span className="ml-0.5 text-[10px] text-stone-400">▼</span>}
+                {item.children && <span className="ml-0.5 text-[10px]" style={{ color: '#6b6150' }}>▼</span>}
               </NavLink>
               {item.children && (
                 <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-                  <div className="min-w-36 rounded-xl border border-stone-200 bg-card p-1.5 shadow-lg">
+                  <div
+                    className="min-w-36 rounded-xl border p-1.5 shadow-lg shadow-black/50"
+                    style={{ backgroundColor: DEEPER_BG, borderColor: BORDER }}
+                  >
                     {item.children.map((c) => (
                       <Link
                         key={c.label}
                         to={c.to}
-                        className="block rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-sand hover:text-ink"
+                        className="block rounded-lg px-3 py-2 text-sm hover:text-[#ece5d8]"
+                        style={{ color: SUB }}
+                        onMouseEnter={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.backgroundColor = '#1f1a14'
+                        }}
+                        onMouseLeave={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+                        }}
                       >
                         {c.label}
                       </Link>
@@ -117,36 +145,61 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
         </nav>
 
         {/* 右侧操作区 */}
-        <div className="flex items-center gap-1 sm:gap-3 text-sm">
-          <button onClick={onOpenSearch} title="站内搜索" className="p-2 text-stone-500 hover:text-ink transition-colors" aria-label="搜索">
+        <div className="flex items-center gap-1 text-sm sm:gap-3">
+          <button
+            onClick={onOpenSearch}
+            title="站内搜索"
+            className="p-2 transition-colors"
+            style={{ color: SUB }}
+            aria-label="搜索"
+          >
             🔍
           </button>
           <button
             onClick={onOpenBooking}
-            className="hidden rounded-full bg-walnut px-4 py-1.5 font-medium text-white hover:bg-walnut/90 sm:inline-flex"
+            className="hidden rounded-full px-4 py-1.5 font-medium text-[#1a150c] sm:inline-flex"
+            style={{ backgroundColor: GOLD }}
           >
             预约到店
           </button>
-          <button onClick={onOpenCart} title="购物车" className="relative p-2 text-stone-500 hover:text-ink transition-colors" aria-label="购物车">
+          <button
+            onClick={onOpenCart}
+            title="购物车"
+            className="relative p-2 transition-colors"
+            style={{ color: SUB }}
+            aria-label="购物车"
+          >
             🛒
             {count > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-semibold text-white">
+              <span
+                className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-[#1a150c]"
+                style={{ backgroundColor: GOLD }}
+              >
                 {count > 99 ? '99+' : count}
               </span>
             )}
           </button>
-          <Link to={member ? '/member' : '/login'} className="hidden items-center gap-1 p-2 text-stone-500 hover:text-ink md:inline-flex" title="会员中心">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15 text-xs font-semibold text-gold">
+          <Link
+            to={member ? '/member' : '/login'}
+            className="hidden items-center gap-1 p-2 md:inline-flex"
+            style={{ color: SUB }}
+            title="会员中心"
+          >
+            <span
+              className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold"
+              style={{ backgroundColor: 'rgba(201,162,39,0.15)', color: GOLD }}
+            >
               {member ? memberLabel.slice(0, 1) : '👤'}
             </span>
             {memberLabel}
           </Link>
-          {/* 管理后台入口（小图标，移动端隐藏） */}
+          {/* 管理后台入口 */}
           <a
             href="/admin/login"
             target="_blank"
             rel="noopener"
-            className="hidden items-center gap-1 rounded-md border border-stone-200 bg-card px-2.5 py-1 text-xs text-stone-500 hover:border-walnut hover:text-walnut lg:inline-flex"
+            className="hidden items-center gap-1 rounded-md border px-2.5 py-1 text-xs lg:inline-flex"
+            style={{ borderColor: BORDER, backgroundColor: DEEPER_BG, color: SUB }}
             title="管理后台"
           >
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
@@ -158,7 +211,8 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
           {/* 移动端汉堡 */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="p-2 text-stone-600 lg:hidden"
+            className="p-2 lg:hidden"
+            style={{ color: SUB }}
             aria-label="菜单"
           >
             ☰
@@ -166,29 +220,38 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
         </div>
       </div>
 
-      {/* 移动端折叠菜单 */}
+      {/* 移动端折叠菜单（也保持黑金） */}
       {mobileOpen && (
-        <div className="border-t border-stone-200 bg-card lg:hidden">
+        <div className="border-t lg:hidden" style={{ backgroundColor: DEEPER_BG, borderColor: BORDER }}>
           <div className="container-yf flex flex-col py-3 text-sm">
-            <Link to="/" onClick={() => setMobileOpen(false)} className="px-3 py-2 text-stone-700 hover:bg-sand rounded-lg">
+            <Link
+              to="/"
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg px-3 py-2"
+              style={{ color: INK_LIGHT }}
+            >
               首页
             </Link>
             {NAV.map((item) => (
               <details key={item.to} className="group">
-                <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-stone-700 hover:bg-sand rounded-lg">
+                <summary
+                  className="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 py-2"
+                  style={{ color: INK_LIGHT }}
+                >
                   <Link to={item.to} onClick={() => setMobileOpen(false)}>
                     {item.label}
                   </Link>
-                  {item.children && <span className="text-stone-400">▾</span>}
+                  {item.children && <span style={{ color: '#6b6150' }}>▾</span>}
                 </summary>
                 {item.children && (
-                  <div className="ml-3 flex flex-col border-l border-stone-200 pl-3">
+                  <div className="ml-3 flex flex-col border-l pl-3" style={{ borderColor: BORDER }}>
                     {item.children.map((c) => (
                       <Link
                         key={c.label}
                         to={c.to}
                         onClick={() => setMobileOpen(false)}
-                        className="px-3 py-2 text-stone-500 hover:text-ink"
+                        className="px-3 py-2"
+                        style={{ color: SUB }}
                       >
                         {c.label}
                       </Link>
@@ -197,11 +260,23 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
                 )}
               </details>
             ))}
-            <div className="mt-2 flex gap-3 border-t border-stone-100 pt-3">
-              <button onClick={() => { setMobileOpen(false); onOpenBooking() }} className="btn-primary flex-1 py-2 text-sm">
+            <div className="mt-2 flex gap-3 border-t pt-3" style={{ borderColor: BORDER }}>
+              <button
+                onClick={() => {
+                  setMobileOpen(false)
+                  onOpenBooking()
+                }}
+                className="flex-1 rounded-lg py-2 text-sm font-medium text-[#1a150c]"
+                style={{ backgroundColor: GOLD }}
+              >
                 预约到店
               </button>
-              <Link to="/member" onClick={() => setMobileOpen(false)} className="btn-outline flex-1 py-2 text-sm text-center">
+              <Link
+                to="/member"
+                onClick={() => setMobileOpen(false)}
+                className="flex-1 rounded-lg border py-2 text-center text-sm"
+                style={{ borderColor: GOLD, color: GOLD }}
+              >
                 会员中心
               </Link>
             </div>

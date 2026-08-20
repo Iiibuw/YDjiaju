@@ -14,21 +14,21 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-gold text-[#1a150c] font-medium tracking-wide hover:bg-gold/90 transition-colors;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-ink text-white font-medium tracking-wide hover:bg-ink/90 transition-colors;
   }
   .btn-gold {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-gold text-[#1a150c] font-medium tracking-wide hover:bg-gold/90 transition-colors;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-gold text-white font-medium tracking-wide hover:bg-gold/90 transition-colors;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center px-6 py-3 border border-gold/40 text-coal hover:border-gold hover:bg-gold/10 transition-colors;
+    @apply inline-flex items-center justify-center px-6 py-3 border border-ink/20 hover:border-ink/40 hover:bg-white transition-colors;
   }
   .container-yf {
     @apply mx-auto max-w-container px-4 sm:px-6 lg:px-8;
   }
   .input-yf {
-    @apply w-full rounded-lg border border-stone-300 bg-card px-3 py-2 text-sm text-coal placeholder:text-stone-500 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-colors;
+    @apply w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-ink placeholder:text-stone-400 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30 transition-colors;
   }
   .card-yf {
-    @apply bg-card rounded-xl border border-gold/15 shadow-lg shadow-black/30;
+    @apply bg-white rounded-xl border border-stone-200/70 shadow-sm;
   }
 }
