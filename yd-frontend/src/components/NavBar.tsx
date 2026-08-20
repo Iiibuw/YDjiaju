@@ -59,7 +59,7 @@ const DEEPER_BG = '#3a3128'
 const BORDER = '#4a3f32'
 
 const navCls = ({ isActive }: { isActive: boolean }) =>
-  `relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[${GOLD}] after:transition-all ${
+  `relative inline-flex items-center py-1 outline-none transition-colors focus:outline-none after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[${GOLD}] after:transition-all ${
     isActive
       ? `font-semibold text-[${GOLD}] after:w-full`
       : `text-[${SUB}] hover:text-[${INK_LIGHT}] after:w-0 hover:after:w-full`
@@ -105,7 +105,11 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
             <div key={item.to} className="group relative">
               <NavLink to={item.to} className={navCls}>
                 {item.label}
-                {item.children && <span className="ml-0.5 text-[10px]" style={{ color: '#6b6150' }}>▼</span>}
+                {item.children && (
+                  <span className="ml-1 inline-flex text-[9px] leading-none" style={{ color: SUB }}>
+                    ▼
+                  </span>
+                )}
               </NavLink>
               {item.children && (
                 <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
@@ -219,7 +223,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
                   <Link to={item.to} onClick={() => setMobileOpen(false)}>
                     {item.label}
                   </Link>
-                  {item.children && <span style={{ color: '#6b6150' }}>▾</span>}
+                  {item.children && <span style={{ color: SUB }}>▾</span>}
                 </summary>
                 {item.children && (
                   <div className="ml-3 flex flex-col border-l pl-3" style={{ borderColor: BORDER }}>
