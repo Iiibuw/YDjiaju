@@ -74,19 +74,19 @@ body {
   background: transparent;
 }
 
-/* ===== 左侧导航菜单对比度增强 ===== */
+/* ===== 左侧导航菜单对比度增强（全浅色文字，禁黑字） ===== */
 .yd-admin-menu.ant-menu-dark {
   background: transparent;
 }
 .yd-admin-menu.ant-menu-dark .ant-menu-item {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.88);
   border-radius: 6px;
   margin-inline: 8px;
   width: calc(100% - 16px);
 }
 .yd-admin-menu.ant-menu-dark .ant-menu-item:hover {
   color: #fff !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
 }
 .yd-admin-menu.ant-menu-dark .ant-menu-item-selected {
   color: #fff !important;

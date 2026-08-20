@@ -25,6 +25,7 @@ import { changePassword, fetchProfile, getCaptcha, login, type AdminProfile } fr
 
 const { Sider, Header, Content } = Layout
 
+/** 品牌标题：仅文字（无图标） */
 const MENU = [
   { key: '/dashboard', label: '仪表盘' },
   { key: '/news', label: '资讯管理' },
@@ -36,31 +37,6 @@ const MENU = [
   { key: '/messages', label: '留言管理' },
   { key: '/depts', label: '部门管理' },
 ]
-
-/** 品牌线性图标：沙发 + 桌面（家具元素，简洁线性风格，32px） */
-function BrandLogoMark() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-8 w-8"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {/* 沙发主体 */}
-      <path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3" />
-      <path d="M4 11a2 2 0 0 0-2 2v3h20v-3a2 2 0 0 0-2-2H4Z" />
-      {/* 沙发扶手 */}
-      <path d="M2 16v2M22 16v2" />
-      {/* 桌腿 */}
-      <path d="M8 6V4h8v2" />
-      {/* YD 首字母负形（用短横强调） */}
-      <path d="M9 13h6M12 13v2" />
-    </svg>
-  )
-}
 
 export default function AdminLayout() {
   const nav = useNavigate()
@@ -197,22 +173,16 @@ export default function AdminLayout() {
         style={{ backgroundColor: '#001529', minHeight: '100vh', height: '100vh', position: 'sticky', top: 0 }}
       >
         {/* Logo 区域：图标 + 品牌名 + 副标题 */}
-        {/* ===== 品牌 Logo：线性家具图标(32px) + 紧凑文字，顶部留白减少 ===== */}
+        {/* ===== 品牌标题：仅文字，浅米白，无图标 ===== */}
         <div
-          className="flex h-12 items-center gap-2 border-b px-3.5"
+          className="flex h-12 items-center border-b px-4"
           style={{ borderColor: 'rgba(255,255,255,0.08)' }}
         >
-          <span
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-            style={{ color: '#c9a227', backgroundColor: 'rgba(201,162,39,0.12)' }}
-          >
-            <BrandLogoMark />
-          </span>
           <div className="flex flex-col leading-none">
-            <span className="text-[13px] font-semibold tracking-wide text-white">
+            <span className="text-[13px] font-semibold tracking-wide" style={{ color: '#f5f0e6' }}>
               YD 家具
             </span>
-            <span className="mt-0.5 text-[9px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <span className="mt-0.5 text-[9px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
               Admin Console
             </span>
           </div>
@@ -231,15 +201,15 @@ export default function AdminLayout() {
             style={{
               backgroundColor: 'transparent',
               borderInlineEnd: 'none',
-              color: 'rgba(255,255,255,0.72)',
+              color: 'rgba(255,255,255,0.88)',
             }}
             className="yd-admin-menu"
           />
         </div>
 
-        {/* ===== 左下角用户区：背景加深 + 头像 + 用户名 + 邮箱 + 退出 ===== */}
+        {/* ===== 左下角用户区：背景加深 + 用户名/账号/退出（全部浅色系） ===== */}
         <div
-          className="border-t px-3.5 py-3"
+          className="border-t px-4 py-3"
           style={{
             borderColor: 'rgba(255,255,255,0.08)',
             backgroundColor: 'rgba(0,0,0,0.25)',
@@ -255,8 +225,10 @@ export default function AdminLayout() {
               {displayName[0]}
             </Avatar>
             <div className="min-w-0 flex-1 leading-tight">
-              <div className="truncate text-[13px] font-medium text-white">{displayName}</div>
-              <div className="mt-0.5 truncate text-[10px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              <div className="truncate text-[13px] font-bold" style={{ color: '#ffffff' }}>
+                {displayName}
+              </div>
+              <div className="mt-0.5 truncate text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 {profile?.email || `@{profile?.username || 'admin'}`}
               </div>
             </div>
@@ -265,8 +237,9 @@ export default function AdminLayout() {
               title="退出登录"
               className="flex h-7 shrink-0 items-center gap-1 rounded-md px-2 text-[11px] transition-colors"
               style={{
-                color: 'rgba(255,255,255,0.65)',
-                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.75)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                backgroundColor: 'rgba(255,255,255,0.06)',
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement
@@ -276,9 +249,9 @@ export default function AdminLayout() {
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement
-                el.style.color = 'rgba(255,255,255,0.65)'
-                el.style.borderColor = 'rgba(255,255,255,0.15)'
-                el.style.backgroundColor = 'transparent'
+                el.style.color = 'rgba(255,255,255,0.75)'
+                el.style.borderColor = 'rgba(255,255,255,0.2)'
+                el.style.backgroundColor = 'rgba(255,255,255,0.06)'
               }}
             >
               <LogoutOutlined style={{ fontSize: 12 }} />
