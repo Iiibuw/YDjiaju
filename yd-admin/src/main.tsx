@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ConfigProvider } from 'antd'
+import { App as AntApp, ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import App from './App'
 import './styles/index.css'
@@ -23,9 +23,14 @@ createRoot(document.getElementById('root')!).render(
         },
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
+      {/* antd <App>：让 Modal.confirm / message / notification 等静态函数拿到 ConfigProvider 上下文，
+          消除 "Static function cannot consume dynamic theme" 警告,
+          修复 React 19 下 Modal.confirm 不弹的问题 */}
+      <AntApp message={{ maxCount: 3 }} notification={{ placement: 'topRight' }}>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </AntApp>
     </ConfigProvider>
   </StrictMode>,
 )
