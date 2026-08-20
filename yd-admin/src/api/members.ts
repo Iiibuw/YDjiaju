@@ -32,6 +32,18 @@ export const membersAdmin = {
     const env = await http.get<ApiEnvelope<MemberListResp>>(`/admin/members?${qs.toString()}`)
     return unwrap(env)
   },
+  async stats(): Promise<{ total: number; today_new: number }> {
+    const env = await http.get<ApiEnvelope<{ total: number; today_new: number }>>('/admin/members/stats')
+    return unwrap(env)
+  },
+  async update(id: number, payload: { nickname?: string | null; email?: string | null; gender?: number | null }) {
+    const env = await http.put<ApiEnvelope<MemberItem>>(`/admin/members/${id}`, payload)
+    return unwrap(env)
+  },
+  async create(payload: { phone: string; password: string; nickname?: string | null; email?: string | null }) {
+    const env = await http.post<ApiEnvelope<MemberItem>>('/admin/members', payload)
+    return unwrap(env)
+  },
   async updateStatus(id: number, is_activate: boolean) {
     const env = await http.put<ApiEnvelope<MemberItem>>(`/admin/members/${id}/status`, { is_activate })
     return unwrap(env)

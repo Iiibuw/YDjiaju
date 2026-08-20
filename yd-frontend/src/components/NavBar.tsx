@@ -62,14 +62,14 @@ const NAV = [
 // 黑金色 hardcoded（不依赖 token）—— NavBar/Footer 是固定奢华区
 const GOLD = '#c9a227'
 const INK_LIGHT = '#ece5d8'
-const SUB = '#bdb5a2'
+const SUB = '#d4ccb8' // 加亮版次级文字（之前 #bdb5a2 在深底上对比度不够看不清）
 const DEEPER_BG = '#1a1714'
 const BORDER = '#2c2720'
 
 const navCls = ({ isActive }: { isActive: boolean }) =>
   `relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[${GOLD}] after:transition-all ${
     isActive
-      ? `font-medium text-[${INK_LIGHT}] after:w-full`
+      ? `font-semibold text-[${GOLD}] after:w-full`
       : `text-[${SUB}] hover:text-[${INK_LIGHT}] after:w-0 hover:after:w-full`
   }`
 

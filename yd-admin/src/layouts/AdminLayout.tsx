@@ -38,6 +38,14 @@ const MENU = [
   { key: '/depts', label: '部门管理' },
 ]
 
+/** 根据当前路径找标题——和左侧选中菜单一致 */
+function resolveHeaderTitle(pathname: string): string {
+  const found = MENU.find((m) => m.key === pathname)
+  if (found) return `YD 家具 · ${found.label}`
+  if (pathname === '/' || pathname === '') return 'YD 家具 · 内容管理'
+  return 'YD 家具 · 后台管理'
+}
+
 export default function AdminLayout() {
   const nav = useNavigate()
   const loc = useLocation()
@@ -186,7 +194,7 @@ export default function AdminLayout() {
 
       <Layout className="flex flex-col">
         <Header className="!flex !items-center !justify-between !bg-white !px-6 shadow-sm">
-          <h1 className="text-base font-medium text-gray-800">YD 家具 · 内容管理</h1>
+          <h1 className="text-base font-medium text-gray-800">{resolveHeaderTitle(loc.pathname)}</h1>
           <Dropdown menu={userDropdown} placement="bottomRight" trigger={['click']}>
             <a
               onClick={(e) => e.preventDefault()}
@@ -207,6 +215,7 @@ export default function AdminLayout() {
 
         <Footer className="!bg-white !border-t !border-gray-200 px-6 py-3">
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-gray-500">
+            {/* ===== 左侧：版本信息 ===== */}
             <Space size="middle" wrap>
               <span>YD 家具管理系统 · v1.0</span>
               <span className="text-gray-300">|</span>
@@ -222,30 +231,15 @@ export default function AdminLayout() {
                 数据权限: <b className="text-gray-700">{profile?.data_scope || 'ALL'}</b>
               </span>
             </Space>
-            <Space size="small">
-              <Button
-                size="small"
-                type="text"
-                icon={<KeyOutlined />}
-                onClick={() => setPwdOpen(true)}
-              >
+            {/* ===== 右侧：三个功能按钮（增加间距，退出红色） ===== */}
+            <Space size="middle">
+              <Button size="small" icon={<KeyOutlined />} onClick={() => setPwdOpen(true)}>
                 修改密码
               </Button>
-              <Button
-                size="small"
-                type="text"
-                icon={<SwapOutlined />}
-                onClick={() => setSwitchOpen(true)}
-              >
+              <Button size="small" icon={<SwapOutlined />} onClick={() => setSwitchOpen(true)}>
                 切换用户
               </Button>
-              <Button
-                size="small"
-                type="text"
-                danger
-                icon={<LogoutOutlined />}
-                onClick={handleLogout}
-              >
+              <Button size="small" danger icon={<LogoutOutlined />} onClick={handleLogout}>
                 退出登录
               </Button>
             </Space>

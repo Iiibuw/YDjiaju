@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models.user import User
-from app.schemas.member import MemberListItem, MemberLoginIn, MemberOut, MemberRegisterIn
+from app.schemas.member import MemberCreateIn, MemberListItem, MemberLoginIn, MemberOut, MemberRegisterIn, MemberUpdateIn
 
 
 def register_member(payload: MemberRegisterIn, db: Session) -> MemberOut:
@@ -95,7 +95,53 @@ def delete_member(db: Session, member_id: int) -> bool:
     return True
 
 
+def update_member(db: Session, member_id: int, payload: MemberUpdateIn) -> MemberListItem | None:
+    """后台编辑会员：昵称/邮箱/性别（不含手机号/密码）。"""
+    u = db.get(User, member_id)
+    if not u or u.is_deleted:
+        return None
+    if payload.nickname is not None:
+        u.nickname = payload.nickname
+    if payload.email is not None:
+        u.email = payload.email or None
+    if payload.gender is not None:
+        u.gender = payload.gender
+    db.commit()
+    db.refresh(u)
+    return MemberListItem.model_validate(u)
+
+
+def create_member_admin(db: Session, payload: MemberCreateIn) -> MemberListItem:
+    """后台手动添加会员：手机号唯一，初始密码 bcrypt 加密。"""
+    exists = db.scalar(select(User).where(User.phone == payload.phone, User.is_deleted == 0))
+    if exists:
+        raise HTTPException(status_code=400, detail="该手机号已注册")
+    u = User(
+        phone=payload.phone,
+        nickname=payload.nickname,
+        email=payload.email,
+        password_hash=hash_password(payload.password),
+        is_activate=1,
+        is_deleted=0,
+    )
+    db.add(u)
+    db.commit()
+    db.refresh(u)
+    return MemberListItem.model_validate(u)
+
+
+def count_members(db: Session) -> tuple[int, int]:
+    """返回 (会员总数, 今日新增)。"""
+    total = db.scalar(select(func.count(User.id)).where(User.is_deleted == 0)) or 0
+    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_new = db.scalar(
+        select(func.count(User.id)).where(User.is_deleted == 0, User.created_date >= today_start)
+    ) or 0
+    return int(total), int(today_new)
+
+
 __all__ = [
     "register_member", "login_member", "get_member",
     "list_members_admin", "update_member_status", "delete_member",
+    "update_member", "create_member_admin", "count_members",
 ]

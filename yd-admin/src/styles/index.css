@@ -7,3 +7,25 @@ body {
     'Microsoft YaHei', sans-serif;
   background: #f5f5f5;
 }
+
+/* ===== 后台表格增强 ===== */
+/* 斑马纹：奇数行浅灰底（与 rowClassName='member-row-stripe' 配合） */
+.ant-table-tbody > tr.member-row-stripe > td {
+  background-color: #fafafa;
+}
+.ant-table-tbody > tr.member-row-stripe:hover > td {
+  background-color: #f0f5ff !important;
+}
+
+/* 表头 hover 高亮 */
+.ant-table-thead > tr > th {
+  transition: background-color 0.15s ease;
+}
+.ant-table-thead > tr > th:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* 表格主色边框（顶部细线更清晰） */
+.ant-table-thead > tr > th {
+  border-top: 1px solid #e8e8e8;
+}
