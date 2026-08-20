@@ -144,9 +144,16 @@ export default function AdminLayout() {
       <Sider
         width={220}
         theme="dark"
-        className="!flex !flex-col"
-        style={{ backgroundColor: '#001529', minHeight: '100vh', height: '100vh', position: 'sticky', top: 0 }}
+        style={{ backgroundColor: '#001529', height: '100vh', position: 'sticky', top: 0, overflow: 'hidden' }}
       >
+        {/* ===== 侧边栏弹性容器：flex column 占满整高，用户区固定在底部 ===== */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+          }}
+        >
         {/* Logo 区域：图标 + 品牌名 + 副标题 */}
         {/* ===== 品牌标题：仅文字，浅米白，无图标 ===== */}
         <div
@@ -163,8 +170,8 @@ export default function AdminLayout() {
           </div>
         </div>
 
-        {/* ===== 菜单（flex-1 撑开，把底部用户区顶到底） ===== */}
-        <div className="flex-1 overflow-y-auto py-1.5">
+        {/* ===== 菜单容器：flex:1 + overflow-y:auto（菜单过多时内部滚动） ===== */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '6px 0' }}>
           <Menu
             theme="dark"
             mode="inline"
@@ -183,12 +190,11 @@ export default function AdminLayout() {
         </div>
         {/* ===== Sider 底部用户区:菜单滚动时固定显示在最底部 ===== */}
         <div
-          className="shrink-0 border-t px-4 py-3"
           style={{
-            borderColor: 'rgba(255,255,255,0.08)',
+            flexShrink: 0,
+            borderTop: '1px solid rgba(255,255,255,0.08)',
             backgroundColor: 'rgba(0,0,0,0.25)',
-            position: 'sticky',
-            bottom: 0,
+            padding: '12px 16px',
           }}
         >
           <div className="flex items-center gap-2.5">
@@ -217,7 +223,8 @@ export default function AdminLayout() {
           </div>
         </div>
 
-        </Sider>
+        </div>
+</Sider>
 
       <Layout className="flex flex-col">
         {/* ===== 顶部 Header：清空（账号操作全部移到左下角） ===== */}
