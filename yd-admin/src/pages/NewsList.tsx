@@ -204,13 +204,14 @@ export default function NewsListPage() {
     {
       title: '封面',
       dataIndex: 'cover_url',
-      width: 70,
+      width: 56,
       render: (url: string | null) =>
         url ? (
           <img
             src={url}
             alt=""
-            className="h-10 w-16 rounded object-cover"
+            className="h-9 w-9 flex-shrink-0 rounded object-cover"
+            loading="lazy"
             onError={(e) => {
               ;(e.currentTarget as HTMLImageElement).style.opacity = '0.3'
             }}

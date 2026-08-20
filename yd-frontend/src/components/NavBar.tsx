@@ -193,21 +193,7 @@ export default function NavBar({ onOpenSearch, onOpenBooking, onOpenCart }: Prop
             </span>
             {memberLabel}
           </Link>
-          {/* 管理后台入口 */}
-          <a
-            href="/admin/login"
-            target="_blank"
-            rel="noopener"
-            className="hidden items-center gap-1 rounded-md border px-2.5 py-1 text-xs lg:inline-flex"
-            style={{ borderColor: BORDER, backgroundColor: DEEPER_BG, color: SUB }}
-            title="管理后台"
-          >
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
-              <path d="M5 21a7 7 0 0 1 14 0" />
-            </svg>
-            管理
-          </a>
+          {/* 管理后台入口已移至首页底部，此处不再显示 */}
           {/* 移动端汉堡 */}
           <button
             onClick={() => setMobileOpen((v) => !v)}

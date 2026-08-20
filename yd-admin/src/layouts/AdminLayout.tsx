@@ -253,26 +253,22 @@ export default function AdminLayout() {
         </Footer>
       </Layout>
 
-      {/* 浮动左下角管理员入口（截图 6 风格） */}
-      <div className="fixed bottom-5 left-5 z-50 flex items-center gap-2 rounded-full bg-white px-2 py-1.5 shadow-lg ring-1 ring-black/5">
+      {/* 浮动左下角管理员入口（截图 3 风格：简洁圆形头像 + 用户名 + 退出） */}
+      <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-md bg-white px-1.5 py-1 shadow-md ring-1 ring-black/5">
         <Avatar
-          size={36}
-          style={{ backgroundColor: '#7C3F00', flexShrink: 0 }}
+          size={32}
+          style={{ backgroundColor: '#1677ff', flexShrink: 0 }}
           icon={<UserOutlined />}
         >
           {displayName[0]}
         </Avatar>
-        <div className="flex flex-col pr-1 leading-tight">
-          <span className="text-xs font-medium text-coal">{displayName}</span>
-          <span className="text-[10px] text-stone-500">
-            {profile?.role?.toUpperCase() || 'ADMIN'}
-          </span>
+        <div className="flex flex-col pr-2 leading-tight">
+          <span className="text-xs font-medium text-gray-800">{displayName}</span>
+          <span className="text-[10px] text-gray-400">({profile?.username})</span>
         </div>
-        <Dropdown menu={userDropdown} placement="topRight" trigger={['click']}>
-          <Button size="small" type="text" icon={<DownOutlined style={{ fontSize: 10 }} />}>
-            操作
-          </Button>
-        </Dropdown>
+        <Button size="small" type="text" danger onClick={handleLogout}>
+          退出
+        </Button>
       </div>
 
       {/* 修改密码 Modal */}

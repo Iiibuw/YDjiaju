@@ -48,12 +48,23 @@ export default function Orders() {
     { title: '订单号', dataIndex: 'order_no', width: 190 },
     {
       title: '商品',
-      width: 280,
+      width: 240,
       render: (_, r) => (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           {r.items.map((it) => (
             <div key={it.id} className="flex items-center gap-2 text-sm">
-              {it.cover_url && <img src={it.cover_url} className="h-8 w-8 rounded object-cover" />}
+              {it.cover_url ? (
+                <img
+                  src={it.cover_url}
+                  className="h-8 w-8 flex-shrink-0 rounded object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    ;(e.currentTarget as HTMLImageElement).style.opacity = '0.3'
+                  }}
+                />
+              ) : (
+                <div className="h-8 w-8 flex-shrink-0 rounded bg-gray-100" />
+              )}
               <span className="truncate">{it.product_name} × {it.quantity}</span>
             </div>
           ))}
