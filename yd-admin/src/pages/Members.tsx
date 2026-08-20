@@ -205,7 +205,7 @@ export default function Members() {
     },
     {
       title: '操作',
-      width: 280,
+      width: 340,
       fixed: 'right',
       render: (_, r) => (
         <Space size="small">
