@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 
 from app.core.captcha import generate_captcha_png
 from app.core.config import settings
-from app.core.security import create_access_token, verify_password
+from app.core.security import create_access_token, hash_password, verify_password
 from app.models.admin_user import AdminUser
 from app.models.dept import Dept
 from app.models.role import Role
@@ -178,4 +178,23 @@ def get_admin_profile(admin: AdminUser, db: Session) -> dict:
     }
 
 
-__all__ = ["new_captcha", "login", "get_admin_profile"]
+__all__ = ["new_captcha", "login", "get_admin_profile", "change_password"]
+
+
+def change_password(admin_id: int, old_password: str, new_password: str, db: Session) -> None:
+    """改自己密码：校验旧密码 → 写入新密码（bcrypt）。
+
+    - 旧密码错：抛 400 "当前密码错误"
+    - 用户不存在：抛 404（防御性，正常不会发生）
+    - 新旧密码相同：抛 400 "新密码不能与当前密码相同"
+    """
+    user = db.get(AdminUser, admin_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    if not verify_password(old_password, user.password_hash):
+        raise HTTPException(status_code=400, detail="当前密码错误")
+    if old_password == new_password:
+        raise HTTPException(status_code=400, detail="新密码不能与当前密码相同")
+    user.password_hash = hash_password(new_password)
+    db.add(user)
+    db.commit()

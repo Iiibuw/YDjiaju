@@ -45,3 +45,10 @@ class AdminProfileOut(BaseModel):
     role: str | None = Field(description="主角色代码（来自 admin_users.role_id → roles.code）")
     dept_name: str | None = Field(default=None, description="部门名")
     data_scope: str = Field(description="ALL/REGION/STORE/SELF")
+
+
+class ChangePasswordIn(BaseModel):
+    """POST /api/v1/auth/change-password 请求体——改自己密码。"""
+
+    old_password: str = Field(min_length=6, max_length=128, description="当前密码")
+    new_password: str = Field(min_length=6, max_length=128, description="新密码（至少 6 位）")

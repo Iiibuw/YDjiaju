@@ -55,3 +55,13 @@ export async function fetchProfile(): Promise<AdminProfile> {
 export async function logout(): Promise<void> {
   await http.post('/auth/logout')
 }
+
+/** 改自己密码。 */
+export interface ChangePasswordIn {
+  old_password: string
+  new_password: string
+}
+
+export async function changePassword(payload: ChangePasswordIn): Promise<void> {
+  await http.post<ApiEnvelope<null>>('/auth/change-password', payload)
+}
