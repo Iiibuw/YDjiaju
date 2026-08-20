@@ -1,5 +1,5 @@
 /** 后台登录页：调用真实后端 /api/v1/auth/*，登录成功时把 token 持久化到 localStorage。 */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Card, Form, Input, Typography, message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,8 +12,18 @@ export default function Login() {
   const nav = useNavigate()
 
   async function refreshCaptcha() {
-    setCaptcha(await getCaptcha())
+    try {
+      const c = await getCaptcha()
+      setCaptcha(c)
+    } catch (e: any) {
+      message.error(e?.message ?? '验证码加载失败，请点击图片重试')
+    }
   }
+
+  // 进入登录页自动加载验证码——避免用户必须先点「加载验证码」按钮才能看到表单
+  useEffect(() => {
+    refreshCaptcha()
+  }, [])
 
   async function onFinish(values: { username: string; password: string; captcha: string }) {
     if (!captcha) return
