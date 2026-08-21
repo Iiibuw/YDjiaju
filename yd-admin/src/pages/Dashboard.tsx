@@ -6,7 +6,7 @@
  * - 底部待办/最新会员等高，内容超出内部滚动
  * 间距统一 16px，全部由 Row/Col 栅格管理，无绝对定位。
  */
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Card, Col, List, Row, Space, Tag } from 'antd'
 import {
   FileTextOutlined,
@@ -30,35 +30,54 @@ const ORDER_STATUS_LABELS: Record<string, string> = {
   closed: '已关闭',
 }
 
-// ============ ECharts 通用 hook（本地 vendor，X 轴类目标签独立分行） ============
+// ============ ECharts 图表（本地 vendor） ============
+// 排查要点:
+// 1) echarts.min.js 由 index.html <script src="/admin/echarts.min.js"> 加载(全局 window.echarts)
+// 2) init 与 setOption 分离:init 在挂载时执行一次,setOption 等数据到达后执行
+// 3) 数据未到(接口慢)先用硬编码 demo 渲染,验证是 echarts 环境 OK
+// 4) console 日志便于 F12 排查
 declare global {
   interface Window {
     echarts?: any
   }
 }
 
-function useECharts(option: any, deps: unknown[]) {
+const DEMO_CATS = ['8/15', '8/16', '8/17', '8/18', '8/19', '8/20', '8/21']
+const DEMO_LINE = [2, 5, 3, 6, 4, 7, 5]
+const DEMO_BAR = [1, 0, 2, 1, 3, 0, 1]
+
+function EChartBox({ option }: { option: any }) {
   const ref = useRef<HTMLDivElement>(null)
-  const chartRef = useRef<any>(null)
+  const [chart, setChart] = useState<any>(null)
+
+  // 仅初始化一次(挂载后)
   useEffect(() => {
     const el = ref.current
-    if (!el || !window.echarts) return
-    if (!chartRef.current) {
-      chartRef.current = window.echarts.init(el)
+    if (!el) return
+    if (!window.echarts) {
+      console.error('[EChart] window.echarts 未定义! 检查 /admin/echarts.min.js 是否 200')
+      return
     }
-    chartRef.current.setOption(option, true)
-    const onResize = () => chartRef.current?.resize()
+    const inst = window.echarts.init(el)
+    console.log('[EChart] init OK, echarts version =', window.echarts?.version)
+    setChart(inst)
+    const onResize = () => inst?.resize()
     window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps)
-  useEffect(() => {
     return () => {
-      chartRef.current?.dispose()
-      chartRef.current = null
+      window.removeEventListener('resize', onResize)
+      inst?.dispose()
     }
   }, [])
-  return ref
+
+  // option 变化时 setOption(数据到达后自动渲染)
+  useEffect(() => {
+    if (chart && option) {
+      console.log('[EChart] setOption, xAxis.data =', option?.xAxis?.data, ', series data =', option?.series?.[0]?.data)
+      chart.setOption(option, true)
+    }
+  }, [chart, option])
+
+  return <div ref={ref} className="w-full" style={{ height: 180 }} />
 }
 
 /** 统一 X 轴配置：interval:0 全显示 + rotate:0 + lineHeight:16 支持换行 */
@@ -72,7 +91,6 @@ const xAxisCommon = (categories: string[]) => ({
     lineHeight: 16,
     color: '#6b7280',
     fontSize: 11,
-    formatter: (v: string) => v,
   },
   axisLine: { lineStyle: { color: '#e5e7eb' } },
   axisTick: { show: false },
@@ -80,7 +98,7 @@ const xAxisCommon = (categories: string[]) => ({
 
 const gridCommon = { left: 4, right: 8, top: 24, bottom: 32, containLabel: true }
 
-// ============ ECharts 折线图（预约趋势） ============
+// ============ 折线图（预约趋势）：数据未到先用 demo 渲染 ============
 function EChartLine({
   categories,
   data,
@@ -90,42 +108,41 @@ function EChartLine({
   data: number[]
   color?: string
 }) {
-  const ref = useECharts(
-    {
-      tooltip: {
-        trigger: 'axis',
-        formatter: (params: any[]) => {
-          const p = params[0]
-          return `${p.axisValue}　预约 ${p.value} 条`
-        },
+  const cats = categories.length > 0 ? categories : DEMO_CATS
+  const vals = data.length > 0 ? data : DEMO_LINE
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+      formatter: (params: any[]) => {
+        const p = params[0]
+        return `${p.axisValue}　预约 ${p.value} 条`
       },
-      grid: gridCommon,
-      xAxis: xAxisCommon(categories),
-      yAxis: {
-        type: 'value',
-        minInterval: 1,
-        axisLabel: { color: '#9ca3af', fontSize: 11 },
-        splitLine: { lineStyle: { color: '#f3f4f6' } },
-      },
-      series: [
-        {
-          name: '预约',
-          type: 'line',
-          data,
-          smooth: true,
-          symbolSize: 6,
-          lineStyle: { width: 2.5, color },
-          itemStyle: { color },
-          areaStyle: { color, opacity: 0.12 },
-        },
-      ],
     },
-    [categories.join('|'), data.join('|'), color],
-  )
-  return <div ref={ref} className="w-full" style={{ height: 180 }} />
+    grid: gridCommon,
+    xAxis: xAxisCommon(cats),
+    yAxis: {
+      type: 'value',
+      minInterval: 1,
+      axisLabel: { color: '#9ca3af', fontSize: 11 },
+      splitLine: { lineStyle: { color: '#f3f4f6' } },
+    },
+    series: [
+      {
+        name: '预约',
+        type: 'line',
+        data: vals,
+        smooth: true,
+        symbolSize: 6,
+        lineStyle: { width: 2.5, color },
+        itemStyle: { color },
+        areaStyle: { color, opacity: 0.12 },
+      },
+    ],
+  }
+  return <EChartBox option={option} />
 }
 
-// ============ ECharts 柱状图（资讯趋势） ============
+// ============ 柱状图（资讯趋势）：数据未到先用 demo 渲染 ============
 function EChartBar({
   categories,
   data,
@@ -135,37 +152,36 @@ function EChartBar({
   data: number[]
   color?: string
 }) {
-  const ref = useECharts(
-    {
-      tooltip: {
-        trigger: 'axis',
-        formatter: (params: any[]) => {
-          const p = params[0]
-          return `${p.axisValue}　发布 ${p.value} 篇`
-        },
+  const cats = categories.length > 0 ? categories : DEMO_CATS
+  const vals = data.length > 0 ? data : DEMO_BAR
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+      formatter: (params: any[]) => {
+        const p = params[0]
+        return `${p.axisValue}　发布 ${p.value} 篇`
       },
-      grid: gridCommon,
-      xAxis: xAxisCommon(categories),
-      yAxis: {
-        type: 'value',
-        minInterval: 1,
-        axisLabel: { color: '#9ca3af', fontSize: 11 },
-        splitLine: { lineStyle: { color: '#f3f4f6' } },
-      },
-      series: [
-        {
-          name: '资讯',
-          type: 'bar',
-          data,
-          barWidth: '45%',
-          itemStyle: { color, borderRadius: [4, 4, 0, 0] },
-          label: { show: true, position: 'top', color: '#8c8c8c', fontSize: 11 },
-        },
-      ],
     },
-    [categories.join('|'), data.join('|'), color],
-  )
-  return <div ref={ref} className="w-full" style={{ height: 180 }} />
+    grid: gridCommon,
+    xAxis: xAxisCommon(cats),
+    yAxis: {
+      type: 'value',
+      minInterval: 1,
+      axisLabel: { color: '#9ca3af', fontSize: 11 },
+      splitLine: { lineStyle: { color: '#f3f4f6' } },
+    },
+    series: [
+      {
+        name: '资讯',
+        type: 'bar',
+        data: vals,
+        barWidth: '45%',
+        itemStyle: { color, borderRadius: [4, 4, 0, 0] },
+        label: { show: true, position: 'top', color: '#8c8c8c', fontSize: 11 },
+      },
+    ],
+  }
+  return <EChartBox option={option} />
 }
 
 // ============ 环形占比图（正方形容器，正圆） ============
