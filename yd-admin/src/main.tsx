@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { App as AntApp, ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import App from './App'
+// ECharts：本地 vendor，作为副作用导入（注入 window.echarts 全局变量）
+import './vendor/echarts.min.js'
 import './styles/index.css'
 
 const queryClient = new QueryClient({
