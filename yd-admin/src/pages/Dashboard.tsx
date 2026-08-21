@@ -7,7 +7,7 @@
  * 间距统一 16px，全部由 Row/Col 栅格管理，无绝对定位。
  */
 import { useMemo } from 'react'
-import { Card, Col, List, Row, Tag } from 'antd'
+import { Card, Col, List, Row, Space, Tag } from 'antd'
 import {
   FileTextOutlined,
   CalendarOutlined,
@@ -186,7 +186,13 @@ export default function Dashboard() {
     { label: '待回复留言', value: todos?.pending_messages ?? 0, link: '/messages', color: '#eb2f96' },
   ]
 
-  const dayLabels = (data?.days ?? []).map((d) => d.slice(5))
+  const dayLabels = (data?.days ?? []).map((d) => {
+    const m = d.slice(5) // "08-15"
+    return m.replace('-', '/').replace(/^0/, '') // "8/15"
+  })
+  const dateRangeLabel = data?.days?.length
+    ? `${data.days[0].slice(5)} - ${data.days[data.days.length - 1].slice(5)}`.replace(/-/g, '/').replace(/^0(\d)/gm, '$1')
+    : ''
 
   return (
     <div className="flex flex-col gap-4">
@@ -226,13 +232,20 @@ export default function Dashboard() {
           <Card
             title="最近 7 天预约趋势"
             className="!rounded-xl !shadow-sm"
-            extra={<Tag color="orange"><CalendarOutlined /> 预约</Tag>}
+            extra={(
+              <Space size={4}>
+                {dateRangeLabel && <span className="text-xs text-gray-400 font-mono">{dateRangeLabel}</span>}
+                <Tag color="orange"><CalendarOutlined /> 预约</Tag>
+              </Space>
+            )}
             loading={isLoading}
             styles={{ body: { padding: 12 } }}
           >
             <MiniLineChart data={data?.appointments ?? []} color="#fa8c16" />
-            <div className="mt-1 flex justify-between px-1 text-[10px] text-gray-400">
-              {dayLabels.map((d, i) => <span key={i}>{d}</span>)}
+            <div className="mt-2 grid grid-cols-7 px-1 text-[10px] text-gray-500 font-mono">
+              {dayLabels.map((d, i) => (
+                <span key={i} className="text-center">{d}</span>
+              ))}
             </div>
           </Card>
         </Col>
@@ -241,13 +254,20 @@ export default function Dashboard() {
           <Card
             title="资讯发布趋势"
             className="!rounded-xl !shadow-sm"
-            extra={<Tag color="blue"><FileTextOutlined /> 近 7 日</Tag>}
+            extra={(
+              <Space size={4}>
+                {dateRangeLabel && <span className="text-xs text-gray-400 font-mono">{dateRangeLabel}</span>}
+                <Tag color="blue"><FileTextOutlined /> 近 7 日</Tag>
+              </Space>
+            )}
             loading={isLoading}
             styles={{ body: { padding: 12 } }}
           >
             <MiniBarChart data={data?.news_trend ?? []} color="#1677ff" />
-            <div className="mt-1 flex justify-between px-1 text-[10px] text-gray-400">
-              {dayLabels.map((d, i) => <span key={i}>{d}</span>)}
+            <div className="mt-2 grid grid-cols-7 px-1 text-[10px] text-gray-500 font-mono">
+              {dayLabels.map((d, i) => (
+                <span key={i} className="text-center">{d}</span>
+              ))}
             </div>
           </Card>
         </Col>
