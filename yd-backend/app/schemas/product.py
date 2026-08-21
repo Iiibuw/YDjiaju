@@ -61,3 +61,24 @@ class ProductCreate(BaseModel):
     sort: int = Field(default=0)
     status: str = Field(default="draft", pattern="^(draft|on_sale|off_sale)$")
     is_top: int = Field(default=0, ge=0, le=1)
+
+class ProductUpdate(BaseModel):
+    """后台 PUT /api/v1/admin/products/{id} 请求体（部分字段更新，exclude_unset）。"""
+
+    product_code: str | None = Field(default=None, max_length=64)
+    name: str | None = Field(default=None, min_length=1, max_length=128)
+    subtitle: str | None = Field(default=None, max_length=255)
+    series_id: int | None = None
+    space_id: int | None = None
+    category_id: int | None = None
+    min_price_cents: int | None = Field(default=None, ge=0)
+    max_price_cents: int | None = Field(default=None, ge=0)
+    cover_url: str | None = None
+    other_images: list[str] | None = None
+    description: str | None = None
+    specs: dict | None = None
+    support_order: int | None = Field(default=None, ge=0, le=1)
+    sort: int | None = Field(default=None)
+    status: str | None = Field(default=None, pattern="^(draft|on_sale|off_sale)$")
+    is_top: int | None = Field(default=None, ge=0, le=1)
+

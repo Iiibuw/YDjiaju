@@ -1,4 +1,4 @@
-/** 后台产品管理：列表 + 搜索 + 上架/下架/置顶 + 删除；新增/编辑跳独立页。 */
+/** 后台产品管理：完整表格列（名称/副标题/系列/空间/品类/价格/排序/状态/封面/时间/操作）+ 搜索 + 上下架 + 删除。 */
 import { useState } from 'react'
 import {
   Button,
@@ -23,6 +23,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
 import { productsAdmin, type ProductItem, type ProductStatus } from '../api/products'
+import { listCategories } from '../api/categories'
 
 const STATUS_OPTIONS: { value: ProductStatus; label: string; color: string }[] = [
   { value: 'draft', label: '草稿', color: 'default' },
@@ -33,8 +34,9 @@ const STATUS_COLOR: Record<string, string> = Object.fromEntries(
   STATUS_OPTIONS.map((o) => [o.value, o.color]),
 )
 
-const fmtPrice = (cents?: number | null) =>
-  cents ? `¥${(cents / 100).toLocaleString()}` : '-'
+/** 分 → 元 */
+const fmtYuan = (cents?: number | null) =>
+  cents != null ? `¥${(cents / 100).toLocaleString('zh-CN', { minimumFractionDigits: 0 })}` : '-'
 
 export default function Products() {
   const qc = useQueryClient()
@@ -43,17 +45,25 @@ export default function Products() {
   const [pageSize, setPageSize] = useState(20)
   const [keyword, setKeyword] = useState('')
   const [statusFilter, setStatusFilter] = useState<ProductStatus | undefined>()
-  const [spaceFilter, setSpaceFilter] = useState<string | undefined>()
+  const [spaceId, setSpaceId] = useState<number | undefined>()
+
+  // 分类(空间/系列/品类)
+  const { data: cats } = useQuery({
+    queryKey: ['categories', 'all'],
+    queryFn: () => listCategories(),
+    staleTime: 60_000,
+  })
+  const spaceOptions = (cats ?? []).filter((c) => c.kind === 'space').map((c) => ({ value: c.id, label: c.name }))
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-products', page, pageSize, keyword, statusFilter, spaceFilter],
+    queryKey: ['admin-products', page, pageSize, keyword, statusFilter, spaceId],
     queryFn: () =>
       productsAdmin.list({
         page,
         page_size: pageSize,
         keyword: keyword || undefined,
-        status: statusFilter,
-        space: spaceFilter,
+        status_filter: statusFilter,
+        category_id: spaceId,
       }),
   })
 
@@ -104,31 +114,49 @@ export default function Products() {
         ),
     },
     {
-      title: '产品',
-      dataIndex: 'title',
+      title: '产品标题',
+      dataIndex: 'name',
       ellipsis: true,
-      render: (t: string, r) => (
+      render: (name: string, r) => (
         <div>
-          <div className="font-medium">{t}</div>
-          <div className="text-xs text-gray-500">
-            {[r.series, r.space, r.style].filter(Boolean).join(' · ') || '-'}
-          </div>
+          <div className="font-medium">{name}</div>
+          {r.subtitle && <div className="text-xs text-gray-500">{r.subtitle}</div>}
         </div>
       ),
     },
     {
-      title: '价格',
-      width: 140,
-      render: (_, r) => (
-        <span>
-          {fmtPrice(r.min_price_cents)} ~ {fmtPrice(r.max_price_cents)}
-        </span>
-      ),
+      title: '系列',
+      dataIndex: 'series_name',
+      width: 110,
+      render: (v: string | null) => v || <span className="text-gray-400">-</span>,
     },
+    {
+      title: '空间',
+      dataIndex: 'space_name',
+      width: 90,
+      render: (v: string | null) => v || <span className="text-gray-400">-</span>,
+    },
+    {
+      title: '品类',
+      dataIndex: 'category_name',
+      width: 110,
+      render: (v: string | null) => v || <span className="text-gray-400">-</span>,
+    },
+    {
+      title: '最低价',
+      width: 110,
+      render: (_, r) => fmtYuan(r.min_price_cents),
+    },
+    {
+      title: '最高价',
+      width: 110,
+      render: (_, r) => fmtYuan(r.max_price_cents),
+    },
+    { title: '排序', dataIndex: 'sort', width: 70, align: 'center' },
     {
       title: '状态',
       dataIndex: 'status',
-      width: 100,
+      width: 90,
       render: (s: string) => (
         <Tag color={STATUS_COLOR[s] || 'default'}>
           {STATUS_OPTIONS.find((o) => o.value === s)?.label ?? s}
@@ -136,9 +164,9 @@ export default function Products() {
       ),
     },
     {
-      title: '上架时间',
-      dataIndex: 'updated_date',
-      width: 170,
+      title: '创建时间',
+      dataIndex: 'created_date',
+      width: 150,
       render: (d: string | null) =>
         d ? new Date(d).toLocaleString('zh-CN', { dateStyle: 'short', timeStyle: 'short' }) : '-',
     },
@@ -160,7 +188,7 @@ export default function Products() {
               onClick={() =>
                 Modal.confirm({
                   title: '确认下架该产品？',
-                  content: '下架后前台不再展示',
+                  content: '下架后前台产品中心不再展示',
                   okText: '下架',
                   cancelText: '取消',
                   okButtonProps: { style: { backgroundColor: '#fa8c16', borderColor: '#fa8c16' } },
@@ -176,9 +204,11 @@ export default function Products() {
               type="link"
               icon={<CheckCircleOutlined />}
               style={{ color: '#52c41a' }}
+              disabled={r.status === 'draft' && r.is_top ? true : false}
               onClick={() =>
                 Modal.confirm({
                   title: '确认上架该产品？',
+                  content: '上架后前台产品中心将展示该产品',
                   okText: '上架',
                   cancelText: '取消',
                   onOk: () => statusMut.mutate({ id: r.id, status: 'on_sale' }),
@@ -217,32 +247,34 @@ export default function Products() {
       extra={
         <Space>
           <Input.Search
-            placeholder="搜索标题"
+            placeholder="搜索产品标题"
             allowClear
-            onSearch={setKeyword}
-            style={{ width: 220 }}
+            onSearch={(v) => {
+              setKeyword(v)
+              setPage(1)
+            }}
+            style={{ width: 200 }}
           />
           <Select
             placeholder="空间"
             allowClear
-            style={{ width: 120 }}
-            value={spaceFilter}
-            onChange={setSpaceFilter}
-            options={[
-              { value: '客厅', label: '客厅' },
-              { value: '餐厅', label: '餐厅' },
-              { value: '卧室', label: '卧室' },
-              { value: '书房', label: '书房' },
-              { value: '茶室', label: '茶室' },
-              { value: '办公', label: '办公' },
-            ]}
+            style={{ width: 110 }}
+            value={spaceId}
+            onChange={(v) => {
+              setSpaceId(v)
+              setPage(1)
+            }}
+            options={spaceOptions}
           />
           <Select
             placeholder="状态"
             allowClear
-            style={{ width: 120 }}
+            style={{ width: 100 }}
             value={statusFilter}
-            onChange={setStatusFilter}
+            onChange={(v) => {
+              setStatusFilter(v)
+              setPage(1)
+            }}
             options={STATUS_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
           />
           <Button type="primary" icon={<PlusOutlined />} onClick={() => nav('/products/new')}>
@@ -256,7 +288,7 @@ export default function Products() {
         loading={isLoading}
         dataSource={data?.items ?? []}
         columns={columns}
-        scroll={{ x: 1100 }}
+        scroll={{ x: 1400 }}
         pagination={{
           current: page,
           pageSize,

@@ -35,6 +35,10 @@ export default function Products() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['products', params],
     queryFn: () => products.listProducts(params),
+    // 数据联动：后台改产品后，前台窗口聚焦/定时自动重新拉取（下架产品即时隐藏）
+    staleTime: 10_000,
+    refetchOnWindowFocus: true,
+    refetchInterval: 30_000,
   })
 
   return (
@@ -71,7 +75,7 @@ export default function Products() {
           )}
 
           {data && data.items.length === 0 && (
-            <div className="bg-card border border-stone-200 p-12 text-center text-stone-500">
+            <div className="bg-white border border-stone-200 p-12 text-center text-stone-500">
               暂无符合筛选条件的产品
             </div>
           )}

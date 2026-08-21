@@ -1,5 +1,5 @@
-/** 独立「编辑产品」页：加载产品详情填充表单，保存后返回列表。 */
-import { useState, useEffect } from 'react'
+/** 独立「编辑产品」页：加载产品详情回填（name / 系列/空间/品类 / 价格(分)），保存后返回列表。 */
+import { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -16,21 +16,22 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { productsAdmin, type ProductCreatePayload, type ProductStatus } from '../api/products'
+import { listCategories } from '../api/categories'
 import { uploadImage, validateImageUrl } from '../api/uploads'
 import RichTextEditor from '../components/RichTextEditor'
 
 interface FormValues {
-  title: string
+  name: string
   subtitle?: string
-  series?: string
-  space?: string
-  style?: string
+  series_id?: number
+  space_id?: number
+  category_id?: number
   cover_url?: string
   description?: string
   min_price_cents?: number
   max_price_cents?: number
   status: ProductStatus
-  sort_no?: number
+  sort?: number
 }
 
 const STATUS_OPTIONS: { value: ProductStatus; label: string }[] = [
@@ -38,9 +39,6 @@ const STATUS_OPTIONS: { value: ProductStatus; label: string }[] = [
   { value: 'on_sale', label: '上架' },
   { value: 'off_sale', label: '下架' },
 ]
-
-const SPACE_OPTIONS = ['客厅', '餐厅', '卧室', '书房', '茶室', '办公'].map((v) => ({ value: v, label: v }))
-const STYLE_OPTIONS = ['现代简约', '现代北欧', '新中式', '轻奢风', '极简', '工业风'].map((v) => ({ value: v, label: v }))
 
 function CoverUrlField({ value, onChange }: { value?: string; onChange?: (v: string) => void }) {
   const [uploading, setUploading] = useState(false)
@@ -121,6 +119,14 @@ export default function ProductEditPage() {
   const qc = useQueryClient()
   const [form] = Form.useForm<FormValues>()
 
+  const { data: cats } = useQuery({
+    queryKey: ['categories', 'all'],
+    queryFn: () => listCategories(),
+    staleTime: 60_000,
+  })
+  const opts = (kind: string) =>
+    (cats ?? []).filter((c) => c.kind === kind).map((c) => ({ value: c.id, label: c.name }))
+
   const { data: item, isLoading } = useQuery({
     queryKey: ['admin-product-detail', productId],
     queryFn: () => productsAdmin.get(productId),
@@ -138,21 +144,21 @@ export default function ProductEditPage() {
     onError: (e: any) => message.error(e?.response?.data?.message || '更新失败'),
   })
 
-  // 数据加载后填充表单
+  // 数据到达后回填
   useEffect(() => {
     if (item) {
       form.setFieldsValue({
-        title: item.title,
+        name: item.name,
         subtitle: item.subtitle ?? '',
-        series: item.series ?? '',
-        space: item.space ?? '',
-        style: item.style ?? '',
+        series_id: item.series_id ?? undefined,
+        space_id: item.space_id ?? undefined,
+        category_id: item.category_id ?? undefined,
         cover_url: item.cover_url ?? '',
         description: item.description ?? '',
         min_price_cents: item.min_price_cents ?? undefined,
         max_price_cents: item.max_price_cents ?? undefined,
         status: item.status ?? 'draft',
-        sort_no: item.sort ?? 0,
+        sort: item.sort ?? 0,
       })
     }
   }, [item, form])
@@ -181,38 +187,45 @@ export default function ProductEditPage() {
         <Form<FormValues>
           form={form}
           layout="vertical"
-          onFinish={(vals) =>
+          onFinish={(vals) => {
+            if (
+              vals.min_price_cents != null &&
+              vals.max_price_cents != null &&
+              vals.min_price_cents > vals.max_price_cents
+            ) {
+              message.error('最低价不能大于最高价')
+              return
+            }
             updateMut.mutate({
-              title: vals.title,
+              name: vals.name,
               subtitle: vals.subtitle || null,
-              series: vals.series || null,
-              space: vals.space || null,
-              style: vals.style || null,
+              series_id: vals.series_id ?? null,
+              space_id: vals.space_id ?? null,
+              category_id: vals.category_id ?? null,
               cover_url: vals.cover_url || null,
               description: vals.description || null,
               min_price_cents: vals.min_price_cents,
               max_price_cents: vals.max_price_cents,
               status: vals.status,
-              sort: vals.sort_no || 0,
-              is_activate: true,
+              sort: vals.sort ?? 0,
             })
-          }
+          }}
         >
-          <Form.Item name="title" label="产品标题" rules={[{ required: true, min: 2, max: 128 }]}>
+          <Form.Item name="name" label="产品标题" rules={[{ required: true, min: 2, max: 128 }]}>
             <Input placeholder="请输入产品标题" />
           </Form.Item>
           <Form.Item name="subtitle" label="副标题">
             <Input placeholder="可选" maxLength={255} />
           </Form.Item>
           <div className="grid grid-cols-3 gap-4">
-            <Form.Item name="series" label="系列">
-              <Input placeholder="如：云杉系列" />
+            <Form.Item name="series_id" label="系列">
+              <Select placeholder="如：胡桃禮" allowClear options={opts('series')} />
             </Form.Item>
-            <Form.Item name="space" label="空间">
-              <Select options={SPACE_OPTIONS} allowClear />
+            <Form.Item name="space_id" label="空间">
+              <Select placeholder="如：餐厅" allowClear options={opts('space')} />
             </Form.Item>
-            <Form.Item name="style" label="风格">
-              <Select options={STYLE_OPTIONS} allowClear />
+            <Form.Item name="category_id" label="品类">
+              <Select placeholder="如：餐桌" allowClear options={opts('category')} />
             </Form.Item>
           </div>
 
@@ -246,17 +259,37 @@ export default function ProductEditPage() {
           </Form.Item>
 
           <div className="grid grid-cols-3 gap-4">
-            <Form.Item name="min_price_cents" label="最低价（分）" tooltip="单位：分，1 元=100 分">
+            <Form.Item
+              name="min_price_cents"
+              label="最低价（分）"
+              tooltip="单位：分，1 元=100 分，展示自动转元"
+            >
               <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
-            <Form.Item name="max_price_cents" label="最高价（分）">
+            <Form.Item
+              name="max_price_cents"
+              label="最高价（分）"
+              tooltip="必须 ≥ 最低价"
+              dependencies={['min_price_cents']}
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const min = getFieldValue('min_price_cents')
+                    if (value != null && min != null && value < min) {
+                      return Promise.reject(new Error('最高价不能小于最低价'))
+                    }
+                    return Promise.resolve()
+                  },
+                }),
+              ]}
+            >
               <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item name="status" label="状态" rules={[{ required: true }]}>
               <Select options={STATUS_OPTIONS} />
             </Form.Item>
           </div>
-          <Form.Item name="sort_no" label="排序号（数值大者优先）">
+          <Form.Item name="sort" label="排序号" tooltip="数值越大，前台展示越靠前">
             <InputNumber min={0} max={9999} />
           </Form.Item>
         </Form>

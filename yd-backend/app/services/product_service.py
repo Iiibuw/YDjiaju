@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.models.category import Category
 from app.models.product import Product
-from app.schemas.product import ProductCreate, ProductDetail, ProductListItem
+from app.schemas.product import ProductCreate, ProductUpdate, ProductDetail, ProductListItem
 
 
 # ===== 公共读（前台） =====
@@ -51,7 +51,7 @@ def list_products(
         q = q.where(Product.name.like(like))
 
     total = db.scalar(select(func.count()).select_from(q.subquery())) or 0
-    q = q.order_by(Product.is_top.desc(), Product.sort.asc(), Product.id.desc())
+    q = q.order_by(Product.is_top.desc(), Product.sort.desc(), Product.id.desc())
     q = q.offset((page - 1) * page_size).limit(page_size)
     rows = db.scalars(q).all()
 
@@ -148,27 +148,48 @@ def create_product(db: Session, payload: ProductCreate, admin_id: int) -> Produc
     return p
 
 
-def update_product(db: Session, product_id: int, payload: ProductCreate, admin_id: int) -> Product | None:
-    """更新产品（全字段覆盖式 PUT）。"""
+def update_product(db: Session, product_id: int, payload: ProductCreate | ProductUpdate, admin_id: int) -> Product | None:
+    """更新产品（部分更新：仅应用客户端显式传入的字段，status-only 上下架不会清空其它字段）。"""
     p = db.get(Product, product_id)
     if not p or p.is_deleted:
         return None
-    p.product_code = payload.product_code
-    p.name = payload.name
-    p.subtitle = payload.subtitle
-    p.series_id = payload.series_id
-    p.space_id = payload.space_id
-    p.category_id = payload.category_id
-    p.min_price_cents = payload.min_price_cents
-    p.max_price_cents = payload.max_price_cents
-    p.cover_url = payload.cover_url
-    p.description = payload.description
-    p.extra_specs = payload.specs
-    p.other_images_json = payload.other_images
-    p.support_order = payload.support_order
-    p.sort = payload.sort
-    p.status = payload.status
-    p.is_top = payload.is_top
+    data = payload.model_dump(exclude_unset=True)
+    if "name" in data:
+        p.name = data["name"]
+    if "subtitle" in data:
+        p.subtitle = data["subtitle"]
+    if "series_id" in data:
+        p.series_id = data["series_id"]
+    if "space_id" in data:
+        p.space_id = data["space_id"]
+    if "category_id" in data:
+        p.category_id = data["category_id"]
+    if "min_price_cents" in data:
+        p.min_price_cents = data["min_price_cents"]
+    if "max_price_cents" in data:
+        p.max_price_cents = data["max_price_cents"]
+    if "cover_url" in data:
+        p.cover_url = data["cover_url"]
+    if "description" in data:
+        p.description = data["description"]
+    if "specs" in data:
+        p.extra_specs = data["specs"]
+    if "other_images" in data:
+        p.other_images_json = data["other_images"]
+    if "support_order" in data:
+        p.support_order = data["support_order"]
+    if "sort" in data:
+        p.sort = data["sort"]
+    if "status" in data:
+        p.status = data["status"]
+    if "is_top" in data:
+        p.is_top = data["is_top"]
+    if "product_code" in data:
+        p.product_code = data["product_code"]
+    # 约束:最低价 ≤ 最高价
+    if p.min_price_cents is not None and p.max_price_cents is not None and p.min_price_cents > p.max_price_cents:
+        db.rollback()
+        raise ValueError("最低价不能大于最高价")
     p.updated_at = admin_id
     db.commit()
     db.refresh(p)
@@ -208,32 +229,27 @@ def list_admin_products(
         q = q.where(Product.name.like(f"%{keyword}%"))
 
     total = db.scalar(select(func.count()).select_from(q.subquery())) or 0
-    q = q.order_by(Product.is_top.desc(), Product.sort.asc(), Product.id.desc())
+    q = q.order_by(Product.is_top.desc(), Product.sort.desc(), Product.id.desc())
     q = q.offset((page - 1) * page_size).limit(page_size)
     rows = db.scalars(q).all()
 
+    # 一次性查询分类名,补 space_name / series_name / category_name
+    cat_ids: set[int] = set()
+    for row in rows:
+        cat_ids.update({row.space_id, row.series_id, row.category_id})
+    cat_ids.discard(None)
+    cat_names: dict[int, str] = {}
+    if cat_ids:
+        for c in db.scalars(select(Category).where(Category.id.in_(cat_ids))).all():
+            cat_names[c.id] = c.name
+
     items: list[dict[str, Any]] = []
     for p in rows:
-        items.append(
-            {
-                "id": p.id,
-                "product_code": p.product_code,
-                "name": p.name,
-                "subtitle": p.subtitle,
-                "category_id": p.category_id,
-                "space_id": p.space_id,
-                "series_id": p.series_id,
-                "min_price_cents": p.min_price_cents,
-                "max_price_cents": p.max_price_cents,
-                "cover_url": p.cover_url,
-                "status": p.status,
-                "is_top": p.is_top,
-                "support_order": p.support_order,
-                "sort": p.sort,
-                "created_date": p.created_date.isoformat() if p.created_date else None,
-                "updated_date": p.updated_date.isoformat() if p.updated_date else None,
-            }
-        )
+        d = to_admin_dict(p)
+        d["space_name"] = cat_names.get(p.space_id)
+        d["series_name"] = cat_names.get(p.series_id)
+        d["category_name"] = cat_names.get(p.category_id)
+        items.append(d)
     return items, total
 
 

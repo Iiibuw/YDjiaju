@@ -1,24 +1,27 @@
-/** 后台产品管理 API */
+/** 后台产品管理 API（字段对齐后端 admin_products，价格单位=分） */
 import { http, unwrap, type ApiEnvelope } from './http'
 
 export type ProductStatus = 'draft' | 'on_sale' | 'off_sale'
 
 export interface ProductItem {
   id: number
-  title: string
+  product_code?: string | null
+  /** 产品标题（后端字段为 name） */
+  name: string
   subtitle?: string | null
-  series?: string | null
-  space?: string | null
   category_id?: number | null
-  style?: string | null
+  space_id?: number | null
+  series_id?: number | null
+  category_name?: string | null
+  space_name?: string | null
+  series_name?: string | null
   cover_url?: string | null
-  gallery?: string[] | null
   description?: string | null
   min_price_cents?: number | null
   max_price_cents?: number | null
-  is_top?: boolean
-  is_recommend?: boolean
-  is_activate?: boolean
+  is_top?: boolean | number
+  is_activate?: boolean | number
+  support_order?: number
   sort?: number
   status?: ProductStatus
   view_count?: number
@@ -27,17 +30,17 @@ export interface ProductItem {
 }
 
 export interface ProductCreatePayload {
-  title: string
+  name: string
   subtitle?: string | null
-  series?: string | null
-  space?: string | null
-  style?: string | null
+  series_id?: number | null
+  space_id?: number | null
+  category_id?: number | null
   cover_url?: string | null
   description?: string | null
   min_price_cents?: number | null
   max_price_cents?: number | null
   status?: ProductStatus
-  is_activate?: boolean
+  is_top?: number
   sort?: number
 }
 
@@ -50,12 +53,13 @@ export interface ProductPageData {
 }
 
 export const productsAdmin = {
+  /** 后台列表：keyword / status_filter / category_id / space_id / series_id */
   async list(params: {
     page?: number
     page_size?: number
     keyword?: string
-    status?: ProductStatus
-    space?: string
+    status_filter?: ProductStatus
+    category_id?: number
   } = {}): Promise<ProductPageData> {
     const resp = await http.get<ApiEnvelope<ProductPageData>>('/admin/products', { params })
     return unwrap(resp)
