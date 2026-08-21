@@ -9,6 +9,7 @@ export interface ProductItem {
   /** 产品标题（后端字段为 name） */
   name: string
   subtitle?: string | null
+  style?: string | null
   category_id?: number | null
   space_id?: number | null
   series_id?: number | null
@@ -32,6 +33,7 @@ export interface ProductItem {
 export interface ProductCreatePayload {
   name: string
   subtitle?: string | null
+  style?: string | null
   series_id?: number | null
   space_id?: number | null
   category_id?: number | null

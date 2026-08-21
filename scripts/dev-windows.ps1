@@ -200,27 +200,24 @@ Write-Host "[START] Backend / FastAPI (port 8000)..."
 $backendScript = "uv run uvicorn app.main:app --host 0.0.0.0 --port 8000"
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$ROOT\yd-backend'; $backendScript" -WindowStyle Normal
 
-# ===== 4. Launch frontend (React) =====
-Write-Host "[START] Frontend / React (port 5180)..."
-$frontendScript = "cd '$ROOT\yd-frontend'; $pkg run dev -- --port 5180 --host 127.0.0.1"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", $frontendScript -WindowStyle Normal
-
-# ===== 5. Launch admin (React, base /admin/) =====
-Write-Host "[START] Admin / React (port 5181, base /admin/)..."
-$adminScript = "cd '$ROOT\yd-admin'; $pkg run dev -- --port 5181 --host 127.0.0.1"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", $adminScript -WindowStyle Normal
+# ===== 4. Launch demo server (单文件前台/后台 + /api 同源代理, port 5280) =====
+Write-Host "[START] Demo server (前台/后台 + API 代理, port 5280)..."
+$demoScript = "cd '$ROOT'; uv run python scripts\ydf_demo_server.py --port 5280 --api http://127.0.0.1:8000 --dir ."
+Start-Process powershell -ArgumentList "-NoExit", "-Command", $demoScript -WindowStyle Normal
 
 Write-Host ""
 Write-Host "============================================="
-Write-Host "[OK] All services starting. Wait ~10 seconds then visit:"
-Write-Host "   Frontend : http://localhost:5180"
-Write-Host "   Admin    : http://localhost:5181/admin/"
-Write-Host "   Backend  : http://localhost:8000"
-Write-Host "   API docs : http://localhost:8000/docs"
+Write-Host "[OK] Services starting. Wait ~8 seconds then open:"
+Write-Host "   Demo 入口 : http://localhost:5280/          (前台 + 后台 + API 文档 统一入口)"
+Write-Host "   前台官网  : http://localhost:5280/web_前台_YD家具.html"
+Write-Host "   后台管理  : http://localhost:5280/web_后台_YD家具.html"
+Write-Host "   API 文档  : http://localhost:8000/docs"
+Write-Host "   后端健康  : http://localhost:8000/api/v1/health"
 Write-Host ""
-Write-Host "   Admin login   : admin / admin123"
-Write-Host "   Member login  : 13800138001 / member123"
+Write-Host "   后台登录  : admin / admin123 （验证码 Dev 模式填 ABCD）"
+Write-Host "   前台会员  : 13800138001 / member123（或注册新手机号）"
 Write-Host ""
-Write-Host "3 separate PowerShell windows opened. Closing this window will not stop them."
+Write-Host "   前后端互通：后台新增产品 → 前台/入口页刷新即同步（同一 SQLite 库）"
+Write-Host "   React 源码前端（yd-frontend/yd-admin）可用 'pnpm dev' 单独启动调试，非默认演示入口"
 Write-Host "============================================="
 pause

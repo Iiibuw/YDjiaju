@@ -104,7 +104,7 @@ export default function MemberCenter() {
     return (
       <div className="bg-sand py-16">
         <div className="container-yf mx-auto max-w-3xl">
-          <div className="rounded-2xl bg-card p-8 shadow-sm ring-1 ring-coal/5">
+          <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-coal/5">
             <div className="flex items-center gap-6">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-walnut text-2xl font-bold text-white">
                 {(member.nickname ?? member.phone).slice(0, 1)}
@@ -145,7 +145,7 @@ export default function MemberCenter() {
               ) : (
                 <div className="space-y-3">
                   {orders.map((o) => (
-                    <div key={o.id} className="rounded-xl border border-coal/10 bg-card p-4">
+                    <div key={o.id} className="rounded-xl border border-coal/10 bg-white p-4">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-coal">订单号：{o.order_no}</span>
                         <span className="rounded-full bg-walnut/10 px-2.5 py-0.5 text-xs text-walnut">
@@ -182,7 +182,7 @@ export default function MemberCenter() {
               ) : (
                 <div className="space-y-3">
                   {appointments.map((a) => (
-                    <div key={a.id} className="rounded-xl border border-coal/10 bg-card p-4">
+                    <div key={a.id} className="rounded-xl border border-coal/10 bg-white p-4">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-coal">
                           {a.type === 'visit' ? '到店参观' : a.type === 'consult' ? '方案咨询' : a.type === 'custom' ? '定制服务' : '其他'}
@@ -212,7 +212,7 @@ export default function MemberCenter() {
               ) : (
                 <div className="space-y-3">
                   {applications.map((a: MyApplication) => (
-                    <div key={a.id} className="rounded-xl border border-coal/10 bg-card p-4">
+                    <div key={a.id} className="rounded-xl border border-coal/10 bg-white p-4">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-coal">{a.job_title ?? `岗位 #${a.job_id}`}</span>
                         <span className="rounded-full bg-walnut/10 px-2.5 py-0.5 text-xs text-walnut">
@@ -251,14 +251,14 @@ export default function MemberCenter() {
   return (
     <div className="bg-sand py-16">
       <div className="container-yf mx-auto max-w-md">
-        <div className="rounded-2xl bg-card p-8 shadow-sm ring-1 ring-coal/5">
+        <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-coal/5">
           <div className="flex rounded-lg bg-sand p-1">
             {(['login', 'register'] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
                 className={`flex-1 rounded-md py-2 text-sm font-medium transition ${
-                  mode === m ? 'bg-card text-walnut shadow-sm' : 'text-coal/60'
+                  mode === m ? 'bg-white text-walnut shadow-sm' : 'text-coal/60'
                 }`}
               >
                 {m === 'login' ? '登录' : '注册'}

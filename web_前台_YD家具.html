@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YD家具 | 官方商城 · 实景案例 · 品牌家居</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { ink:'#1C1917', stone2:'#44403C', gold:'#CA8A04', sand:'#FAFAF9', coal:'#0C0A09' },
+    fontFamily: { head:['Lexend','sans-serif'], body:['Source+Sans+3','sans-serif'] },
+  }}};
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family:'Source Sans 3', sans-serif; }
+  h1,h2,h3,.font-head { font-family:'Lexend', sans-serif; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none!important; animation:none!important; } }
+  .nav-link { position:relative; }
+  .nav-link::after { content:''; position:absolute; left:0; bottom:-6px; height:2px; width:0; background:#CA8A04; transition:width .2s ease; }
+  .nav-link:hover::after, .nav-link.active::after { width:100%; }
+  .tab-btn.active { color:#1C1917; border-color:#CA8A04; }
+  .tab-btn { color:#44403C; }
+  .modal { transition:opacity .2s ease; }
+  .nav-item:hover .sub-nav { opacity:1; visibility:visible; transform:translateY(0); }
+  .sub-nav { opacity:0; visibility:hidden; transform:translateY(8px); transition:all .2s ease; }
+  .carousel-slide { transition: opacity .6s ease; cursor:pointer; }
+  .carousel-slide:hover .slide-hint { opacity:1; }
+  [hidden] { display:none!important; }
+  .product-thumb { background: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%); }
+</style>
+</head>
+<body class="bg-sand text-coal">
+
+<!-- ============ 顶部导航 ============ -->
+<header class="sticky top-0 z-50 bg-sand/95 backdrop-blur border-b border-stone-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16">
+      <a href="#/" class="flex items-center gap-2 cursor-pointer" aria-label="YD家具 首页">
+        <span class="inline-flex items-center justify-center w-9 h-9 rounded-md bg-ink text-gold font-head font-bold">YD</span>
+        <span class="font-head text-xl font-semibold text-ink">YD家具</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1 text-[15px]" aria-label="主导航">
+        <a href="#/" class="nav-link active text-ink font-medium cursor-pointer px-3 py-2" data-nav="home">首页</a>
+
+        <div class="nav-item relative px-3 py-2 cursor-pointer group">
+          <a href="#/products" class="nav-link text-stone2 hover:text-ink cursor-pointer" data-nav="products">产品中心</a>
+          <div class="sub-nav absolute left-0 top-full pt-2 w-44">
+            <a href="#/products" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">全部产品</a>
+            <a href="#/products?space=客厅" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">客厅精选</a>
+            <a href="#/products?space=卧室" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">卧室精选</a>
+            <a href="#/products?space=书房" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">书房精选</a>
+            <a href="#/products?space=茶室" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">茶室精选</a>
+            <a href="#/products?space=办公" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">办公家具</a>
+          </div>
+        </div>
+
+        <a href="#/cases" class="nav-link text-stone2 hover:text-ink cursor-pointer px-3 py-2" data-nav="cases">案例</a>
+
+        <div class="nav-item relative px-3 py-2 cursor-pointer group">
+          <a href="#/news" class="nav-link text-stone2 hover:text-ink cursor-pointer" data-nav="news">新闻</a>
+          <div class="sub-nav absolute left-0 top-full pt-2 w-36">
+            <a href="#/news?cat=company" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">企业新闻</a>
+            <a href="#/news?cat=industry" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">行业资讯</a>
+          </div>
+        </div>
+
+        <div class="nav-item relative px-3 py-2 cursor-pointer group">
+          <a href="#/jobs" class="nav-link text-stone2 hover:text-ink cursor-pointer" data-nav="jobs">招聘</a>
+          <div class="sub-nav absolute left-0 top-full pt-2 w-36">
+            <a href="#/jobs?cat=social" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">社会招聘</a>
+            <a href="#/jobs?cat=campus" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">校园招聘</a>
+          </div>
+        </div>
+
+        <div class="nav-item relative px-3 py-2 cursor-pointer group">
+          <a href="#/about" class="nav-link text-stone2 hover:text-ink cursor-pointer" data-nav="about">关于我们</a>
+          <div class="sub-nav absolute left-0 top-full pt-2 w-36">
+            <a href="#/about" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">关于YD</a>
+            <a href="#/about" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">发展历程</a>
+            <a href="#/about" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">品牌介绍</a>
+            <a href="#/about" class="block px-4 py-2 hover:bg-stone-50 text-stone2 hover:text-ink">联系我们</a>
+          </div>
+        </div>
+      </nav>
+      <div class="hidden md:flex items-center gap-3" id="navActions">
+        <button id="openSearch" class="p-2 rounded-md hover:bg-stone-100 cursor-pointer" aria-label="站内搜索">
+          <svg class="w-5 h-5 text-stone2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+        <button id="openBook" class="px-3 py-2 rounded-md bg-gold text-white text-sm font-medium hover:bg-amber-700 transition-colors cursor-pointer">在线预约</button>
+        <button id="openChat" class="p-2 rounded-md hover:bg-stone-100 cursor-pointer" aria-label="在线客服">
+          <svg class="w-5 h-5 text-stone2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </button>
+        <a href="#/cart" class="relative p-2 rounded-md hover:bg-stone-100 cursor-pointer" aria-label="购物车">
+          <svg class="w-5 h-5 text-stone2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6 5 3H2"/></svg>
+          <span id="cartBadge" class="absolute top-1 right-0 w-4 h-4 text-[10px] bg-gold text-white rounded-full flex items-center justify-center hidden">0</span>
+        </a>
+        <button id="openLogin" class="px-3 py-2 rounded-md border border-ink text-ink text-sm hover:bg-ink hover:text-white transition-colors cursor-pointer">会员登录</button>
+      </div>
+      <button id="menuBtn" class="lg:hidden p-2 rounded-md hover:bg-stone-100 cursor-pointer" aria-label="打开菜单" aria-expanded="false">
+        <svg class="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="lg:hidden hidden border-t border-stone-200 bg-sand">
+    <nav class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1 text-[15px]" aria-label="移动端导航">
+      <a href="#/" class="py-2 text-ink font-medium cursor-pointer">首页</a>
+      <a href="#/products" class="py-2 text-stone2 cursor-pointer">产品中心</a>
+      <a href="#/products?space=客厅" class="py-2 text-stone2 cursor-pointer pl-4 text-sm">— 客厅精选</a>
+      <a href="#/products?space=卧室" class="py-2 text-stone2 cursor-pointer pl-4 text-sm">— 卧室精选</a>
+      <a href="#/products?space=茶室" class="py-2 text-stone2 cursor-pointer pl-4 text-sm">— 茶室精选</a>
+      <a href="#/cases" class="py-2 text-stone2 cursor-pointer">案例</a>
+      <a href="#/news" class="py-2 text-stone2 cursor-pointer">新闻</a>
+      <a href="#/news?cat=company" class="py-2 text-stone2 cursor-pointer pl-4 text-sm">— 企业新闻</a>
+      <a href="#/news?cat=industry" class="py-2 text-stone2 cursor-pointer pl-4 text-sm">— 行业资讯</a>
+      <a href="#/jobs" class="py-2 text-stone2 cursor-pointer">招聘</a>
+      <a href="#/jobs?cat=social" class="py-2 text-stone2 cursor-pointer pl-4 text-sm">— 社会招聘</a>
+      <a href="#/jobs?cat=campus" class="py-2 text-stone2 cursor-pointer pl-4 text-sm">— 校园招聘</a>
+      <a href="#/about" class="py-2 text-stone2 cursor-pointer">关于我们</a>
+      <a href="#/downloads" class="py-2 text-stone2 cursor-pointer">下载中心</a>
+      <a href="web_后台_YD家具.html" class="py-2 text-gold font-medium cursor-pointer">后台登录 →</a>
+      <div class="flex items-center gap-3 py-3 border-t border-stone-200 mt-2">
+        <button id="openBookM" class="px-3 py-2 rounded-md bg-gold text-white text-sm cursor-pointer">在线预约</button>
+        <button id="openLoginM" class="px-3 py-2 rounded-md border border-ink text-sm cursor-pointer">会员登录</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- ============ 首页（#/） ============ -->
+  <div id="page-home">
+  <!-- ============ Hero 轮播（整张可点击跳转） ============ -->
+  <section class="relative h-[420px] sm:h-[520px] overflow-hidden bg-ink">
+    <div id="carouselTrack" class="relative w-full h-full">
+      <div class="carousel-slide absolute inset-0 flex items-center bg-gradient-to-br from-ink via-stone2 to-ink" data-href="prototype_产品详情_YD家具.html?id=1">
+        <div class="max-w-7xl mx-auto px-6 w-full"><div class="max-w-2xl relative">
+          <p class="text-gold font-head tracking-widest text-sm mb-3">YD家具 · 72年国货家居品牌</p>
+          <h1 class="text-white font-head text-4xl sm:text-5xl font-semibold leading-tight">为家，造一木一器</h1>
+          <p class="text-stone-300 mt-4 text-lg">原创设计 · 人体工程学 · 智能化生产线</p>
+          <span class="slide-hint mt-4 inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-sm opacity-0 transition-opacity">点击查看 胡桃禮茶室组合 →</span>
+        </div></div>
+      </div>
+      <div class="carousel-slide absolute inset-0 flex items-center bg-gradient-to-br from-stone-800 via-stone-700 to-ink opacity-0" data-href="prototype_产品详情_YD家具.html?id=2">
+        <div class="max-w-7xl mx-auto px-6 w-full"><div class="max-w-2xl relative">
+          <p class="text-gold font-head tracking-widest text-sm mb-3">2026 新品</p>
+          <h1 class="text-white font-head text-4xl sm:text-5xl font-semibold leading-tight">柏悦系列 · 主卧新境</h1>
+          <p class="text-stone-300 mt-4 text-lg">软包床头 · 静音稳固 · 现代卧室</p>
+          <span class="slide-hint mt-4 inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-sm opacity-0 transition-opacity">点击查看 柏悦主卧床 →</span>
+        </div></div>
+      </div>
+      <div class="carousel-slide absolute inset-0 flex items-center bg-gradient-to-br from-stone-900 via-amber-950 to-ink opacity-0" data-href="prototype_案例展示_YD家具.html">
+        <div class="max-w-7xl mx-auto px-6 w-full"><div class="max-w-2xl relative">
+          <p class="text-gold font-head tracking-widest text-sm mb-3">实景案例</p>
+          <h1 class="text-white font-head text-4xl sm:text-5xl font-semibold leading-tight">120㎡ 现代简约三居室</h1>
+          <p class="text-stone-300 mt-4 text-lg">真实户型 · 所见即所得</p>
+          <span class="slide-hint mt-4 inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-sm opacity-0 transition-opacity">点击查看实景案例 →</span>
+        </div></div>
+      </div>
+      <div class="carousel-slide absolute inset-0 flex items-center bg-gradient-to-br from-stone-800 via-stone-900 to-ink opacity-0" data-href="#" data-book="1">
+        <div class="max-w-7xl mx-auto px-6 w-full"><div class="max-w-2xl relative">
+          <p class="text-gold font-head tracking-widest text-sm mb-3">品牌活动</p>
+          <h1 class="text-white font-head text-4xl sm:text-5xl font-semibold leading-tight">8.18 工厂直购节</h1>
+          <p class="text-stone-300 mt-4 text-lg">预约到店 · 专属顾问 · 限时礼遇</p>
+          <span class="slide-hint mt-4 inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-sm opacity-0 transition-opacity">点击立即预约 →</span>
+        </div></div>
+      </div>
+      <div class="carousel-slide absolute inset-0 flex items-center bg-gradient-to-br from-slate-800 via-stone-800 to-ink opacity-0" data-href="prototype_产品详情_YD家具.html?id=4">
+        <div class="max-w-7xl mx-auto px-6 w-full"><div class="max-w-2xl relative">
+          <p class="text-gold font-head tracking-widest text-sm mb-3">客厅精选</p>
+          <h1 class="text-white font-head text-4xl sm:text-5xl font-semibold leading-tight">如意春 · 轻奢沙发</h1>
+          <p class="text-stone-300 mt-4 text-lg">高回弹海绵 · 可拆洗设计 · 实木脚</p>
+          <span class="slide-hint mt-4 inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-sm opacity-0 transition-opacity">点击查看 如意春沙发 →</span>
+        </div></div>
+      </div>
+      <div class="carousel-slide absolute inset-0 flex items-center bg-gradient-to-br from-neutral-800 via-stone-900 to-ink opacity-0" data-href="prototype_产品中心_YD家具.html?space=办公">
+        <div class="max-w-7xl mx-auto px-6 w-full"><div class="max-w-2xl relative">
+          <p class="text-gold font-head tracking-widest text-sm mb-3">办公家具</p>
+          <h1 class="text-white font-head text-4xl sm:text-5xl font-semibold leading-tight">现代办公 · 效率美学</h1>
+          <p class="text-stone-300 mt-4 text-lg">人体工学椅 · 会议桌 · 储物系统</p>
+          <span class="slide-hint mt-4 inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-sm opacity-0 transition-opacity">点击查看办公产品 →</span>
+        </div></div>
+      </div>
+    </div>
+    <button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur cursor-pointer">‹</button>
+    <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur cursor-pointer">›</button>
+    <div id="carouselDots" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2"></div>
+  </section>
+
+  <!-- ============ 推荐产品 ============ -->
+  <section id="products" class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-ink">推荐产品</h2>
+        <p class="text-stone2 mt-1">按 系列 / 空间 / 品类 多维筛选，部分商品支持在线下单</p>
+      </div>
+      <a href="prototype_产品中心_YD家具.html" class="hidden sm:inline text-gold font-medium hover:underline cursor-pointer">进入产品中心 →</a>
+    </div>
+    <div id="featuredGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </section>
+
+  <!-- ============ 预约 CTA ============ -->
+  <section class="bg-ink">
+    <div class="max-w-7xl mx-auto px-6 py-14 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div><h2 class="font-head text-2xl font-semibold text-white">预约到店，体验实景样板间</h2>
+      <p class="text-stone-300 mt-2">留下联系方式，专属顾问将与您联系。</p></div>
+      <button id="openBook2" class="px-6 py-3 rounded-md bg-gold text-white font-medium hover:bg-amber-700 transition-colors cursor-pointer">立即在线预约</button>
+    </div>
+  </section>
+  </div>
+  <!-- ============ 首页结束 ============ -->
+
+  <!-- ============ 产品中心（#/products） ============ -->
+  <div id="page-products" class="hidden">
+    <section class="bg-ink py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-white">产品中心</h2>
+        <p class="text-stone-300 mt-1">按 系列 / 空间 / 品类 多维筛选，部分商品支持在线下单</p>
+      </div>
+    </section>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="lg:w-52 shrink-0 space-y-6">
+          <div><h4 class="font-head font-medium text-ink mb-2">空间</h4>
+            <div id="pf-space" class="flex flex-wrap lg:flex-col gap-2 text-sm"></div></div>
+          <div><h4 class="font-head font-medium text-ink mb-2">系列</h4>
+            <div id="pf-series" class="flex flex-wrap lg:flex-col gap-2 text-sm"></div></div>
+          <div><h4 class="font-head font-medium text-ink mb-2">品类</h4>
+            <div id="pf-category" class="flex flex-wrap lg:flex-col gap-2 text-sm"></div></div>
+        </aside>
+        <div class="flex-1">
+          <div class="flex items-center justify-between mb-4">
+            <p id="prodCount" class="text-sm text-stone2"></p>
+            <div class="flex gap-2">
+              <input id="prodSearch" type="text" placeholder="搜索产品…" class="border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold" style="min-width:180px">
+              <button id="prodSearchBtn" class="px-4 py-2 rounded-md bg-ink text-white text-sm hover:bg-stone2 cursor-pointer">搜索</button>
+            </div>
+          </div>
+          <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+          <div id="productPager" class="flex items-center justify-center gap-3 mt-8"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ 案例（#/cases） ============ -->
+  <div id="page-cases" class="hidden">
+    <section class="bg-ink py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-white">实景案例</h2>
+        <p class="text-stone-300 mt-1">真实户型 · 所见即所得</p>
+      </div>
+    </section>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div id="caseList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+  </div>
+
+  <!-- ============ 新闻（#/news） ============ -->
+  <div id="page-news" class="hidden">
+    <section class="bg-ink py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-white">新闻资讯</h2>
+        <p class="text-stone-300 mt-1">品牌动态 · 行业洞察</p>
+      </div>
+    </section>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div class="flex gap-2 mb-6 border-b border-stone-200">
+        <button class="news-tab px-4 py-2 border-b-2 border-gold font-medium text-ink cursor-pointer" data-cat="">全部</button>
+        <button class="news-tab px-4 py-2 border-b-2 border-transparent text-stone2 cursor-pointer" data-cat="company">企业新闻</button>
+        <button class="news-tab px-4 py-2 border-b-2 border-transparent text-stone2 cursor-pointer" data-cat="industry">行业资讯</button>
+      </div>
+      <div id="newsList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      <div id="newsPager" class="flex items-center justify-center gap-3 mt-8"></div>
+    </section>
+  </div>
+
+  <!-- ============ 招聘（#/jobs） ============ -->
+  <div id="page-jobs" class="hidden">
+    <section class="bg-ink py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-white">加入我们</h2>
+        <p class="text-stone-300 mt-1">与 YD 一起，为家造好物</p>
+      </div>
+    </section>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div class="flex gap-2 mb-6 border-b border-stone-200">
+        <button class="job-tab px-4 py-2 border-b-2 border-gold font-medium text-ink cursor-pointer" data-cat="">全部</button>
+        <button class="job-tab px-4 py-2 border-b-2 border-transparent text-stone2 cursor-pointer" data-cat="social">社会招聘</button>
+        <button class="job-tab px-4 py-2 border-b-2 border-transparent text-stone2 cursor-pointer" data-cat="campus">校园招聘</button>
+      </div>
+      <div id="jobList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+  </div>
+
+  <!-- ============ 关于我们（#/about） ============ -->
+  <div id="page-about" class="hidden">
+    <section class="bg-ink py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-white">关于我们</h2>
+        <p class="text-stone-300 mt-1">72 年国货家居品牌</p>
+      </div>
+    </section>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8" id="aboutBody"></section>
+  </div>
+
+  <!-- ============ 下载中心（#/downloads） ============ -->
+  <div id="page-downloads" class="hidden">
+    <section class="bg-ink py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-white">下载中心</h2>
+        <p class="text-stone-300 mt-1">产品资料 · 设计素材 · 品牌手册</p>
+      </div>
+    </section>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div id="downloadList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <p id="downloadEmpty" class="hidden text-stone-400 text-center py-10">暂无资料（可在后台「系统管理-下载中心」上传）</p>
+    </section>
+  </div>
+
+  <!-- ============ 购物车（#/cart） ============ -->
+  <div id="page-cart" class="hidden">
+    <section class="bg-ink py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="font-head text-2xl sm:text-3xl font-semibold text-white">购物车</h2>
+        <p class="text-stone-300 mt-1">确认商品与数量，提交订单</p>
+      </div>
+    </section>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div id="cartList" class="space-y-3 mb-6"></div>
+      <div id="cartSummary" class="flex items-center justify-between bg-white border border-stone-200 rounded-xl p-5">
+        <p class="text-stone2">合计：<span id="cartTotal" class="text-gold font-semibold text-xl">¥0</span></p>
+        <button id="checkoutBtn" class="px-6 py-3 rounded-md bg-gold text-white font-medium hover:bg-amber-700 transition-colors cursor-pointer">提交订单</button>
+      </div>
+      <div id="orderFormBox" class="hidden mt-6 bg-white border border-stone-200 rounded-xl p-6 max-w-xl">
+        <h3 class="font-head font-medium text-ink mb-4">收货信息</h3>
+        <div class="space-y-3">
+          <div><label class="block text-sm text-stone2 mb-1">收货人</label><input id="of-name" class="w-full border border-stone-300 rounded-md px-3 py-2"></div>
+          <div><label class="block text-sm text-stone2 mb-1">手机号</label><input id="of-phone" class="w-full border border-stone-300 rounded-md px-3 py-2"></div>
+          <div><label class="block text-sm text-stone2 mb-1">收货地址</label><input id="of-addr" class="w-full border border-stone-300 rounded-md px-3 py-2"></div>
+          <button id="submitOrderBtn" class="w-full py-2.5 rounded-md bg-ink text-white font-medium hover:bg-stone2 cursor-pointer">确认提交订单</button>
+          <p id="orderOk" class="hidden text-green-700 text-sm text-center"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ 页脚 ============ -->
+<footer class="bg-sand border-t border-stone-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+    <div class="col-span-2 md:col-span-1"><div class="flex items-center gap-2 mb-3"><span class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-ink text-gold font-head font-bold">YD</span><span class="font-head font-semibold text-ink">YD家具</span></div>
+      <p class="text-stone2">集研发、制造、销售于一体的现代化家居企业。</p></div>
+    <div><h4 class="font-head font-medium text-ink mb-3">关于我们</h4>
+      <ul class="space-y-2 text-stone2"><li><a href="#/about" class="hover:text-ink">关于YD</a></li><li><a href="#/about" class="hover:text-ink">发展历程</a></li><li><a href="#/about" class="hover:text-ink">品牌介绍</a></li><li><a href="#/about" class="hover:text-ink">联系我们</a></li></ul></div>
+    <div><h4 class="font-head font-medium text-ink mb-3">快捷入口</h4>
+      <ul class="space-y-2 text-stone2"><li><a href="#/products" class="hover:text-ink">产品中心</a></li><li><a href="#/cases" class="hover:text-ink">实景案例</a></li><li><a href="#/jobs" class="hover:text-ink">招聘</a></li><li><a href="#/downloads" class="hover:text-ink">下载中心</a></li><li><a href="web_后台_YD家具.html" class="text-gold font-medium hover:underline">后台登录 →</a></li></ul></div>
+    <div><h4 class="font-head font-medium text-ink mb-3">联系</h4>
+      <ul class="space-y-2 text-stone2"><li>400-888-8888</li><li>contact@yd-home.com</li></ul></div>
+  </div>
+  <div class="border-t border-stone-200 py-4 text-center text-xs text-stone-500">© 2026 YD家具 版权所有 · 原型示意（基于 PRD v1.1）</div>
+</footer>
+
+<!-- ============ 在线客服浮窗 ============ -->
+<button id="chatFloat" class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gold text-white shadow-lg flex items-center justify-center hover:bg-amber-700 transition-colors cursor-pointer" aria-label="在线客服">
+  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+
+<!-- ============ 在线预约 弹窗 ============ -->
+<div id="bookModal" class="modal hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40" role="dialog" aria-modal="true" aria-label="在线预约">
+  <div class="bg-white rounded-2xl w-full max-w-md p-6">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-head text-lg font-semibold text-ink">在线预约</h3><button class="closeBook text-stone-400 hover:text-ink cursor-pointer" aria-label="关闭">✕</button></div>
+    <form id="bookForm" class="space-y-3">
+      <div><label class="block text-sm text-stone2 mb-1">姓名</label><input required class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold" /></div>
+      <div><label class="block text-sm text-stone2 mb-1">手机号</label><input required type="tel" class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold" /></div>
+      <div><label class="block text-sm text-stone2 mb-1">需求类型</label>
+        <select class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold">
+          <option>产品咨询</option><option>到店预约</option><option>定制需求</option><option>其他</option>
+        </select></div>
+      <div><label class="block text-sm text-stone2 mb-1">留言</label><textarea rows="3" class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold"></textarea></div>
+      <button type="submit" class="w-full py-2.5 rounded-md bg-gold text-white font-medium hover:bg-amber-700 transition-colors cursor-pointer">提交预约</button>
+      <p id="bookOk" class="hidden text-green-700 text-sm text-center">提交成功，顾问将尽快与您联系（原型演示）</p>
+    </form>
+  </div>
+</div>
+
+<!-- ============ 会员登录 弹窗 ============ -->
+<div id="loginModal" class="modal hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40" role="dialog" aria-modal="true" aria-label="会员登录">
+  <div class="bg-white rounded-2xl w-full max-w-md p-6">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-head text-lg font-semibold text-ink" id="loginTitle">会员登录</h3><button class="closeLogin text-stone-400 hover:text-ink cursor-pointer" aria-label="关闭">✕</button></div>
+    <div class="flex gap-2 mb-5 border-b border-stone-200">
+      <button id="tabLogin" class="login-tab active px-3 py-2 border-b-2 border-gold font-medium text-ink cursor-pointer">登录</button>
+      <button id="tabReg" class="login-tab px-3 py-2 border-b-2 border-transparent text-stone2 cursor-pointer">注册</button>
+    </div>
+    <form id="authForm" class="space-y-3">
+      <div><label class="block text-sm text-stone2 mb-1">手机号</label><input required type="tel" class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold" /></div>
+      <div id="regCode" hidden><label class="block text-sm text-stone2 mb-1">验证码</label><input class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold" /></div>
+      <div><label class="block text-sm text-stone2 mb-1">密码</label><input required type="password" class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold" /></div>
+      <div id="regPwd" hidden><label class="block text-sm text-stone2 mb-1">确认密码</label><input type="password" class="w-full border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold" /></div>
+      <button type="submit" id="authSubmit" class="w-full py-2.5 rounded-md bg-ink text-white font-medium hover:bg-stone2 transition-colors cursor-pointer">登录</button>
+      <p id="authOk" class="hidden text-green-700 text-sm text-center">操作成功（原型演示）</p>
+    </form>
+  </div>
+</div>
+
+<!-- ============ 会员中心 弹窗 ============ -->
+<div id="memberModal" class="modal hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40" role="dialog" aria-modal="true" aria-label="个人中心">
+  <div class="bg-white rounded-2xl w-full max-w-md p-6">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-head text-lg font-semibold text-ink">个人中心</h3><button class="closeMember text-stone-400 hover:text-ink cursor-pointer">✕</button></div>
+    <div class="flex items-center gap-4 mb-5">
+      <div class="w-14 h-14 rounded-full bg-ink text-white flex items-center justify-center font-head text-lg">用户</div>
+      <div><p class="font-medium text-ink">YD会员</p><p class="text-sm text-stone2">138****8888</p></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3 text-sm">
+      <a href="prototype_购物车结算_YD家具.html" class="block p-3 rounded-lg border border-stone-200 hover:border-gold text-center">我的订单</a>
+      <button class="p-3 rounded-lg border border-stone-200 hover:border-gold text-center" onclick="openBook()">我的预约</button>
+      <button class="p-3 rounded-lg border border-stone-200 hover:border-gold text-center" onclick="toast('功能开发中')">收货地址</button>
+      <button class="p-3 rounded-lg border border-stone-200 hover:border-gold text-center" onclick="toast('功能开发中')">账户设置</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 搜索弹窗 ============ -->
+<div id="searchModal" class="modal hidden fixed inset-0 z-[60] flex items-start justify-center pt-24 p-4 bg-black/40" role="dialog" aria-modal="true" aria-label="站内搜索">
+  <div class="bg-white rounded-2xl w-full max-w-2xl p-6">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-head text-lg font-semibold text-ink">站内搜索</h3><button class="closeSearch text-stone-400 hover:text-ink cursor-pointer" aria-label="关闭">✕</button></div>
+    <div class="relative">
+      <input id="searchInput" type="text" placeholder="搜索产品、案例、新闻…" class="w-full border border-stone-300 rounded-md pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-gold" />
+      <svg class="absolute left-3 top-3.5 w-5 h-5 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    </div>
+    <div id="searchResult" class="mt-4 space-y-3 max-h-80 overflow-y-auto"></div>
+  </div>
+</div>
+
+<!-- ============ 在线客服弹窗 ============ -->
+<div id="chatModal" class="modal hidden fixed bottom-24 right-6 z-[60] w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-stone-200 overflow-hidden" role="dialog" aria-modal="true" aria-label="在线客服">
+  <div class="bg-ink text-white p-4 flex items-center justify-between">
+    <div><h3 class="font-head font-medium">YD家具 在线客服</h3><p class="text-xs text-stone-300">工作时间 9:00-21:00</p></div>
+    <button class="closeChat text-stone-300 hover:text-white cursor-pointer">✕</button>
+  </div>
+  <div id="chatBody" class="h-72 p-4 overflow-y-auto bg-stone-50 space-y-3 text-sm"></div>
+  <div id="chatQuick" class="px-3 pt-2 pb-1 border-t border-stone-100 bg-white flex flex-wrap gap-2">
+    <button class="quick-q px-2 py-1 rounded-md bg-stone-100 text-xs text-stone2 hover:bg-gold hover:text-white transition-colors" data-q="产品价格">产品价格</button>
+    <button class="quick-q px-2 py-1 rounded-md bg-stone-100 text-xs text-stone2 hover:bg-gold hover:text-white transition-colors" data-q="预约到店">预约到店</button>
+    <button class="quick-q px-2 py-1 rounded-md bg-stone-100 text-xs text-stone2 hover:bg-gold hover:text-white transition-colors" data-q="售后服务">售后服务</button>
+    <button class="quick-q px-2 py-1 rounded-md bg-stone-100 text-xs text-stone2 hover:bg-gold hover:text-white transition-colors" data-q="门店地址">门店地址</button>
+    <button class="quick-q px-2 py-1 rounded-md bg-stone-100 text-xs text-stone2 hover:bg-gold hover:text-white transition-colors" data-q="转人工">转人工</button>
+  </div>
+  <form id="chatForm" class="p-3 border-t border-stone-200 flex gap-2">
+    <input id="chatInput" type="text" placeholder="输入消息…" class="flex-1 border border-stone-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold" />
+    <button type="submit" class="px-4 py-2 rounded-md bg-gold text-white text-sm hover:bg-amber-700 cursor-pointer">发送</button>
+  </form>
+</div>
+
+<!-- ============ 登录后用户头像下拉 ============ -->
+<div id="userMenu" class="hidden absolute right-4 top-14 w-40 bg-white border border-stone-200 rounded-lg shadow-lg py-2 z-50">
+  <button id="memberCenterBtn" class="w-full text-left px-4 py-2 text-sm text-stone2 hover:bg-stone-50 hover:text-ink cursor-pointer">个人中心</button>
+  <a href="prototype_购物车结算_YD家具.html" class="block px-4 py-2 text-sm text-stone2 hover:bg-stone-50 hover:text-ink">我的订单</a>
+  <button id="logoutBtn" class="w-full text-left px-4 py-2 text-sm text-stone2 hover:bg-stone-50 hover:text-ink cursor-pointer">退出登录</button>
+</div>
+
+<div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[70] bg-ink text-white px-5 py-2.5 rounded-lg shadow-lg hidden">已加入购物车</div>
+
+<script>
+/* ---------- 通用工具 ---------- */
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),1500); }
+function escapeHtml(t){ return (t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c])); }
+
+/* ---------- 会员系统 ---------- */
+const loginModal = document.getElementById('loginModal');
+const memberModal = document.getElementById('memberModal');
+function openLogin(){ loginModal.classList.remove('hidden'); }
+function closeLogin(){ loginModal.classList.add('hidden'); }
+function openMember(){ memberModal.classList.remove('hidden'); }
+function closeMember(){ memberModal.classList.add('hidden'); }
+['openLogin','openLoginM'].forEach(id => { const el=document.getElementById(id); if(el) el.addEventListener('click', openLogin); });
+document.querySelectorAll('.closeLogin').forEach(b => b.addEventListener('click', closeLogin));
+loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLogin(); });
+document.querySelectorAll('.closeMember').forEach(b => b.addEventListener('click', closeMember));
+memberModal.addEventListener('click', e => { if (e.target === memberModal) closeMember(); });
+
+const tabLogin = document.getElementById('tabLogin'), tabReg = document.getElementById('tabReg');
+tabLogin.addEventListener('click', () => setAuthMode('login'));
+tabReg.addEventListener('click', () => setAuthMode('reg'));
+function setAuthMode(mode){
+  const reg = mode === 'reg';
+  tabLogin.classList.toggle('active', !reg); tabLogin.classList.toggle('border-gold', !reg); tabLogin.classList.toggle('border-transparent', reg);
+  tabReg.classList.toggle('active', reg); tabReg.classList.toggle('border-gold', reg); tabReg.classList.toggle('border-transparent', !reg);
+  document.getElementById('regCode').hidden = !reg; document.getElementById('regPwd').hidden = !reg;
+  document.getElementById('loginTitle').textContent = reg ? '会员注册' : '会员登录';
+  document.getElementById('authSubmit').textContent = reg ? '注册' : '登录';
+}
+document.getElementById('authForm').addEventListener('submit', e => {
+  e.preventDefault();
+  submitAuth();
+});
+function updateMemberUI(){
+  const isLogin = localStorage.getItem('yd_member') === '1';
+  const loginBtn = document.getElementById('openLogin');
+  const mobileLoginBtn = document.getElementById('openLoginM');
+  if(isLogin){
+    if(loginBtn){
+      loginBtn.outerHTML = `<div class="relative"><button id="avatarBtn" class="w-9 h-9 rounded-full bg-ink text-white text-sm font-medium flex items-center justify-center hover:bg-stone2 cursor-pointer">用户</button></div>`;
+      const avatarBtn = document.getElementById('avatarBtn');
+      if(avatarBtn) avatarBtn.addEventListener('click', () => document.getElementById('userMenu').classList.toggle('hidden'));
+    }
+    if(mobileLoginBtn) mobileLoginBtn.textContent = '用户';
+  }
+}
+document.getElementById('logoutBtn').addEventListener('click', () => { localStorage.removeItem('yd_member'); location.reload(); });
+document.addEventListener('click', e => { if(!e.target.closest('#avatarBtn') && !e.target.closest('#userMenu')) document.getElementById('userMenu').classList.add('hidden'); });
+document.getElementById('memberCenterBtn').addEventListener('click', () => { document.getElementById('userMenu').classList.add('hidden'); openMember(); });
+updateMemberUI();
+
+/* ---------- 在线预约 ---------- */
+const bookModal = document.getElementById('bookModal');
+function openBook(){ bookModal.classList.remove('hidden'); }
+function closeBook(){ bookModal.classList.add('hidden'); }
+['openBook','openBookM','openBook2'].forEach(id => { const el=document.getElementById(id); if(el) el.addEventListener('click', openBook); });
+document.querySelectorAll('.closeBook').forEach(b => b.addEventListener('click', closeBook));
+bookModal.addEventListener('click', e => { if (e.target === bookModal) closeBook(); });
+document.getElementById('bookForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const ok = document.getElementById('bookOk');
+  ok.classList.remove('hidden');
+  setTimeout(() => { closeBook(); ok.classList.add('hidden'); document.getElementById('bookForm').reset(); }, 1200);
+});
+
+/* ---------- 在线客服（智能回复） ---------- */
+const chatModal = document.getElementById('chatModal');
+const chatBody = document.getElementById('chatBody');
+function openChat(){ chatModal.classList.remove('hidden'); }
+function closeChat(){ chatModal.classList.add('hidden'); }
+document.getElementById('openChat').addEventListener('click', openChat);
+document.getElementById('chatFloat').addEventListener('click', openChat);
+document.querySelectorAll('.closeChat').forEach(b => b.addEventListener('click', closeChat));
+function addBotReply(html){ const div=document.createElement('div'); div.className='flex gap-2'; div.innerHTML=`<div class="w-8 h-8 rounded-full bg-gold text-white flex items-center justify-center text-xs">客</div><div class="bg-white border border-stone-200 rounded-lg rounded-tl-none px-3 py-2 text-stone2">${html}</div>`; chatBody.appendChild(div); chatBody.scrollTop=chatBody.scrollHeight; }
+function addUserReply(text){ const div=document.createElement('div'); div.className='flex gap-2 justify-end'; div.innerHTML=`<div class="bg-gold text-white rounded-lg rounded-tr-none px-3 py-2">${escapeHtml(text)}</div><div class="w-8 h-8 rounded-full bg-stone-300 text-white flex items-center justify-center text-xs">我</div>`; chatBody.appendChild(div); chatBody.scrollTop=chatBody.scrollHeight; }
+function botAnswer(text){
+  const t = text.toLowerCase();
+  if(t.includes('价格')||t.includes('多少钱')||t.includes('报价')) return '我们的产品覆盖多个价位段，例如柏悦主卧床 ¥3,260 起、胡桃禮茶室组合 ¥4,980 起。具体报价可在产品详情页查看，或留下手机号，专属顾问为您定制方案。';
+  if(t.includes('预约')||t.includes('到店')||t.includes('体验')) return '您可以通过顶部"在线预约"按钮填写需求，选择到店预约、产品咨询或定制需求，顾问将在 1 个工作日内联系您。';
+  if(t.includes('售后')||t.includes('退换')||t.includes('保修')||t.includes('维修')) return 'YD家具提供 3 年质保与终身维护服务。售后问题请拨打服务热线 400-888-9999，或在个人中心提交服务单。';
+  if(t.includes('地址')||t.includes('门店')||t.includes('在哪')) return '总部地址：广东省深圳市南山区科技园南区YD家具大厦。全国 500+ 门店，您可拨打 400-888-8888 查询最近门店。';
+  if(t.includes('电话')||t.includes('热线')||t.includes('联系')) return '销售热线：400-888-8888；服务热线：400-888-9999；邮箱：contact@yd-home.com。';
+  if(t.includes('人工')||t.includes('客服')||t.includes('顾问')) return '已为您转接专属顾问，当前排队 1 人，预计等待 30 秒。您也可以直接留下手机号，顾问将主动回电。';
+  return '收到，小 Y 正在学习中。如需更详细的方案，建议点击"转人工"或拨打 400-888-8888。';
+}
+function sendChat(text){
+  if(!text) return;
+  addUserReply(text);
+  document.getElementById('chatInput').value='';
+  setTimeout(() => addBotReply(botAnswer(text)), 600);
+}
+document.getElementById('chatForm').addEventListener('submit', e => { e.preventDefault(); sendChat(document.getElementById('chatInput').value.trim()); });
+document.querySelectorAll('.quick-q').forEach(b => b.addEventListener('click', () => sendChat(b.dataset.q)));
+addBotReply('您好，欢迎咨询 YD家具，我是智能客服小 Y。您可以直接输入问题，或点击下方常见问题。');
+
+/* ---------- 搜索 ---------- */
+const searchModal = document.getElementById('searchModal');
+function openSearch(){ searchModal.classList.remove('hidden'); document.getElementById('searchInput').focus(); }
+function closeSearch(){ searchModal.classList.add('hidden'); }
+document.getElementById('openSearch').addEventListener('click', openSearch);
+document.querySelectorAll('.closeSearch').forEach(b => b.addEventListener('click', closeSearch));
+searchModal.addEventListener('click', e => { if(e.target === searchModal) closeSearch(); });
+const searchData = [
+  {type:'产品', title:'胡桃禮 · 茶室组合', link:'prototype_产品详情_YD家具.html?id=1'},
+  {type:'产品', title:'柏悦 · 主卧床', link:'prototype_产品详情_YD家具.html?id=2'},
+  {type:'案例', title:'现代简约 · 三居室', link:'prototype_案例展示_YD家具.html'},
+  {type:'新闻', title:'YD家具入选中国全屋定制十大品牌', link:'prototype_新闻详情_YD家具.html?id=1'},
+  {type:'招聘', title:'门店销售顾问', link:'prototype_招聘_YD家具.html#social'},
+];
+document.getElementById('searchInput').addEventListener('input', e => {
+  const val = e.target.value.trim().toLowerCase();
+  const res = document.getElementById('searchResult'); res.innerHTML = '';
+  if(!val) return;
+  const filtered = searchData.filter(x => x.title.toLowerCase().includes(val) || x.type.includes(val));
+  if(filtered.length === 0){ res.innerHTML = '<p class="text-stone2 text-sm">未找到相关结果</p>'; return; }
+  filtered.forEach(x => {
+    const div = document.createElement('a');
+    div.href = x.link; div.className = 'block p-3 rounded-lg border border-stone-200 hover:bg-stone-50 cursor-pointer';
+    div.innerHTML = `<span class="text-xs text-gold">${x.type}</span><p class="text-ink font-medium">${x.title}</p>`;
+    res.appendChild(div);
+  });
+});
+
+/* ---------- API 层（真实后端，同源代理） ---------- */
+const API_BASE = (window.__YD_API_BASE__) || '/api/v1';
+async function apiGet(path, params){
+  try{
+    const qs = params ? '?' + new URLSearchParams(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>[k,String(v)])) : '';
+    const r = await fetch(API_BASE + path + qs);
+    const j = await r.json();
+    return (j && j.code === 0) ? j.data : null;
+  }catch(e){ return null; }
+}
+async function apiPost(path, body, token){
+  try{
+    const r = await fetch(API_BASE + path, {
+      method: 'POST', headers: {'Content-Type': 'application/json', ...(token?{Authorization:'Bearer '+token}:{})},
+      body: JSON.stringify(body),
+    });
+    const j = await r.json();
+    return j;
+  }catch(e){ return {code: 500, detail: '网络错误：' + e.message}; }
+}
+const MEMBER_TOKEN_KEY = 'yd_member_token';
+function memberToken(){ return localStorage.getItem(MEMBER_TOKEN_KEY) || ''; }
+function memberInfo(){ try{ return JSON.parse(localStorage.getItem('yd_member_info') || 'null'); }catch(e){ return null; } }
+
+/* ---------- Hash 路由 ---------- */
+const PAGES = ['home','products','cases','news','jobs','about','downloads','cart'];
+let currentPage = 'home';
+function parseHash(){
+  const h = location.hash.replace(/^#\/?/, '') || 'home';
+  const [path, qs] = h.split('?');
+  const q = Object.fromEntries(new URLSearchParams(qs || ''));
+  return { page: PAGES.includes(path) ? path : 'home', query: q };
+}
+function navigate(){
+  const { page, query } = parseHash();
+  currentPage = page;
+  document.querySelectorAll('#top > div[id^="page-"]').forEach(d => d.classList.add('hidden'));
+  const el = document.getElementById('page-' + page);
+  if(el) el.classList.remove('hidden');
+  document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('active', a.dataset.nav === page));
+  if(page === 'home'){ loadHomeData(); resetTimer(); }
+  else if(page === 'products'){ renderProductsPage(query); }
+  else if(page === 'cases'){ loadCases(); }
+  else if(page === 'news'){ renderNewsPage(query); }
+  else if(page === 'jobs'){ renderJobsPage(query); }
+  else if(page === 'about'){ loadAbout(); }
+  else if(page === 'downloads'){ loadDownloads(); }
+  else if(page === 'cart'){ renderCart(); }
+  window.scrollTo({top: 0});
+}
+window.addEventListener('hashchange', navigate);
+
+/* ---------- 首页数据（真实 banners + products，无数据 fallback 静态） ---------- */
+let realBanners = [], realFeatured = [];
+async function loadHomeData(){
+  if(!realBanners.length){
+    const b = await apiGet('/public/banners');
+    if(Array.isArray(b) && b.length) realBanners = b;
+  }
+  if(!realFeatured.length){
+    const p = await apiGet('/public/products', {page_size: 6});
+    if(p && Array.isArray(p.items) && p.items.length) realFeatured = p.items;
+  }
+  if(realFeatured.length) renderFeaturedReal();
+}
+
+function renderFeaturedReal(){
+  const grid = document.getElementById('featuredGrid');
+  grid.innerHTML = '';
+  realFeatured.forEach(p => {
+    const priceTxt = p.price_yuan || (p.min_price_cents ? '¥' + (p.min_price_cents/100).toLocaleString() : '');
+    const card = document.createElement('article');
+    card.className = 'bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-lg transition-shadow';
+    const img = p.cover_url
+      ? `<img src="${p.cover_url}" alt="${escapeHtml(p.name)}" class="w-full aspect-[4/3] object-cover">`
+      : `<div class="aspect-[4/3] product-thumb flex items-center justify-center text-stone-500"><span class="text-xs">家具</span></div>`;
+    card.innerHTML = `
+      <a href="#/products" class="block">${img}</a>
+      <div class="p-4"><p class="text-xs text-stone-500">${escapeHtml(p.subtitle || 'YD家具')}</p><h3 class="font-head font-medium text-ink mt-1">${escapeHtml(p.name)}</h3>
+        <div class="flex items-center justify-between mt-3"><span class="text-gold font-semibold">${priceTxt}</span>
+        <button class="addcart-btn px-3 py-1.5 rounded-md bg-ink text-white text-xs hover:bg-stone2 transition-colors cursor-pointer" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-price="${p.min_price_cents||0}">加入购物车</button>
+        </div></div>`;
+    grid.appendChild(card);
+  });
+  document.querySelectorAll('.addcart-btn').forEach(btn => btn.addEventListener('click', e => { e.stopPropagation(); addToCart(+btn.dataset.id, btn.dataset.name, +btn.dataset.price); }));
+}
+
+/* ---------- 产品中心 ---------- */
+let prodState = { space: '', series: '', category: '', keyword: '', page: 1, pageSize: 12, cats: [] };
+async function renderProductsPage(query){
+  if(query.space) prodState.space = query.space;
+  if(query.series) prodState.series = query.series;
+  if(query.category) prodState.category = query.category;
+  const cats = await apiGet('/public/categories');
+  if(Array.isArray(cats)) prodState.cats = cats;
+  renderProdFilters();
+  await loadProducts();
+}
+function renderProdFilters(){
+  const spaces = prodState.cats.filter(c => c.kind === 'space');
+  const series = prodState.cats.filter(c => c.kind === 'series');
+  const cats = prodState.cats.filter(c => c.kind === 'category');
+  const btn = (list, key, label) => `<button class="px-3 py-1 rounded-md border ${prodState[key]===label?'bg-ink text-white border-ink':'border-stone-200 text-stone2 hover:border-gold'} cursor-pointer" onclick="setProdFilter('${key}','${label}')">${label}</button>`;
+  document.getElementById('pf-space').innerHTML = '<button class="px-3 py-1 rounded-md border '+(prodState.space===''?'bg-ink text-white border-ink':'border-stone-200 text-stone2 hover:border-gold')+' cursor-pointer" onclick="setProdFilter(\'space\',\'\')">全部</button>' + spaces.map(c => btn(spaces, 'space', c.name)).join('');
+  document.getElementById('pf-series').innerHTML = '<button class="px-3 py-1 rounded-md border '+(prodState.series===''?'bg-ink text-white border-ink':'border-stone-200 text-stone2 hover:border-gold')+' cursor-pointer" onclick="setProdFilter(\'series\',\'\')">全部</button>' + series.map(c => btn(series, 'series', c.name)).join('');
+  document.getElementById('pf-category').innerHTML = '<button class="px-3 py-1 rounded-md border '+(prodState.category===''?'bg-ink text-white border-ink':'border-stone-200 text-stone2 hover:border-gold')+' cursor-pointer" onclick="setProdFilter(\'category\',\'\')">全部</button>' + cats.map(c => btn(cats, 'category', c.name)).join('');
+}
+function setProdFilter(key, val){ prodState[key] = val; prodState.page = 1; renderProdFilters(); loadProducts(); }
+async function loadProducts(){
+  const params = { page: prodState.page, page_size: prodState.pageSize, keyword: prodState.keyword || undefined };
+  if(prodState.space){
+    const sp = prodState.cats.find(c => c.kind === 'space' && c.name === prodState.space);
+    if(sp) params.space_id = sp.id;
+  }
+  if(prodState.series){
+    const se = prodState.cats.find(c => c.kind === 'series' && c.name === prodState.series);
+    if(se) params.series_id = se.id;
+  }
+  if(prodState.category){
+    const ca = prodState.cats.find(c => c.kind === 'category' && c.name === prodState.category);
+    if(ca) params.category_id = ca.id;
+  }
+  const d = await apiGet('/public/products', params);
+  const list = document.getElementById('productList');
+  const countEl = document.getElementById('prodCount');
+  if(!d || !Array.isArray(d.items) || !d.items.length){
+    list.innerHTML = '<p class="text-stone-400 text-center py-10 col-span-full">暂无产品</p>';
+    countEl.textContent = '共 0 件';
+    document.getElementById('productPager').innerHTML = '';
+    return;
+  }
+  countEl.textContent = '共 ' + d.total + ' 件产品';
+  list.innerHTML = d.items.map(p => {
+    const priceTxt = p.price_yuan || (p.min_price_cents ? '¥' + (p.min_price_cents/100).toLocaleString() : '');
+    const img = p.cover_url ? `<img src="${p.cover_url}" alt="${escapeHtml(p.name)}" class="w-full aspect-[4/3] object-cover">` : `<div class="aspect-[4/3] product-thumb flex items-center justify-center text-stone-500"><span class="text-xs">家具</span></div>`;
+    return `<article class="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-lg transition-shadow">
+      ${img}
+      <div class="p-4"><p class="text-xs text-stone-500">${escapeHtml(p.subtitle || '')}</p><h3 class="font-head font-medium text-ink mt-1">${escapeHtml(p.name)}</h3>
+      <div class="flex items-center justify-between mt-3"><span class="text-gold font-semibold">${priceTxt}</span>
+      <button class="addcart-btn px-3 py-1.5 rounded-md bg-ink text-white text-xs hover:bg-stone2 transition-colors cursor-pointer" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-price="${p.min_price_cents||0}">加入购物车</button></div></div></article>`;
+  }).join('');
+  document.querySelectorAll('#productList .addcart-btn').forEach(btn => btn.addEventListener('click', e => { e.stopPropagation(); addToCart(+btn.dataset.id, btn.dataset.name, +btn.dataset.price); }));
+  const totalPages = Math.max(1, d.total_pages || Math.ceil(d.total / prodState.pageSize));
+  document.getElementById('productPager').innerHTML =
+    `<button class="px-4 py-2 rounded-md border border-stone-200 text-sm ${prodState.page<=1?'opacity-40 cursor-not-allowed':'hover:border-gold cursor-pointer'}" onclick="prodPage(${prodState.page-1})">上一页</button>
+     <span class="text-sm text-stone2">${prodState.page} / ${totalPages}</span>
+     <button class="px-4 py-2 rounded-md border border-stone-200 text-sm ${prodState.page>=totalPages?'opacity-40 cursor-not-allowed':'hover:border-gold cursor-pointer'}" onclick="prodPage(${prodState.page+1})">下一页</button>`;
+}
+function prodPage(n){
+  const totalPages = 999;
+  if(n < 1) return;
+  prodState.page = n; loadProducts();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const sb = document.getElementById('prodSearchBtn');
+  if(sb) sb.addEventListener('click', () => { prodState.keyword = document.getElementById('prodSearch').value.trim(); prodState.page = 1; loadProducts(); });
+  const si = document.getElementById('prodSearch');
+  if(si) si.addEventListener('keydown', e => { if(e.key === 'Enter'){ prodState.keyword = si.value.trim(); prodState.page = 1; loadProducts(); } });
+});
+
+/* ---------- 案例 ---------- */
+async function loadCases(){
+  const d = await apiGet('/public/cases', {page: 1, page_size: 12});
+  const list = document.getElementById('caseList');
+  if(!d || !Array.isArray(d.items) || !d.items.length){ list.innerHTML = '<p class="text-stone-400 text-center py-10 col-span-full">暂无案例</p>'; return; }
+  list.innerHTML = d.items.map(c => {
+    const img = c.cover_url ? `<img src="${c.cover_url}" alt="${escapeHtml(c.title)}" class="w-full aspect-[4/3] object-cover">` : `<div class="aspect-[4/3] product-thumb flex items-center justify-center text-stone-500"><span class="text-xs">案例</span></div>`;
+    return `<article class="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-lg transition-shadow">
+      ${img}
+      <div class="p-4"><p class="text-xs text-gold">${escapeHtml(c.style || '')}${c.area ? ' · ' + escapeHtml(c.area) : ''}</p><h3 class="font-head font-medium text-ink mt-1">${escapeHtml(c.title)}</h3></div></article>`;
+  }).join('');
+}
+
+/* ---------- 新闻 ---------- */
+let newsState = { cat: '', page: 1, pageSize: 6 };
+async function renderNewsPage(query){
+  if(query.cat) newsState.cat = query.cat;
+  document.querySelectorAll('.news-tab').forEach(t => {
+    const on = t.dataset.cat === newsState.cat;
+    t.classList.toggle('border-gold', on); t.classList.toggle('border-transparent', !on);
+    t.classList.toggle('text-ink', on); t.classList.toggle('text-stone2', !on);
+  });
+  const d = await apiGet('/public/news', {page: newsState.page, page_size: newsState.pageSize, category: newsState.cat || undefined});
+  const list = document.getElementById('newsList');
+  if(!d || !Array.isArray(d.items) || !d.items.length){ list.innerHTML = '<p class="text-stone-400 text-center py-10 col-span-full">暂无新闻</p>'; document.getElementById('newsPager').innerHTML = ''; return; }
+  list.innerHTML = d.items.map(n => {
+    const img = n.cover_url ? `<img src="${n.cover_url}" alt="${escapeHtml(n.title)}" class="w-full aspect-[16/9] object-cover">` : `<div class="aspect-[16/9] product-thumb flex items-center justify-center text-stone-500"><span class="text-xs">新闻</span></div>`;
+    const date = n.published_date ? String(n.published_date).slice(0,10) : '';
+    return `<article class="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-lg transition-shadow">
+      ${img}
+      <div class="p-4"><p class="text-xs text-stone-500">${n.category === 'company' ? '企业新闻' : '行业资讯'} · ${date}</p><h3 class="font-head font-medium text-ink mt-2">${escapeHtml(n.title)}</h3>
+      <p class="text-sm text-stone2 mt-1 line-clamp-2">${escapeHtml(n.summary || '')}</p></div></article>`;
+  }).join('');
+  const totalPages = Math.max(1, d.total_pages || 1);
+  document.getElementById('newsPager').innerHTML =
+    `<button class="px-4 py-2 rounded-md border border-stone-200 text-sm ${newsState.page<=1?'opacity-40 cursor-not-allowed':'hover:border-gold cursor-pointer'}" onclick="newsPage(${newsState.page-1})">上一页</button>
+     <span class="text-sm text-stone2">${newsState.page} / ${totalPages}</span>
+     <button class="px-4 py-2 rounded-md border border-stone-200 text-sm ${newsState.page>=totalPages?'opacity-40 cursor-not-allowed':'hover:border-gold cursor-pointer'}" onclick="newsPage(${newsState.page+1})">下一页</button>`;
+}
+function newsPage(n){ if(n < 1) return; newsState.page = n; renderNewsPage({}); }
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.news-tab').forEach(t => t.addEventListener('click', () => { newsState.cat = t.dataset.cat; newsState.page = 1; renderNewsPage({}); }));
+});
+
+/* ---------- 招聘 ---------- */
+let jobState = { cat: '' };
+async function renderJobsPage(query){
+  if(query.cat) jobState.cat = query.cat;
+  document.querySelectorAll('.job-tab').forEach(t => {
+    const on = t.dataset.cat === jobState.cat;
+    t.classList.toggle('border-gold', on); t.classList.toggle('border-transparent', !on);
+    t.classList.toggle('text-ink', on); t.classList.toggle('text-stone2', !on);
+  });
+  const d = await apiGet('/public/jobs', {page: 1, page_size: 50, category: jobState.cat || undefined});
+  const list = document.getElementById('jobList');
+  if(!d || !Array.isArray(d.items) || !d.items.length){ list.innerHTML = '<p class="text-stone-400 text-center py-10 col-span-full">暂无在招岗位</p>'; return; }
+  list.innerHTML = d.items.map(j => {
+    const salary = j.salary_min_cents ? '¥' + (j.salary_min_cents/100/10000).toFixed(1) + '万 - ¥' + (j.salary_max_cents/100/10000).toFixed(1) + '万' : '面议';
+    const expire = j.expire_date ? '截止 ' + String(j.expire_date).slice(0,10) : '';
+    return `<article class="bg-white rounded-xl border border-stone-200 p-5 hover:shadow-lg transition-shadow">
+      <div class="flex items-start justify-between gap-3">
+        <div><h3 class="font-head font-medium text-ink">${escapeHtml(j.title)}</h3>
+        <p class="text-sm text-stone2 mt-1">${escapeHtml(j.department || '')} · ${escapeHtml(j.location || '')} · ${expire}</p></div>
+        <span class="text-gold font-semibold whitespace-nowrap">${salary}</span>
+      </div>
+      <button class="apply-job-btn mt-3 px-4 py-1.5 rounded-md bg-ink text-white text-sm hover:bg-stone2 transition-colors cursor-pointer" data-id="${j.id}" data-title="${escapeHtml(j.title)}">投递简历</button>
+    </article>`;
+  }).join('');
+  document.querySelectorAll('.apply-job-btn').forEach(b => b.addEventListener('click', () => openApply(b.dataset.id, b.dataset.title)));
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.job-tab').forEach(t => t.addEventListener('click', () => { jobState.cat = t.dataset.cat; renderJobsPage({}); }));
+});
+
+/* ---------- 关于我们 ---------- */
+async function loadAbout(){
+  const d = await apiGet('/public/about-sections');
+  const body = document.getElementById('aboutBody');
+  if(Array.isArray(d) && d.length){
+    body.innerHTML = d.map(s => `
+      <div class="bg-white border border-stone-200 rounded-xl p-6" id="about-${escapeHtml(s.code || '')}">
+        <h3 class="font-head text-lg font-semibold text-ink mb-2">${escapeHtml(s.title || s.code || '')}</h3>
+        ${s.content_html ? `<div class="prose text-stone2 text-sm leading-relaxed">${s.content_html}</div>` : `<p class="text-stone2 text-sm">${escapeHtml(s.content || '')}</p>`}
+        ${(s.images && s.images.length) ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">${s.images.map(img => img.url ? `<img src="${img.url}" class="rounded-lg w-full aspect-[4/3] object-cover">` : '').join('')}</div>` : ''}
+      </div>`).join('');
+  } else {
+    body.innerHTML = `
+      <div class="bg-white border border-stone-200 rounded-xl p-6"><h3 class="font-head text-lg font-semibold text-ink mb-2">关于YD</h3><p class="text-stone2 text-sm leading-relaxed">YD家具创立于 1953 年，专注实木家具研发制造 72 年，集研发、制造、销售于一体的现代化家居企业。</p></div>
+      <div class="bg-white border border-stone-200 rounded-xl p-6"><h3 class="font-head text-lg font-semibold text-ink mb-2">发展历程</h3><p class="text-stone2 text-sm leading-relaxed">1953 年建厂 · 1988 年品牌化运营 · 2010 年全屋定制业务上线 · 2026 年智能化生产线全面投产。</p></div>
+      <div class="bg-white border border-stone-200 rounded-xl p-6"><h3 class="font-head text-lg font-semibold text-ink mb-2">品牌介绍</h3><p class="text-stone2 text-sm leading-relaxed">胡桃禮、柏悦、如意春、办公优选四大系列，覆盖客厅、餐厅、卧室、书房、茶室全空间场景。</p></div>
+      <div class="bg-white border border-stone-200 rounded-xl p-6"><h3 class="font-head text-lg font-semibold text-ink mb-2">联系我们</h3><p class="text-stone2 text-sm leading-relaxed">服务热线：400-888-8888；服务热线：400-888-9999；邮箱：contact@yd-home.com</p></div>`;
+  }
+}
+
+/* ---------- 下载中心 ---------- */
+async function loadDownloads(){
+  const d = await apiGet('/public/downloads', {page: 1, page_size: 50});
+  const list = document.getElementById('downloadList');
+  const empty = document.getElementById('downloadEmpty');
+  if(!d || !Array.isArray(d.items) || !d.items.length){ list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  list.innerHTML = d.items.map(dl => `
+    <div class="bg-white rounded-xl border border-stone-200 p-5 hover:shadow-lg transition-shadow">
+      <h3 class="font-head font-medium text-ink">${escapeHtml(dl.title || dl.file_name || '资料')}</h3>
+      <p class="text-xs text-stone-500 mt-1">${escapeHtml(dl.category || '')}${dl.file_size ? ' · ' + dl.file_size : ''}</p>
+      <a href="${escapeHtml(dl.file_url || '#')}" target="_blank" class="inline-block mt-3 px-4 py-1.5 rounded-md bg-gold text-white text-sm hover:bg-amber-700 transition-colors">下载</a>
+    </div>`).join('');
+}
+
+/* ---------- 投递弹窗 ---------- */
+let applyJobId = null;
+function openApply(jobId, title){
+  applyJobId = jobId;
+  showModal(`<h3 class="font-head text-lg font-semibold text-ink mb-3">投递简历 · ${title}</h3>
+    <p class="text-sm text-stone2 mb-3">如已登录会员，投递将自动关联您的账号，可在「个人中心」查看进度。</p>
+    <div class="space-y-3">
+      <div><label class="block text-sm text-stone2 mb-1">姓名</label><input id="ap-name" class="w-full border border-stone-300 rounded-md px-3 py-2"></div>
+      <div><label class="block text-sm text-stone2 mb-1">手机号</label><input id="ap-phone" class="w-full border border-stone-300 rounded-md px-3 py-2"></div>
+      <div><label class="block text-sm text-stone2 mb-1">邮箱</label><input id="ap-email" class="w-full border border-stone-300 rounded-md px-3 py-2"></div>
+      <div><label class="block text-sm text-stone2 mb-1">简历链接</label><input id="ap-resume" class="w-full border border-stone-300 rounded-md px-3 py-2" placeholder="https://…（选填）"></div>
+    </div>
+    <button class="w-full mt-4 py-2.5 rounded-md bg-gold text-white font-medium hover:bg-amber-700 cursor-pointer" onclick="submitApply()">提交投递</button>`);
+}
+async function submitApply(){
+  const payload = {
+    job_id: applyJobId,
+    name: document.getElementById('ap-name').value.trim(),
+    phone: document.getElementById('ap-phone').value.trim(),
+    email: document.getElementById('ap-email').value.trim(),
+    resume_url: document.getElementById('ap-resume').value.trim() || null,
+  };
+  if(!payload.name || !payload.phone){ toast('请填写姓名与手机号'); return; }
+  const j = await apiPost('/public/jobs/apply', payload, memberToken() || undefined);
+  closeModalBox();
+  if(j && j.code === 0){ toast('投递成功，我们会在 3 个工作日内与您联系'); }
+  else { toast('投递失败：' + (j.detail || j.message || '请重试')); }
+}
+
+/* ---------- 简易模态（复用于投递） ---------- */
+function showModal(html){
+  let m = document.getElementById('appModal');
+  if(!m){
+    m = document.createElement('div');
+    m.id = 'appModal';
+    m.className = 'modal hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40';
+    m.innerHTML = '<div class="bg-white rounded-2xl w-full max-w-md p-6" id="appModalInner"></div>';
+    document.body.appendChild(m);
+  }
+  m.classList.remove('hidden');
+  document.getElementById('appModalInner').innerHTML = html;
+}
+function closeModalBox(){ const m = document.getElementById('appModal'); if(m) m.classList.add('hidden'); }
+
+/* ---------- 购物车（复用已有 cart 逻辑 + 真实下单） ---------- */
+function addToCart(id, name, price){
+  const cart = JSON.parse(localStorage.getItem('yd_cart') || '[]');
+  const key = String(id);
+  const item = cart.find(x => x.key === key);
+  if(item){ item.qty++; } else { cart.push({key: String(id), id, name: name || ('产品' + id), price: price || 0, qty: 1}); }
+  localStorage.setItem('yd_cart', JSON.stringify(cart));
+  updateCartBadge();
+  toast('已加入购物车');
+}
+function renderCart(){
+  const cart = JSON.parse(localStorage.getItem('yd_cart') || '[]');
+  const list = document.getElementById('cartList');
+  const totalEl = document.getElementById('cartTotal');
+  if(!cart.length){
+    list.innerHTML = '<p class="text-stone-400 text-center py-10">购物车为空，去 <a href="#/products" class="text-gold hover:underline">产品中心</a> 逛逛吧</p>';
+    totalEl.textContent = '¥0';
+    document.getElementById('orderFormBox').classList.add('hidden');
+    document.getElementById('checkoutBtn').disabled = true;
+    document.getElementById('checkoutBtn').classList.add('opacity-40');
+    return;
+  }
+  document.getElementById('checkoutBtn').disabled = false;
+  document.getElementById('checkoutBtn').classList.remove('opacity-40');
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  totalEl.textContent = '¥' + (total/100).toLocaleString();
+  list.innerHTML = cart.map((i, idx) => `
+    <div class="flex items-center justify-between bg-white border border-stone-200 rounded-xl p-4">
+      <div><h4 class="font-head font-medium text-ink">${escapeHtml(i.name)}</h4><p class="text-sm text-stone2 mt-1">¥${(i.price/100).toLocaleString()} × ${i.qty}</p></div>
+      <div class="flex items-center gap-2">
+        <button class="w-7 h-7 rounded-md border border-stone-200 hover:border-gold cursor-pointer" onclick="cartQty(${idx},-1)">−</button>
+        <span class="w-6 text-center">${i.qty}</span>
+        <button class="w-7 h-7 rounded-md border border-stone-200 hover:border-gold cursor-pointer" onclick="cartQty(${idx},1)">+</button>
+        <button class="ml-2 text-red-400 hover:text-red-600 text-sm cursor-pointer" onclick="cartRemove(${idx})">删除</button>
+      </div>
+    </div>`).join('');
+}
+function cartQty(idx, delta){
+  const cart = JSON.parse(localStorage.getItem('yd_cart') || '[]');
+  if(!cart[idx]) return;
+  cart[idx].qty += delta;
+  if(cart[idx].qty <= 0) cart.splice(idx, 1);
+  localStorage.setItem('yd_cart', JSON.stringify(cart));
+  updateCartBadge(); renderCart();
+}
+function cartRemove(idx){
+  const cart = JSON.parse(localStorage.getItem('yd_cart') || '[]');
+  cart.splice(idx, 1);
+  localStorage.setItem('yd_cart', JSON.stringify(cart));
+  updateCartBadge(); renderCart();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const cb = document.getElementById('checkoutBtn');
+  if(cb) cb.addEventListener('click', () => document.getElementById('orderFormBox').classList.toggle('hidden'));
+  const so = document.getElementById('submitOrderBtn');
+  if(so) so.addEventListener('click', async () => {
+    const cart = JSON.parse(localStorage.getItem('yd_cart') || '[]');
+    if(!cart.length){ toast('购物车为空'); return; }
+    const payload = {
+      items: cart.map(i => ({product_id: i.id, quantity: i.qty})),
+      receiver_name: document.getElementById('of-name').value.trim(),
+      receiver_phone: document.getElementById('of-phone').value.trim(),
+      receiver_address: document.getElementById('of-addr').value.trim(),
+    };
+    if(!payload.receiver_name || !payload.receiver_phone || !payload.receiver_address){ toast('请填写完整收货信息'); return; }
+    const j = await apiPost('/orders', payload, memberToken() || undefined);
+    if(j && j.code === 0){
+      localStorage.setItem('yd_cart', JSON.stringify([]));
+      updateCartBadge(); renderCart();
+      const ok = document.getElementById('orderOk');
+      ok.textContent = '订单 ' + (j.data.order_no || '') + ' 提交成功，可在会员中心「我的订单」查看';
+      ok.classList.remove('hidden');
+      toast('下单成功');
+    } else {
+      toast('下单失败：' + (j.detail || j.message || '请重试'));
+    }
+  });
+});
+
+/* ---------- 会员登录（真实） ---------- */
+let memberMode = 'login';
+async function submitAuth(){
+  const phone = document.querySelector('#authForm input[type="tel"]').value.trim();
+  const pwd = document.querySelector('#authForm input[type="password"]').value;
+  const okEl = document.getElementById('authOk');
+  if(!/^1\d{10}$/.test(phone)){ toast('请输入 11 位手机号'); return; }
+  if(memberMode === 'login'){
+    const j = await apiPost('/members/login', {phone, password: pwd});
+    if(j && j.code === 0 && j.data && j.data.access_token){
+      localStorage.setItem(MEMBER_TOKEN_KEY, j.data.access_token);
+      localStorage.setItem('yd_member_info', JSON.stringify(j.data));
+      localStorage.setItem('yd_member', '1');
+      closeLogin(); updateMemberUI();
+      toast('登录成功');
+    } else {
+      okEl.textContent = '登录失败：' + (j.detail || j.message || '请检查手机号密码');
+      okEl.classList.remove('hidden');
+    }
+  } else {
+    const code = document.querySelector('#regCode input').value.trim();
+    const pwd2 = document.querySelector('#regPwd input').value;
+    if(pwd !== pwd2){ okEl.textContent = '两次密码不一致'; okEl.classList.remove('hidden'); return; }
+    const j = await apiPost('/members/register', {phone, password: pwd, nickname: 'YD会员' + phone.slice(-4)});
+    if(j && j.code === 0){
+      okEl.textContent = '注册成功，请登录';
+      okEl.classList.remove('hidden');
+      setAuthMode('login');
+    } else {
+      okEl.textContent = '注册失败：' + (j.detail || j.message || '手机号可能已注册');
+      okEl.classList.remove('hidden');
+    }
+  }
+}
+
+/* ---------- 轮播 ---------- */
+const slides = document.querySelectorAll('.carousel-slide');
+const dotsContainer = document.getElementById('carouselDots');
+let currentSlide = 0, slideTimer;
+slides.forEach((s,i) => {
+  const dot = document.createElement('button');
+  dot.className = 'w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white transition-colors' + (i===0?' bg-white':'');
+  dot.addEventListener('click', e => { e.stopPropagation(); goToSlide(i); });
+  dotsContainer.appendChild(dot);
+  s.addEventListener('click', () => {
+    if (s.dataset.book) { openBook(); return; }
+    const href = s.dataset.href;
+    if (href && href !== '#'){
+      if (href.startsWith('#')){ location.hash = href; }
+      else if (href.startsWith('prototype_')){ location.hash = href.includes('产品中心') ? '#/products' : (href.includes('案例') ? '#/cases' : '#/'); }
+      else location.href = href;
+    }
+  });
+});
+function goToSlide(idx){
+  slides.forEach((s,i) => { s.style.opacity = i===idx?'1':'0'; });
+  Array.from(dotsContainer.children).forEach((d,i) => { d.classList.toggle('bg-white', i===idx); d.classList.toggle('bg-white/40', i!==idx); });
+  currentSlide = idx; resetTimer();
+}
+function nextSlide(){ goToSlide((currentSlide + 1) % slides.length); }
+function prevSlide(){ goToSlide((currentSlide - 1 + slides.length) % slides.length); }
+function resetTimer(){ clearInterval(slideTimer); slideTimer = setInterval(nextSlide, 5000); }
+document.getElementById('nextSlide').addEventListener('click', e => { e.stopPropagation(); nextSlide(); });
+document.getElementById('prevSlide').addEventListener('click', e => { e.stopPropagation(); prevSlide(); });
+resetTimer();
+
+/* ---------- 购物车角标 ---------- */
+function updateCartBadge(){
+  try{
+    const cart = JSON.parse(localStorage.getItem('yd_cart') || '[]');
+    const count = cart.reduce((sum,item)=>sum+item.qty,0);
+    const badge = document.getElementById('cartBadge');
+    if(badge){ badge.textContent = count; badge.classList.toggle('hidden', count === 0); }
+  }catch(e){}
+}
+
+/* ---------- 初始化 ---------- */
+updateCartBadge();
+navigate();
+
+/* ---------- 移动端菜单 ---------- */
+const menuBtn = document.getElementById('menuBtn'), mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => { const open = mobileMenu.classList.toggle('hidden') === false; menuBtn.setAttribute('aria-expanded', String(open)); });
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeBook(); closeLogin(); closeSearch(); closeChat(); closeMember(); closeModalBox(); } });
+</script>
+</body>
+</html>

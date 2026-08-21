@@ -33,7 +33,7 @@ export default function Jobs() {
       </section>
 
       {/* ===== 分类 tab ===== */}
-      <section className="border-b border-coal/10 bg-card">
+      <section className="border-b border-coal/10 bg-white">
         <div className="container-yf flex gap-2 py-4">
           {CATEGORY_TABS.map((t) => (
             <button
@@ -68,7 +68,7 @@ export default function Jobs() {
                 <Link
                   key={j.id}
                   to={`/jobs/${j.id}`}
-                  className="group flex items-center justify-between gap-6 rounded-2xl bg-card p-6 shadow-sm ring-1 ring-coal/5 transition hover:shadow-md"
+                  className="group flex items-center justify-between gap-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-coal/5 transition hover:shadow-md"
                 >
                   <div>
                     <div className="flex items-center gap-2">

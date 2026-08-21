@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YD 后台管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>html,body{height:100%}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#1f2937}#toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(20px);background:#1f2937;color:#fff;padding:.7rem 1.3rem;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:all .3s;z-index:300}#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}.modal.show{display:flex}.act-btn{cursor:pointer;padding:.25rem .6rem;border-radius:6px;font-size:.8rem;transition:all .15s}.act-edit{color:#1677ff}.act-edit:hover{background:#e6f0ff}.act-del{color:#ef4444}.act-del:hover{background:#fee2e2}.act-add{color:#16a34a}.act-add:hover{background:#dcfce7}.side-item{cursor:pointer;display:flex;align-items:center;gap:.6rem;padding:.65rem .9rem;border-radius:8px;color:#cbd5e1;font-size:.9rem;transition:all .15s}.side-item:hover{background:#1e293b;color:#fff}.side-item.active{background:#1677ff;color:#fff}.card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:1.1rem 1.3rem}.kpi{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:1.1rem}.btn-primary{background:#1677ff;color:#fff;font-weight:500;transition:all .15s}.btn-primary:hover{background:#4096ff}.btn-line{border:1px solid #d1d5db;color:#374151;transition:all .15s}.btn-line:hover{border-color:#1677ff;color:#1677ff}table{width:100%;border-collapse:collapse;font-size:.85rem}th{text-align:left;color:#6b7280;font-weight:500;padding:.6rem .8rem;border-bottom:1px solid #e5e7eb;background:#fafafa}td{padding:.6rem .8rem;border-bottom:1px solid #f1f5f9}tr:hover td{background:#f8fafc}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#drawerBox{position:fixed;inset:0;z-index:210;display:none}
+#drawerBox.show{display:block}
+#drawerOverlay{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+#drawerPanel{position:absolute;right:0;top:0;bottom:0;width:100%;max-width:480px;background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.15);transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+#drawerBox.show #drawerPanel{transform:translateX(0)}
+#drawerHead{padding:1rem 1.25rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
+#drawerBody{flex:1;overflow-y:auto;padding:1.25rem}
+#drawerFoot{padding:1rem 1.25rem;border-top:1px solid #e5e7eb}
+
+#userDropdown{position:relative}
+#userDropdownMenu{position:absolute;right:0;top:calc(100% + 6px);width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.12);display:none;overflow:hidden;z-index:50}
+#userDropdownMenu.show{display:block}
+#userDropdownMenu button{display:block;width:100%;text-align:left;padding:.6rem .9rem;font-size:.85rem;color:#374151;background:#fff;border:none;cursor:pointer}
+#userDropdownMenu button:hover{background:#f3f4f6}
+#userDropdownMenu .divider{height:1px;background:#e5e7eb;margin:0 .5rem}
+</style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div id="loginView" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8">
+    <div class="text-center mb-6"><h1 class="text-2xl font-bold text-slate-800">YD 后台管理</h1><p class="text-sm text-slate-400 mt-1">企业管理运营平台</p></div>
+    <form id="adminLoginForm" onsubmit="return doLogin(event)">
+      <label class="block text-sm text-slate-500 mb-1">账号</label>
+      <input id="au" required class="w-full border border-slate-300 rounded-lg px-3 py-2.5 mb-3 focus:border-primary focus:outline-none" placeholder="admin / editor / product / service / order">
+      <label class="block text-sm text-slate-500 mb-1">密码</label>
+      <input id="ap" type="password" required class="w-full border border-slate-300 rounded-lg px-3 py-2.5 mb-3 focus:border-primary focus:outline-none" placeholder="密码（演示 admin123）">
+      <label class="block text-sm text-slate-500 mb-1">图形验证码</label>
+      <div class="flex gap-2 mb-4">
+        <input id="acode" required maxlength="4" class="flex-1 border border-slate-300 rounded-lg px-3 py-2.5 focus:border-primary focus:outline-none" placeholder="点击图片刷新">
+        <img id="acaptchaImg" src="" alt="验证码" class="h-11 w-28 border border-slate-300 rounded-lg cursor-pointer object-contain bg-slate-50" onclick="refreshCaptcha()" title="点击刷新">
+      </div>
+      <button class="btn-primary w-full py-2.5 rounded-lg">登录</button>
+    </form>
+    <div class="mt-4 text-xs text-slate-400 bg-slate-50 rounded-lg p-3 leading-relaxed">
+      <b>演示账号</b>（密码 admin123 / 后端 SQLite 种子）：<br>
+      admin 超级管理员 ｜ editor 内容编辑 ｜ product 产品管理员 ｜ service 客服运营 ｜ order 订单专员
+    </div>
+    <div id="loginError" class="mt-3 text-sm text-red-500 hidden"></div>
+  </div>
+</div>
+
+<!-- 主框架 -->
+<div id="appView" class="hidden min-h-screen flex">
+  <aside class="w-56 bg-slate-900 text-white shrink-0 flex flex-col">
+    <div class="px-5 py-4 border-b border-slate-700 flex items-center gap-2"><span class="font-bold text-lg">YD</span><span class="text-slate-300 text-sm">后台</span></div>
+    <nav id="sideMenu" class="flex-1 p-3 space-y-1 overflow-y-auto"></nav>
+    <div class="p-3 border-t border-slate-700 flex items-center gap-2">
+      <div id="roleAvatar" class="w-9 h-9 rounded-full bg-primary flex items-center justify-center font-bold"></div>
+      <div class="flex-1"><p id="roleName" class="text-sm font-medium"></p><p class="text-xs text-slate-400" id="roleKeyText"></p></div>
+      <button class="text-slate-400 hover:text-white text-sm" onclick="doLogout()" title="退出">退出</button>
+    </div>
+  </aside>
+  <main class="flex-1 flex flex-col">
+    <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between">
+      <h2 id="modTitle" class="text-lg font-semibold text-slate-800">仪表盘</h2>
+      <div class="flex items-center gap-3">
+        <button class="btn-line px-3 py-1.5 rounded-lg text-sm flex items-center gap-1" onclick="refreshModule()">⟳ 刷新</button>
+        <span class="text-sm text-slate-400" id="clock"></span>
+        <div id="userDropdown">
+          <button class="flex items-center gap-2 text-sm text-slate-600 hover:text-primary" onclick="toggleUserDropdown(event)">
+            <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold" id="headerAvatar"></span>
+            <span id="headerRoleName">管理员</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div id="userDropdownMenu">
+            <button onclick="openChangePwd()">修改密码</button>
+            <button onclick="openSwitchUser()">切换账号</button>
+            <div class="divider"></div>
+            <button onclick="doLogout()">退出登录</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="adminContent" class="flex-1 p-6 overflow-y-auto"></div>
+  </main>
+</div>
+
+<div id="modalBox" class="modal" onclick="if(event.target===this)closeModalBox()"><div class="bg-white rounded-xl w-full max-w-lg p-6" id="modalInner"></div></div>
+<div id="drawerBox"><div id="drawerOverlay" onclick="closeDrawer()"></div><div id="drawerPanel"><div id="drawerHead"><h3 class="font-semibold text-lg" id="drawerTitle">新增</h3><button class="text-slate-400 hover:text-slate-600" onclick="closeDrawer()">✕</button></div><div id="drawerBody"></div><div id="drawerFoot"><button class="btn-primary w-full py-2.5 rounded-lg" id="drawerSaveBtn">保存</button></div></div></div>
+
+<div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[300] px-4 py-2 rounded-lg shadow-lg bg-ink text-white text-sm hidden">提示</div>
+
+<script>
+/* ===== 角色与模块权限（PRD §3.2 / §6.12 / §8.2） ===== */
+const ROLES={
+  admin:{name:'超级管理员',avatar:'超',modules:['dashboard','carousel','product','case','news','recruit','about','booking','message','order','system']},
+  editor:{name:'内容编辑',avatar:'编',modules:['dashboard','carousel','news','case','about','message']},
+  product:{name:'产品管理员',avatar:'产',modules:['dashboard','carousel','product','order']},
+  service:{name:'客服运营',avatar:'客',modules:['dashboard','booking','message','order']},
+  order:{name:'订单专员',avatar:'单',modules:['dashboard','order','booking']}
+};
+const MOD_LABEL={dashboard:'仪表盘',carousel:'轮播图管理',product:'产品管理',case:'案例管理',news:'新闻管理',recruit:'招聘管理',about:'关于我们管理',booking:'预约管理',message:'留言管理',order:'订单管理',system:'系统管理'};
+
+/* ===== 数据（原型数据驱动，非服务端强制） ===== */
+const DB={
+  carousel:[{id:1,title:'胡桃禮首屏',pos:'首页',link:'产品',sort:1,on:'是',img:'',series:'胡桃禮',cat:'沙发',model:'HL-SF-01'},{id:2,title:'柏悦卧室',pos:'首页',link:'产品',sort:2,on:'是',img:'',series:'柏悦',cat:'床',model:'BY-BD-02'},{id:3,title:'茶韵茶室',pos:'案例详情',link:'案例',sort:3,on:'否',img:'',series:'',cat:'',model:''}],
+  product:[{id:1,series:'胡桃禮',cat:'沙发',model:'HL-SF-01',desc:'北美黑胡桃实木沙发，榫卯框架，坐感饱满',img:'',price:12800,cost:6800,status:'在售',publish:'已发布',validTo:'2027-12-31',created:'2026-08-10',updated:'2026-08-15'},{id:2,series:'柏悦',cat:'床',model:'BY-BD-02',desc:'头层牛皮软床，低靠背沉静大气',img:'',price:8800,cost:4200,status:'在售',publish:'已发布',validTo:'2027-12-31',created:'2026-08-10',updated:'2026-08-15'},{id:3,series:'办公优选',cat:'椅',model:'BG-CH-03',desc:'人体工学椅，多向调节，适合长时间伏案',img:'',price:2400,cost:1100,status:'在售',publish:'草稿',validTo:'2027-12-31',created:'2026-08-12',updated:'2026-08-16'}],
+  case:[{id:1,title:'城芯平层·胡桃禮客厅',space:'客厅',style:'现代简约',products:[{series:'胡桃禮',cat:'沙发',model:'HL-SF-01'},{series:'胡桃禮',cat:'几',model:'HL-CJ-02'}],created:'2026-08-10',updated:'2026-08-15'},{id:2,title:'院墅·柏悦主卧',space:'卧室',style:'新中式',products:[{series:'柏悦',cat:'床',model:'BY-BD-02'}],created:'2026-08-11',updated:'2026-08-16'}],
+  news:[{id:1,title:'YD 2026 春季新品发布会圆满落幕',cat:'企业新闻',status:'已发布',content:'本次发布会以"温润生活"为主题，发布胡桃禮、柏悦两大系列新品，现场展示了多款黑胡桃实木家具，并公布年度空间定制计划。',publishTime:'2026-08-10 09:30'},{id:2,title:'实木家居消费趋势报告',cat:'行业资讯',status:'已发布',content:'行业数据显示，消费者对空间定制与环保材质的需求持续上升，定制化成为主流，线上咨询量同比增长 38%。',publishTime:'2026-08-05 14:20'}],
+  recruit:[{id:1,title:'实木家具结构设计师',type:'社招',dept:'研发设计',status:'招聘中',startTime:'2026-08-01',endTime:'2026-09-30'},{id:2,title:'管培生（设计方向）',type:'校招',dept:'管培',status:'招聘中',startTime:'2026-08-15',endTime:'2026-10-15'}],
+  about:[{id:1,block:'关于YD'},{id:2,block:'发展历程'},{id:3,block:'品牌介绍'},{id:4,block:'联系我们'}],
+  booking:[{id:1,name:'王女士',phone:'138****0001',type:'到店预约',status:'待跟进',from:'首页',time:'2026-08-17 10:00'},{id:2,name:'李先生',phone:'139****0002',type:'产品咨询',status:'跟进中',from:'产品详情',time:'2026-08-16 15:30'}],
+  message:[{id:1,name:'张同学',source:'招聘投递',content:'咨询校招简历投递方式',status:'待处理',msgTime:'2026-08-17 14:20',replyTime:'',conv:[{role:'user',text:'咨询校招简历投递方式',time:'2026-08-17 14:20'}]},{id:2,name:'赵先生',source:'客服留言',content:'沙发能否定制尺寸',status:'已回复',msgTime:'2026-08-16 10:05',replyTime:'2026-08-16 11:30',conv:[{role:'user',text:'沙发能否定制尺寸',time:'2026-08-16 10:05'},{role:'staff',text:'支持定制尺寸，客服将与您确认具体规格与报价',time:'2026-08-16 11:30'}]}],
+  order:[{id:1,no:'YD20260812001',user:'会员0001',amount:12800,status:'已付款'},{id:2,no:'YD20260811002',user:'会员0002',amount:8800,status:'待付款'}]
+};
+/* 下拉框选项（#65 表单字段统一使用下拉框） */
+const SELECTS={
+  carousel:{pos:['首页','案例详情','新闻'],link:['产品','案例','新闻'],on:['是','否']},
+  product:{status:['在售','下架','预售','缺货'],publish:['已发布','草稿']},
+  news:{cat:['企业新闻','行业资讯'],status:['已发布','草稿','待审核']},
+  recruit:{type:['社招','校招'],dept:['研发设计','管培','销售','运营'],status:['招聘中','暂停','已关闭']},
+  booking:{type:['到店预约','产品咨询','定制需求','其它'],status:['待跟进','跟进中','已成交','已关闭'],from:['首页','产品详情','案例','新闻']},
+  message:{source:['招聘投递','客服留言','产品咨询','售后'],status:['待处理','已回复','已关闭']},
+  order:{status:['待付款','已付款','已发货','运输中','已签收','已取消']}
+};
+/* 长文本字段用多行文本框（#64 新闻正文 / #63 产品描述） */
+const TEXTAREAS={news:['content'],product:['desc']};
+/* 只读字段（#63 产品 发布状态/有效期/创建时间/修改时间 固定不可改） */
+const READONLY={product:['publish','created','updated'],recruit:['startTime']};
+const TABLE_CFG={
+  carousel:{cols:[['img','图片'],['title','标题'],['pos','位置'],['link','跳转类型'],['series','系列'],['cat','类别'],['model','型号'],['sort','排序'],['on','启用']],ops:true},
+  product:{cols:[['series','系列'],['cat','类别'],['model','型号'],['desc','描述'],['img','图片'],['price','售价'],['cost','成本'],['status','状态'],['publish','发布状态'],['validTo','有效期'],['created','创建时间'],['updated','修改时间']],ops:true},
+  case:{cols:[['title','案例'],['space','空间'],['style','风格'],['products','所含产品'],['created','创建时间'],['updated','修改时间']],ops:true},
+  news:{cols:[['title','标题'],['cat','分类'],['content','内容'],['status','状态'],['publishTime','发布时间']],ops:true},
+  recruit:{cols:[['title','岗位'],['type','类型'],['dept','部门'],['location','地点'],['salaryMin','月薪下限(元)'],['salaryMax','月薪上限(元)'],['status','状态'],['startTime','开始时间'],['endTime','截止时间']],ops:true},
+  about:{cols:[['block','区块']],ops:true},
+  booking:{cols:[['name','姓名'],['phone','电话'],['type','需求类型'],['status','状态'],['from','来源'],['time','预约时间']],ops:true},
+  message:{cols:[['name','姓名'],['source','来源'],['content','内容'],['status','状态'],['msgTime','留言时间'],['replyTime','回复时间']],ops:true},
+  order:{cols:[['no','订单号'],['user','用户'],['amount','金额'],['status','状态']],ops:true}
+};
+let currentRole=null,currentMod='dashboard',currentSearch='';
+let ADMIN_TOKEN='';
+let ADMIN_USERNAME='';
+
+/* ===== 后端 API 配置（同源代理，由演示服务器转发到 :8000） ===== */
+const API_BASE = (window.__YD_API_BASE__) || '/api/v1';
+
+/* ===== 真实数据层（9 个模块接后端：完整 CRUD / 状态流转 / 回复） ===== */
+const REMOTE_MODS = ['product', 'case', 'news', 'carousel', 'recruit', 'booking', 'message', 'order', 'about'];
+const REMOTE_PATH = {
+  product: '/admin/products', case: '/admin/cases', news: '/admin/news',
+  carousel: '/admin/banners', recruit: '/admin/jobs', booking: '/admin/appointments',
+  message: '/admin/messages', order: '/admin/orders', about: '/admin/about-sections',
+};
+// 操作类型：full=完整 CRUD（新增/编辑/删除）；status=仅状态流转；reply=回复+删除；about=区块维护
+const OP_TYPE = {
+  product: 'full', case: 'full', news: 'full', carousel: 'full', recruit: 'full',
+  booking: 'status', order: 'status', message: 'reply', about: 'about',
+};
+let CATS_ALL = []; // 分类列表（series/space/category）
+let REMOTE_ITEMS = {}; // mod -> rows（后端原始）
+
+async function apiGet(path, params){
+  try{
+    const qs = params ? '?' + new URLSearchParams(Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>[k,String(v)])) : '';
+    const r = await fetch(API_BASE + path + qs, {headers: {'Authorization': 'Bearer ' + ADMIN_TOKEN}});
+    const j = await r.json();
+    return (j && j.code === 0) ? j.data : null;
+  }catch(e){ return null; }
+}
+async function apiSend(method, path, body){
+  try{
+    const r = await fetch(API_BASE + path, {
+      method, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_TOKEN},
+      body: JSON.stringify(body),
+    });
+    const j = await r.json();
+    return j;
+  }catch(e){ return {code: 500, detail: '网络错误：' + e.message}; }
+}
+async function loadCats(){
+  if(CATS_ALL.length) return;
+  const d = await apiGet('/admin/categories');
+  if(Array.isArray(d)) CATS_ALL = d;
+}
+function catIdByName(kind, name){
+  if(!name) return null;
+  const c = CATS_ALL.find(x => x.kind === kind && x.name === name);
+  return c ? c.id : null;
+}
+function catNameById(kind, id){
+  if(!id) return '';
+  const c = CATS_ALL.find(x => x.kind === kind && x.id === id);
+  return c ? c.name : '';
+}
+function fmtDate(s){
+  if(!s) return '';
+  return String(s).slice(0,10);
+}
+function fmtMoney(cents){
+  if(cents === null || cents === undefined) return 0;
+  return Math.round(cents / 100);
+}
+/* 后端行 → 原型行（供现有表格渲染） */
+function remoteToProto(mod, it){
+  if(mod === 'product'){
+    const series = catNameById('series', it.series_id);
+    const cat = catNameById('category', it.category_id);
+    return {
+      id: it.id, series: series || (it.subtitle || '').split('·')[0]?.trim() || '—', cat: cat || '—',
+      model: it.product_code || '—', desc: it.description || '', img: it.cover_url || '',
+      price: fmtMoney(it.min_price_cents), cost: 0,
+      status: it.status === 'on_sale' ? '在售' : (it.status === 'off_sale' ? '下架' : '草稿'),
+      publish: it.status === 'draft' ? '草稿' : '已发布',
+      validTo: it.publish_end_at ? fmtDate(it.publish_end_at) : '—',
+      created: fmtDate(it.created_date), updated: fmtDate(it.updated_date),
+      __raw: it,
+    };
+  }
+  if(mod === 'case'){
+    return {
+      id: it.id, title: it.title, space: '—', style: it.style || '—',
+      products: it.description ? [{series: it.style || '', cat: '', model: it.description.slice(0, 30)}] : [],
+      created: fmtDate(it.published_date), updated: '',
+      __raw: it,
+    };
+  }
+  // news
+  if(mod === 'news'){
+    return {
+      id: it.id, title: it.title, cat: it.category === 'company' ? '企业新闻' : '行业资讯',
+      content: it.summary || it.content || '', status: it.is_published ? '已发布' : '草稿',
+      publishTime: it.published_date ? String(it.published_date).slice(0,16).replace('T',' ') : '',
+      __raw: it,
+    };
+  }
+  // carousel（banners）
+  if(mod === 'carousel'){
+    return {
+      id: it.id, title: it.title, pos: it.link_type || '', link: it.link_target || '',
+      series: '', cat: '', model: '', sort: it.sort || 0,
+      on: it.is_activate === 1 || it.is_activate === true ? '是' : '否',
+      img: it.image_url || '', __raw: it,
+    };
+  }
+  // recruit（jobs）
+  if(mod === 'recruit'){
+    return {
+      id: it.id, title: it.title, type: it.category === 'campus' ? '校招' : '社招',
+      dept: it.department || '—', status: it.is_activate === false ? '已关闭' : '招聘中',
+      startTime: it.publish_date ? String(it.publish_date).slice(0,10) : '',
+      endTime: it.expire_date ? String(it.expire_date).slice(0,10) : '',
+      __raw: it,
+    };
+  }
+  // booking（appointments）
+  if(mod === 'booking'){
+    const stMap = {pending:'待跟进', following:'跟进中', converted:'已成交', invalid:'已关闭'};
+    return {
+      id: it.id, name: it.name || '—', phone: it.phone || '—',
+      type: it.type || '到店预约', status: stMap[it.status] || it.status || '待跟进',
+      from: it.source_page || '—',
+      time: it.preferred_date ? String(it.preferred_date).slice(0,16).replace('T',' ') : '',
+      __raw: it,
+    };
+  }
+  // message（留言）
+  if(mod === 'message'){
+    const stMap = {pending:'待处理', replied:'已回复', archived:'已关闭'};
+    return {
+      id: it.id, name: it.name || '—', source: '客服留言',
+      content: it.content || '', status: stMap[it.status] || it.status || '待处理',
+      msgTime: it.created_date ? String(it.created_date).slice(0,16).replace('T',' ') : '',
+      replyTime: it.reply_date ? String(it.reply_date).slice(0,16).replace('T',' ') : '',
+      __raw: it,
+    };
+  }
+  // order（订单）
+  if(mod === 'order'){
+    const stMap = {pending:'待付款', paid:'已付款', shipped:'已发货', completed:'已完成', closed:'已取消'};
+    return {
+      id: it.id, no: it.order_no || '', user: it.receiver_name || '—',
+      amount: it.final_cents != null ? Math.round(it.final_cents/100) : 0,
+      status: stMap[it.status] || it.status || '待付款', __raw: it,
+    };
+  }
+  return { id: it.id, title: it.title || it.code || '', __raw: it };
+}
+async function loadRemoteTable(mod, cb){
+  const d = await apiGet(REMOTE_PATH[mod], {page: 1, page_size: 100});
+  const rows = (d && Array.isArray(d.items)) ? d.items.map(it => remoteToProto(mod, it)) : [];
+  REMOTE_ITEMS[mod] = rows;
+  if(cb) cb(rows);
+  return rows;
+}
+function statusToApi(mod, proto){
+  if(mod === 'product') return proto.status === '在售' ? 'on_sale' : (proto.status === '下架' ? 'off_sale' : 'draft');
+  return proto.status === '已发布' ? 'on_sale' : 'draft';
+}
+function protoToApi(mod, proto, isAdd){
+  if(mod === 'product'){
+    const seriesName = proto.series && proto.series !== '—' ? proto.series : (proto.seriesName || '');
+    const catName = proto.cat && proto.cat !== '—' ? proto.cat : (proto.catName || '');
+    let category_id = catIdByName('category', catName);
+    let space_id = proto.spaceId ? catIdByName('space', proto.spaceId) : null;
+    let series_id = catIdByName('series', seriesName);
+    // CHECK chk_products_category_or_space：分类、空间、系列至少一个
+    if(!category_id && !space_id && !series_id){
+      const firstCat = CATS_ALL.find(x => x.kind === 'category');
+      if(firstCat) category_id = firstCat.id;
+    }
+    return {
+      name: (seriesName + ' · ' + (proto.model || '产品')).trim().replace(/^ · /, ''),
+      subtitle: [seriesName, catName].filter(Boolean).join(' · ') || null,
+      product_code: proto.model && proto.model !== '—' ? proto.model : null,
+      series_id,
+      space_id,
+      category_id,
+      min_price_cents: Math.round((proto.price || 0) * 100),
+      max_price_cents: Math.round((proto.price || 0) * 100),
+      cover_url: proto.img || null,
+      description: proto.desc || null,
+      support_order: 1,
+      sort: 0,
+      status: statusToApi('product', proto),
+      is_top: 0,
+    };
+  }
+  if(mod === 'case'){
+    return {
+      title: proto.title,
+      cover_url: proto.img || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+      style: proto.style && proto.style !== '—' ? proto.style : null,
+      area: proto.space && proto.space !== '—' ? proto.space : null,
+      description: proto.desc || null,
+      published_date: proto.publishTime || null,
+      sort: 0,
+    };
+  }
+  // news
+  if(mod === 'news'){
+    return {
+      title: proto.title,
+      category: proto.cat === '企业新闻' ? 'company' : 'industry',
+      cover_url: proto.img || null,
+      summary: (proto.content || '').slice(0, 100) || null,
+      content: proto.content || '',
+      author: 'YD 编辑部',
+      is_published: proto.status === '已发布',
+      is_top: 0,
+      is_recommend: 0,
+      sort: 0,
+      published_date: proto.publishTime || null,
+    };
+  }
+  // carousel（banners）
+  if(mod === 'carousel'){
+    return {
+      title: proto.title,
+      image_url: proto.img || 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200',
+      link_type: proto.pos === '新闻' ? 'news' : (proto.pos === '案例详情' ? 'case' : (proto.pos === '首页' ? 'url' : 'product')),
+      link_target: proto.link || '',
+      sort: proto.sort || 0,
+      is_activate: proto.on === '是' ? 1 : 0,
+    };
+  }
+  // recruit（jobs）
+  if(mod === 'recruit'){
+    return {
+      title: proto.title,
+      category: proto.type === '校招' ? 'campus' : 'social',
+      department: proto.dept && proto.dept !== '—' ? proto.dept : null,
+      location: proto.location || null,
+      salary_min_cents: proto.salaryMin != null ? Math.round(proto.salaryMin * 100) : null,
+      salary_max_cents: proto.salaryMax != null ? Math.round(proto.salaryMax * 100) : null,
+      headcount: proto.headcount || 1,
+      description: proto.desc || null,
+      publish_date: proto.startTime || null,
+      expire_date: proto.endTime || null,
+      is_activate: proto.status !== '已关闭',
+    };
+  }
+  return {};
+}
+
+/* ===== 登录（接真实后端：验证码 → 登录 → 写入 token） ===== */
+async function refreshCaptcha(){
+  const cid = 'c_' + Math.random().toString(36).slice(2, 12);
+  try{
+    const r = await fetch(API_BASE + '/auth/captcha?captcha_id=' + cid);
+    const j = await r.json();
+    if(j && j.code === 0 && j.data && j.data.captcha_id){
+      window.__captcha_id__ = j.data.captcha_id;
+      const img = document.getElementById('acaptchaImg');
+      // 优先用图片直连端点（沙箱会 wrap base64 为 blob ref，直连最稳）
+      img.src = API_BASE + '/auth/captcha-image/' + j.data.captcha_id + '?t=' + Date.now();
+      img.onerror = function(){ img.src = j.data.captcha_image || ''; };
+    }
+  }catch(err){
+    const img = document.getElementById('acaptchaImg');
+    if(img) img.title = '后端未连通：' + err.message;
+  }
+}
+
+async function doLogin(e){
+  e.preventDefault();
+  const errEl = document.getElementById('loginError');
+  errEl.classList.add('hidden');
+  const u = document.getElementById('au').value.trim();
+  const p = document.getElementById('ap').value.trim();
+  const code = document.getElementById('acode').value.trim();
+  const cid = window.__captcha_id__ || ('c_' + Math.random().toString(36).slice(2,10));
+  try{
+    const r = await fetch(API_BASE + '/auth/login', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username: u, password: p, captcha_id: cid, captcha_code: code}),
+    });
+    const j = await r.json();
+    if(j && j.code === 0 && j.data && j.data.access_token){
+      ADMIN_TOKEN = j.data.access_token;
+      ADMIN_USERNAME = u;
+      const roleKey = ROLES[u] ? u : 'admin';
+      currentRole = ROLES[roleKey];
+      sessionStorage.setItem('yd_admin_logged','1');
+      sessionStorage.setItem('yd_admin_role',roleKey);
+      sessionStorage.setItem('yd_admin_token',ADMIN_TOKEN);
+      localStorage.setItem('yd_admin_logged','1');
+      localStorage.setItem('yd_admin_role',roleKey);
+      enterApp();
+    }else{
+      errEl.textContent = '登录失败：' + (j.detail || j.message || JSON.stringify(j));
+      errEl.classList.remove('hidden');
+      refreshCaptcha();
+    }
+  }catch(err){
+    errEl.textContent = '请求失败：' + err.message + '\n请确认后端服务运行于 ' + API_BASE;
+    errEl.classList.remove('hidden');
+  }
+  return false;
+}
+
+function doLogout(){sessionStorage.removeItem('yd_admin_logged');sessionStorage.removeItem('yd_admin_role');sessionStorage.removeItem('yd_admin_token');localStorage.removeItem('yd_admin_logged');localStorage.removeItem('yd_admin_role');location.reload();}
+function enterApp(){
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('appView').classList.remove('hidden');
+  buildSideMenu();
+  updateHeaderUser();
+  renderModule('dashboard');
+  fetchDashboardStats();
+}
+async function fetchDashboardStats(){
+  try{
+    const r = await fetch(API_BASE + '/admin/dashboard/stats', {headers: {'Authorization': 'Bearer ' + ADMIN_TOKEN}});
+    const j = await r.json();
+    if(j && j.code === 0 && j.data) renderDashboard(document.getElementById('adminContent'), j.data);
+  }catch(err){
+    renderDashboard(document.getElementById('adminContent'), null);
+  }
+}
+function buildSideMenu(){document.getElementById('roleAvatar').textContent=currentRole.avatar;document.getElementById('roleName').textContent=currentRole.name;document.getElementById('roleKeyText').textContent=Object.keys(ROLES).find(k=>ROLES[k]===currentRole)||'';document.getElementById('sideMenu').innerHTML=currentRole.modules.map(m=>`<div class="side-item ${m===currentMod?'active':''}" data-mod="${m}" onclick="goMod('${m}')">${MOD_LABEL[m]}</div>`).join('');}
+function updateHeaderUser(){const rk=Object.keys(ROLES).find(k=>ROLES[k]===currentRole)||'admin';document.getElementById('headerAvatar').textContent=currentRole.avatar;document.getElementById('headerRoleName').textContent=currentRole.name+'('+rk+')';}
+function goMod(m){currentMod=m;currentSearch='';document.querySelectorAll('.side-item').forEach(i=>i.classList.toggle('active',i.dataset.mod===m));renderModule(m);}
+
+/* ===== 渲染分发 ===== */
+function renderModule(mod){
+  document.getElementById('modTitle').textContent=MOD_LABEL[mod];
+  const c=document.getElementById('adminContent');
+  if(mod==='dashboard')return renderDashboard(c);
+  if(mod==='system')return renderSystem(c);
+  if(REMOTE_MODS.includes(mod)){ renderRemoteModule(mod); return; }
+  const cfg=TABLE_CFG[mod];
+  c.innerHTML=`<div class="card"><div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-3"><h3 class="font-semibold text-slate-700">${MOD_LABEL[mod]}列表</h3><div class="flex items-center gap-2"><input id="modSearch" type="text" placeholder="搜索关键词…" value="${esc(currentSearch)}" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:border-primary focus:outline-none" oninput="doSearch(this.value)" style="min-width:180px"><button class="btn-primary px-3 py-1.5 rounded-lg text-sm" onclick="openAdd('${mod}')">+ 新增</button></div></div><div class="overflow-x-auto"><table id="tbl_${mod}"></table></div></div>`;
+  renderTable(mod);
+}
+function renderRemoteModule(mod){
+  const c=document.getElementById('adminContent');
+  if(mod==='about'){ c.innerHTML=`<div class="card"><div class="flex justify-between items-center mb-3"><h3 class="font-semibold text-slate-700">关于我们区块 <span class="text-xs font-normal text-green-600">（实时同步前端）</span></h3><button class="btn-primary px-3 py-1.5 rounded-lg text-sm" onclick="openAdd('about')">+ 新增区块</button></div><div id="aboutList"></div></div>`; refreshRemote('about'); return; }
+  const hasAdd = OP_TYPE[mod] === 'full';
+  const addBtn = hasAdd ? `<button class="btn-primary px-3 py-1.5 rounded-lg text-sm" onclick="openAdd('${mod}')">+ 新增</button>` : '';
+  c.innerHTML=`<div class="card"><div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-3"><h3 class="font-semibold text-slate-700">${MOD_LABEL[mod]}列表 <span class="text-xs font-normal text-green-600">（实时同步前端）</span></h3><div class="flex items-center gap-2"><input id="modSearch" type="text" placeholder="搜索关键词…" value="${esc(currentSearch)}" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:border-primary focus:outline-none" oninput="doSearch(this.value)" style="min-width:180px"><button class="btn-line px-3 py-1.5 rounded-lg text-sm" onclick="refreshRemote('${mod}')">⟳ 刷新</button>${addBtn}</div></div><div class="overflow-x-auto"><table id="tbl_${mod}"></table></div></div>`;
+  refreshRemote(mod);
+}
+function refreshRemote(mod){
+  if(mod==='about'){ loadAboutRemote(); return; }
+  loadCats().then(() => loadRemoteTable(mod, rows => renderRemoteTable(mod, rows)));
+}
+function renderRemoteTable(mod, rows){
+  const cfg=TABLE_CFG[mod];
+  let list=rows||(REMOTE_ITEMS[mod]||[]);
+  if(currentSearch){
+    const kw=currentSearch.toLowerCase();
+    list=list.filter(r=>cfg.cols.some(c=>{const v=r[c[0]];if(v==null)return false;if(Array.isArray(v))return v.some(p=>JSON.stringify(p).toLowerCase().includes(kw));return String(v).toLowerCase().includes(kw);}));
+  }
+  const ops = opCellFor(mod);
+  const head='<tr>'+cfg.cols.map(c=>`<th>${c[1]}</th>`).join('')+(ops?'<th>操作</th>':'')+'</tr>';
+  const body=list.map(r=>`<tr>${cfg.cols.map(c=>{
+    if(c[0]==='img')return `<td>${r.img?`<img src="${r.img}" class="h-10 w-16 object-cover rounded border">`:'<span class="text-slate-300">—</span>'}</td>`;
+    if(c[0]==='products')return `<td>${fmtProductCell(r.products)}</td>`;
+    if(TEXTAREAS[mod]&&TEXTAREAS[mod].includes(c[0]))return `<td class="max-w-[220px] truncate text-slate-500" title="${esc(r[c[0]]||'')}">${esc((r[c[0]]||'').slice(0,24))||'—'}</td>`;
+    return `<td>${fmt(r[c[0]])}</td>`;
+  }).join('')}${ops?`<td>${opCellFor(mod).replaceAll('{id}',r.id)}</td>`:''}</tr>`).join('')||'<tr><td colspan="'+(cfg.cols.length+(ops?1:0))+'" class="text-slate-400 text-center py-6">暂无数据</td></tr>';
+  document.getElementById('tbl_'+mod).innerHTML=head+body;
+}
+function opCellFor(mod){
+  const t = OP_TYPE[mod];
+  if(t === 'full') return `<span class="act-btn act-edit" onclick="openEdit('${mod}',{id})">编辑</span><span class="act-btn act-del" onclick="openDel('${mod}',{id})">删除</span>`;
+  if(t === 'status') return `<span class="act-btn act-edit" onclick="openStatus('${mod}',{id})">状态流转</span>`;
+  if(t === 'reply') return `<span class="act-btn act-add" onclick="openReply({id})">回复</span><span class="act-btn act-del" onclick="openDel('${mod}',{id})">删除</span>`;
+  return '';
+}
+/* about 区块（非表格） */
+async function loadAboutRemote(){
+  const d = await apiGet(REMOTE_PATH.about);
+  const rows = Array.isArray(d) ? d.map(it => ({id: it.id, code: it.code, title: it.title, subtitle: it.subtitle || '', body: it.body || '', sort: it.sort || 0, __raw: it})) : [];
+  REMOTE_ITEMS.about = rows;
+  const box = document.getElementById('aboutList');
+  if(!box) return;
+  if(!rows.length){ box.innerHTML = '<p class="text-slate-400 text-center py-6">暂无区块，点「+ 新增区块」创建</p>'; return; }
+  box.innerHTML = `<div class="space-y-3">${rows.map(a=>`<div class="flex justify-between items-center border-b border-slate-100 pb-2"><div><span class="font-medium text-slate-700">${esc(a.title)}</span><span class="text-xs text-slate-400 ml-2">${esc(a.code)}</span></div><span class="act-btn act-edit" onclick="openAboutEdit(${a.id})">维护</span></div>`).join('')}</div>`;
+}
+function openAboutEdit(id){
+  const a = (REMOTE_ITEMS.about||[]).find(x => x.id === id);
+  if(!a) return;
+  showModal(`<h3 class="font-semibold text-lg mb-3">维护：${esc(a.title)}</h3>
+    <label class="block text-sm text-slate-500 mb-1">区块标识（code）</label>
+    <input id="aboutCode" value="${esc(a.code)}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">标题</label>
+    <input id="aboutTitle" value="${esc(a.title)}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">副标题</label>
+    <input id="aboutSubtitle" value="${esc(a.subtitle||'')}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">正文（HTML 支持）</label>
+    <textarea id="aboutBody" rows="6" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none">${esc(a.body||'')}</textarea>
+    <div class="flex gap-2 justify-end"><button class="btn-line px-4 py-2 rounded-lg" onclick="closeModalBox()">取消</button><button class="btn-primary px-4 py-2 rounded-lg" onclick="saveAboutEdit(${a.id})">保存</button></div>`);
+}
+async function saveAboutEdit(id){
+  const a = (REMOTE_ITEMS.about||[]).find(x => x.id === id);
+  if(!a) return;
+  const payload = {
+    code: document.getElementById('aboutCode').value.trim() || a.code,
+    title: document.getElementById('aboutTitle').value.trim() || a.title,
+    subtitle: document.getElementById('aboutSubtitle').value.trim() || null,
+    body: document.getElementById('aboutBody').value || null,
+    sort: a.sort || 0, is_activate: 1, images: [],
+  };
+  const j = await apiSend('PUT', REMOTE_PATH.about + '/' + id, payload);
+  closeModalBox();
+  if(j && j.code === 0){ toast('已保存，前台刷新可见'); refreshRemote('about'); }
+  else { toast('保存失败：' + (j.detail || j.message || '请重试')); }
+}
+function renderTable(mod,filter){
+  const cfg=TABLE_CFG[mod];let rows=DB[mod]||[];if(filter){const kw=filter.toLowerCase();rows=rows.filter(r=>cfg.cols.some(c=>{const v=r[c[0]];if(v==null)return false;if(Array.isArray(v))return v.some(p=>JSON.stringify(p).toLowerCase().includes(kw));return String(v).toLowerCase().includes(kw);}));}
+  const head='<tr>'+cfg.cols.map(c=>`<th>${c[1]}</th>`).join('')+(cfg.ops?'<th>操作</th>':'')+'</tr>';
+  const body=rows.map(r=>`<tr>${cfg.cols.map(c=>{
+    if(c[0]==='img')return `<td>${r.img?`<img src="${r.img}" class="h-10 w-16 object-cover rounded border">`:'<span class="text-slate-300">—</span>'}</td>`;
+    if(c[0]==='products')return `<td>${fmtProductCell(r.products)}</td>`;
+    if(TEXTAREAS[mod]&&TEXTAREAS[mod].includes(c[0]))return `<td class="max-w-[220px] truncate text-slate-500" title="${esc(r[c[0]]||'')}">${esc((r[c[0]]||'').slice(0,24))||'—'}</td>`;
+    return `<td>${fmt(r[c[0]])}</td>`;
+  }).join('')}${cfg.ops?`<td>${mod==='carousel'?`<span class="act-btn act-edit" onclick="openCarouselPreview(${r.id})">预览</span>`:''}<span class="act-btn act-edit" onclick="openEdit('${mod}',${r.id})">编辑</span><span class="act-btn act-del" onclick="openDel('${mod}',${r.id})">删除</span>${mod==='message'?`<span class="act-btn act-add" onclick="openReply(${r.id})">回复</span>`:''}</td>`:''}</tr>`).join('')||'<tr><td colspan="'+(cfg.cols.length+(cfg.ops?1:0))+'" class="text-slate-400 text-center py-6">暂无数据</td></tr>';
+  document.getElementById('tbl_'+mod).innerHTML=head+body;
+}
+function fmt(v){if(v===true)return '<span class="text-green-600">是</span>';if(v===false)return '<span class="text-slate-400">否</span>';if(typeof v==='number'&&MOD_LABEL)return v.toLocaleString&&v>999?v.toLocaleString():v;return v;}
+
+/* ===== 仪表盘（动态数据 + 图表，PRD §6.2 / #20） ===== */
+function seedStats(){
+  const days=['周一','周二','周三','周四','周五','周六','周日'];
+  const visits=days.map((_,i)=>800+i*173+(i%2?120:0));
+  const sales=days.map((_,i)=>3+i*1+(i%3?0:2));
+  const totalVisit=visits.reduce((a,b)=>a+b,0);
+  return {days,visits,sales,totalVisit,bookings:DB.booking.length,msgs:DB.message.length,orders:DB.order.length,salesSum:sales.reduce((a,b)=>a+b,0)*1000};
+}
+function renderDashboard(c, stats){
+  if(stats && stats.counts){
+    const cs = stats.counts;
+    const days = stats.days || [];
+    const orderVals = (stats.orders || []).map(v => Number(v || 0));
+    const visitVals = (stats.visits || []).map(v => Number(v || 0));
+    const maxV = Math.max(1, ...visitVals);
+    const maxO = Math.max(1, ...orderVals);
+    const bars = days.map((d,i)=>{const h=Math.round(visitVals[i]/maxV*140);return `<div class="flex flex-col items-center gap-1"><div class="text-[10px] text-slate-500">${visitVals[i]||0}</div><div class="w-7 rounded-t bg-primary" style="height:${h}px"></div><div class="text-[11px] text-slate-500">${d.slice(5)}</div></div>`;}).join('');
+    const linePts = days.map((_,i)=>`${(i*60+20).toFixed(0)},${(160-Math.round(orderVals[i]/maxO*130)).toFixed(0)}`).join(' ');
+    c.innerHTML = `<div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-5">
+      ${kpi('会员', (cs.members||0).toLocaleString())}${kpi('产品', (cs.products||0).toLocaleString())}${kpi('订单', (cs.orders||0).toLocaleString())}${kpi('留言', (cs.messages||0).toLocaleString())}${kpi('预约', (cs.appointments||0).toLocaleString())}${kpi('资讯', (cs.news||0).toLocaleString())}
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card"><h3 class="font-semibold text-slate-700 mb-3">近 7 日访问量（来自 stats_visit 真实表）</h3><div class="flex items-end justify-between gap-2 h-[180px]">${bars||'<div class="text-slate-400 m-auto">暂无访问数据</div>'}</div></div>
+      <div class="card"><h3 class="font-semibold text-slate-700 mb-3">近 7 日订单量（真实）</h3><svg viewBox="0 0 440 180" class="w-full h-[180px]"><polyline points="${linePts}" fill="none" stroke="#1677ff" stroke-width="2.5"/><polyline points="20,160 ${400},160" stroke="#e5e7eb" stroke-width="1"/>${days.map((d,i)=>`<circle cx="${i*60+20}" cy="${160-Math.round(orderVals[i]/maxO*130)}" r="3" fill="#1677ff"/><text x="${i*60+20}" y="${160-Math.round(orderVals[i]/maxO*130)-8}" font-size="9" fill="#6b7280" text-anchor="middle">${orderVals[i]||0}</text><text x="${i*60+20}" y="176" font-size="9" fill="#6b7280" text-anchor="middle">${d.slice(5)}</text>`).join('')}</svg></div>
+    </div>`;
+    return;
+  }
+  const s = seedStats();
+  const maxV=Math.max(...s.visits);
+  const bars=s.days.map((d,i)=>{const h=Math.round(s.visits[i]/maxV*140);return `<div class="flex flex-col items-center gap-1"><div class="text-[10px] text-slate-500">${s.visits[i]}</div><div class="w-7 rounded-t bg-primary" style="height:${h}px"></div><div class="text-[11px] text-slate-500">${d}</div></div>`;}).join('');
+  const maxS=Math.max(...s.sales);
+  const linePts=s.sales.map((v,i)=>`${(i*60+20).toFixed(0)},${(160-Math.round(v/maxS*130)).toFixed(0)}`).join(' ');
+  c.innerHTML=`<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-5">
+    ${kpi('访问量(PV/UV)',s.totalVisit.toLocaleString())}${kpi('预约量',s.bookings)}${kpi('留言量',s.msgs)}${kpi('订单量',s.orders)}${kpi('销售额(趋势)',s.salesSum.toLocaleString())}
+  </div>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="card"><h3 class="font-semibold text-slate-700 mb-3">近 7 日访问量</h3><div class="flex items-end justify-between gap-2 h-[180px]">${bars}</div></div>
+    <div class="card"><h3 class="font-semibold text-slate-700 mb-3">销售额趋势（万元）</h3><svg viewBox="0 0 440 180" class="w-full h-[180px]"><polyline points="${linePts}" fill="none" stroke="#1677ff" stroke-width="2.5"/><polyline points="20,160 ${400},160" stroke="#e5e7eb" stroke-width="1"/>${s.sales.map((v,i)=>`<circle cx="${i*60+20}" cy="${160-Math.round(v/maxS*130)}" r="3" fill="#1677ff"/><text x="${i*60+20}" y="${160-Math.round(v/maxS*130)-8}" font-size="9" fill="#6b7280" text-anchor="middle">${v}</text><text x="${i*60+20}" y="176" font-size="9" fill="#6b7280" text-anchor="middle">${s.days[i]}</text>`).join('')}</svg></div>
+  </div>`;
+}
+function kpi(label,val){return `<div class="kpi"><p class="text-xs text-slate-400">${label}</p><p class="text-2xl font-bold text-slate-800 mt-1">${val}</p></div>`;}
+
+/* ===== 关于我们管理（4 区块，PRD §6.8） ===== */
+function renderAbout(c){c.innerHTML=`<div class="card space-y-3">${DB.about.map(a=>`<div class="flex justify-between items-center border-b border-slate-100 pb-2"><span class="font-medium text-slate-700">${a.block}</span><span class="act-btn act-edit" onclick="maintainAbout('${a.block}')">维护</span></div>`).join('')}<p class="text-xs text-slate-400 pt-1">含「发展历程」横向时间线节点维护（1953→2053 叙事），「联系我们」维护地址/热线/邮箱/社交账号。</p></div>`;}
+function maintainAbout(block){showModal(`<h3 class="font-semibold text-lg mb-3">维护：${block}</h3><p class="text-sm text-slate-500 mb-2">在此处编辑「${block}」区块内容（原型中保存到内存）。</p><textarea id="aboutText" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none" rows="6" placeholder="输入内容…"></textarea><div class="flex gap-2 justify-end"><button class="btn-line px-4 py-2 rounded-lg" onclick="closeModalBox()">取消</button><button class="btn-primary px-4 py-2 rounded-lg" onclick="saveAboutBlock('${block}')">保存</button></div>`);}
+function saveAboutBlock(block){const t=document.getElementById('aboutText').value.trim();toast('已保存「'+block+'」内容'+(t?'（'+t.slice(0,20)+'…）':''));closeModalBox();}
+
+/* ===== 系统管理（权限 / 数据隔离 / 审计，PRD §6.12，原型为 UI 示意） ===== */
+/* ===== 系统管理（真实：角色 / 权限点 / 管理员） ===== */
+let SYS_TAB = 'roles';
+let SYS_ROLES = [], SYS_PERMS = [], SYS_USERS = [];
+function renderSystem(c){
+  c.innerHTML = `<div class="flex gap-2 mb-4 border-b border-slate-200">
+      <button class="sys-tab px-4 py-2 border-b-2 ${SYS_TAB==='roles'?'border-primary text-primary font-medium':'border-transparent text-slate-500'} cursor-pointer" data-tab="roles">角色管理</button>
+      <button class="sys-tab px-4 py-2 border-b-2 ${SYS_TAB==='perms'?'border-primary text-primary font-medium':'border-transparent text-slate-500'} cursor-pointer" data-tab="perms">权限点</button>
+      <button class="sys-tab px-4 py-2 border-b-2 ${SYS_TAB==='users'?'border-primary text-primary font-medium':'border-transparent text-slate-500'} cursor-pointer" data-tab="users">管理员</button>
+    </div><div id="sysBody"></div>`;
+  document.querySelectorAll('.sys-tab').forEach(b => b.addEventListener('click', () => { SYS_TAB = b.dataset.tab; renderSystem(c); }));
+  if(SYS_TAB === 'roles') renderSysRoles();
+  else if(SYS_TAB === 'perms') renderSysPerms();
+  else renderSysUsers();
+}
+async function loadSysRoles(){
+  const d = await apiGet('/admin/roles', {page: 1, page_size: 100});
+  SYS_ROLES = (d && Array.isArray(d.items)) ? d.items : [];
+  return SYS_ROLES;
+}
+async function loadSysPerms(){
+  const d = await apiGet('/admin/permissions');
+  if(d && typeof d === 'object'){
+    const flat = [];
+    Object.entries(d).forEach(([mod, arr]) => {
+      if(Array.isArray(arr)) arr.forEach(p => flat.push(Object.assign({}, p, {_module: mod})));
+    });
+    SYS_PERMS = flat;
+  }
+  return SYS_PERMS;
+}
+async function loadSysUsers(){
+  const d = await apiGet('/admin/users', {page: 1, page_size: 100});
+  SYS_USERS = (d && Array.isArray(d.items)) ? d.items : [];
+  return SYS_USERS;
+}
+async function renderSysRoles(){
+  const box = document.getElementById('sysBody');
+  box.innerHTML = '<div class="card"><p class="text-slate-400 text-center py-6">加载中…</p></div>';
+  const rows = await loadSysRoles();
+  box.innerHTML = `<div class="card">
+    <div class="flex justify-between items-center mb-3"><h3 class="font-semibold text-slate-700">角色列表</h3><button class="btn-primary px-3 py-1.5 rounded-lg text-sm" onclick="openRoleAdd()">+ 新增角色</button></div>
+    <div class="overflow-x-auto"><table>
+      <tr><th>名称</th><th>代码</th><th>数据范围</th><th>权限数</th><th>状态</th><th>操作</th></tr>
+      ${rows.map(r => `<tr><td class="font-medium">${esc(r.name)}</td><td>${esc(r.code)}</td><td>${esc(r.data_scope)}</td><td>${(r.permission_ids||[]).length}</td><td>${r.is_activate===1?'<span class="text-green-600">启用</span>':'<span class="text-slate-400">停用</span>'}</td>
+        <td><span class="act-btn act-edit" onclick="openRoleEdit(${r.id})">编辑</span><span class="act-btn act-add" onclick="openRolePerm(${r.id})">授权</span><span class="act-btn act-del" onclick="delRole(${r.id})">删除</span></td></tr>`).join('')}
+    </table></div></div>`;
+}
+function openRoleAdd(){
+  showModal(`<h3 class="font-semibold text-lg mb-3">新增角色</h3>
+    <label class="block text-sm text-slate-500 mb-1">名称</label><input id="rName" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">代码（唯一）</label><input id="rCode" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none" placeholder="如 operator">
+    <label class="block text-sm text-slate-500 mb-1">数据范围</label>
+    <select id="rScope" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none"><option value="ALL">ALL（全部）</option><option value="REGION">REGION（区域）</option><option value="STORE">STORE（门店）</option><option value="SELF">SELF（本人）</option></select>
+    <label class="block text-sm text-slate-500 mb-1">描述</label><input id="rDesc" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none">
+    <button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveRole(null)">创建</button>`);
+}
+function openRoleEdit(id){
+  const r = SYS_ROLES.find(x => x.id === id); if(!r) return;
+  showModal(`<h3 class="font-semibold text-lg mb-3">编辑角色 · ${esc(r.name)}</h3>
+    <label class="block text-sm text-slate-500 mb-1">名称</label><input id="rName" value="${esc(r.name)}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">代码</label><input id="rCode" value="${esc(r.code)}" disabled class="w-full border border-slate-200 bg-slate-50 rounded-lg px-3 py-2 mb-3 text-slate-400">
+    <label class="block text-sm text-slate-500 mb-1">数据范围</label>
+    <select id="rScope" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none"><option value="ALL" ${r.data_scope==='ALL'?'selected':''}>ALL（全部）</option><option value="REGION" ${r.data_scope==='REGION'?'selected':''}>REGION（区域）</option><option value="STORE" ${r.data_scope==='STORE'?'selected':''}>STORE（门店）</option><option value="SELF" ${r.data_scope==='SELF'?'selected':''}>SELF（本人）</option></select>
+    <label class="block text-sm text-slate-500 mb-1">描述</label><input id="rDesc" value="${esc(r.description||'')}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none">
+    <button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveRole(${r.id})">保存</button>`);
+}
+async function saveRole(id){
+  const payload = {
+    name: document.getElementById('rName').value.trim(),
+    code: document.getElementById('rCode').value.trim(),
+    data_scope: document.getElementById('rScope').value,
+    description: document.getElementById('rDesc').value.trim() || null,
+    sort: 0, is_activate: 1,
+  };
+  if(!payload.name || !payload.code){ toast('请填写名称与代码'); return; }
+  const j = id ? await apiSend('PUT', '/admin/roles/' + id, payload) : await apiSend('POST', '/admin/roles', payload);
+  closeModalBox();
+  if(j && j.code === 0){ toast('角色已保存'); renderSysRoles(); }
+  else toast('保存失败：' + (j.detail || j.message || '请重试'));
+}
+async function delRole(id){
+  const j = await apiSend('DELETE', '/admin/roles/' + id, {});
+  closeModalBox();
+  if(j && j.code === 0){ toast('角色已删除'); renderSysRoles(); }
+  else toast('删除失败：' + (j.detail || j.message || '请重试'));
+}
+async function openRolePerm(id){
+  const r = SYS_ROLES.find(x => x.id === id); if(!r) return;
+  const perms = await loadSysPerms();
+  const cur = new Set(r.permission_ids || []);
+  showModal(`<h3 class="font-semibold text-lg mb-3">角色授权 · ${esc(r.name)}</h3>
+    <p class="text-xs text-slate-400 mb-2">勾选权限点后保存（全量替换）</p>
+    <div class="max-h-80 overflow-y-auto space-y-2 mb-4">${perms.map(p => `<label class="flex items-center gap-2 text-sm text-slate-600"><input type="checkbox" class="perm-chk" value="${p.id}" ${cur.has(p.id)?'checked':''}>${esc(p._module||'')} · ${esc(p.name||p.code)} <span class="text-xs text-slate-400">${esc(p.code)}</span></label>`).join('')}</div>
+    <button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveRolePerm(${r.id})">保存授权</button>`);
+}
+async function saveRolePerm(id){
+  const ids = Array.from(document.querySelectorAll('.perm-chk:checked')).map(el => +el.value);
+  const j = await apiSend('PUT', '/admin/roles/' + id + '/permissions', {permission_ids: ids});
+  closeModalBox();
+  if(j && j.code === 0){ toast('授权已保存'); renderSysRoles(); }
+  else toast('保存失败：' + (j.detail || j.message || '请重试'));
+}
+async function renderSysPerms(){
+  const box = document.getElementById('sysBody');
+  box.innerHTML = '<div class="card"><p class="text-slate-400 text-center py-6">加载中…</p></div>';
+  const perms = await loadSysPerms();
+  const byMod = {};
+  perms.forEach(p => { (byMod[p._module] = byMod[p._module] || []).push(p); });
+  box.innerHTML = `<div class="card"><h3 class="font-semibold text-slate-700 mb-3">权限点清单（按模块）</h3>
+    <div class="overflow-x-auto"><table><tr><th>模块</th><th>权限点</th></tr>
+    ${Object.entries(byMod).map(([mod, arr]) => `<tr><td class="font-medium align-top">${esc(mod)}</td><td>${arr.map(p => `<span class="inline-block bg-slate-100 text-slate-600 rounded px-2 py-0.5 text-xs mr-1 mb-1">${esc(p.name||p.code)}</span>`).join('')}</td></tr>`).join('')}
+    </table></div></div>`;
+}
+async function renderSysUsers(){
+  const box = document.getElementById('sysBody');
+  box.innerHTML = '<div class="card"><p class="text-slate-400 text-center py-6">加载中…</p></div>';
+  const rows = await loadSysUsers();
+  box.innerHTML = `<div class="card">
+    <div class="flex justify-between items-center mb-3"><h3 class="font-semibold text-slate-700">管理员列表</h3><button class="btn-primary px-3 py-1.5 rounded-lg text-sm" onclick="openUserAdd()">+ 新增管理员</button></div>
+    <div class="overflow-x-auto"><table>
+      <tr><th>账号</th><th>姓名</th><th>角色</th><th>数据范围</th><th>状态</th><th>操作</th></tr>
+      ${rows.map(u => `<tr><td class="font-medium">${esc(u.username)}</td><td>${esc(u.real_name||u.nickname||'—')}</td><td>${esc(u.role_code||'—')}</td><td>${esc(u.data_scope)}</td><td>${u.is_activate===1?'<span class="text-green-600">启用</span>':'<span class="text-slate-400">停用</span>'}</td>
+        <td><span class="act-btn act-edit" onclick="openUserEdit(${u.id})">编辑</span><span class="act-btn act-add" onclick="openUserPwd(${u.id})">重置密码</span><span class="act-btn act-del" onclick="delUser(${u.id})">删除</span></td></tr>`).join('')}
+    </table></div></div>`;
+}
+function openUserAdd(){
+  const roles = SYS_ROLES;
+  showModal(`<h3 class="font-semibold text-lg mb-3">新增管理员</h3>
+    <label class="block text-sm text-slate-500 mb-1">账号</label><input id="uName" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">密码（≥6 位）</label><input id="uPwd" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">姓名</label><input id="uReal" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">角色</label>
+    <select id="uRole" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none"><option value="">（不选）</option>${roles.map(r => `<option value="${r.id}">${esc(r.name)}</option>`).join('')}</select>
+    <label class="block text-sm text-slate-500 mb-1">数据范围</label>
+    <select id="uScope" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none"><option value="ALL">ALL</option><option value="REGION">REGION</option><option value="STORE">STORE</option><option value="SELF">SELF</option></select>
+    <button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveUser(null)">创建</button>`);
+}
+function openUserEdit(id){
+  const u = SYS_USERS.find(x => x.id === id); if(!u) return;
+  const roles = SYS_ROLES;
+  showModal(`<h3 class="font-semibold text-lg mb-3">编辑管理员 · ${esc(u.username)}</h3>
+    <label class="block text-sm text-slate-500 mb-1">姓名</label><input id="uReal" value="${esc(u.real_name||'')}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+    <label class="block text-sm text-slate-500 mb-1">角色</label>
+    <select id="uRole" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none"><option value="">（不选）</option>${roles.map(r => `<option value="${r.id}" ${u.role_id===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select>
+    <label class="block text-sm text-slate-500 mb-1">数据范围</label>
+    <select id="uScope" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none"><option value="ALL" ${u.data_scope==='ALL'?'selected':''}>ALL</option><option value="REGION" ${u.data_scope==='REGION'?'selected':''}>REGION</option><option value="STORE" ${u.data_scope==='STORE'?'selected':''}>STORE</option><option value="SELF" ${u.data_scope==='SELF'?'selected':''}>SELF</option></select>
+    <button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveUser(${u.id})">保存</button>`);
+}
+async function saveUser(id){
+  if(id === null){
+    const payload = {
+      username: document.getElementById('uName').value.trim(),
+      password: document.getElementById('uPwd').value,
+      real_name: document.getElementById('uReal').value.trim() || null,
+      role_id: +document.getElementById('uRole').value || null,
+      data_scope: document.getElementById('uScope').value,
+      is_activate: 1,
+    };
+    if(!payload.username || !payload.password || payload.password.length < 6){ toast('请填写账号与 ≥6 位密码'); return; }
+    const j = await apiSend('POST', '/admin/users', payload);
+    closeModalBox();
+    if(j && j.code === 0){ toast('管理员已创建'); renderSysUsers(); }
+    else toast('创建失败：' + (j.detail || j.message || '请重试'));
+  } else {
+    const payload = {
+      real_name: document.getElementById('uReal').value.trim() || null,
+      role_id: +document.getElementById('uRole').value || null,
+      data_scope: document.getElementById('uScope').value,
+      is_activate: 1,
+    };
+    const j = await apiSend('PUT', '/admin/users/' + id, payload);
+    closeModalBox();
+    if(j && j.code === 0){ toast('管理员已保存'); renderSysUsers(); }
+    else toast('保存失败：' + (j.detail || j.message || '请重试'));
+  }
+}
+function openUserPwd(id){
+  showModal(`<h3 class="font-semibold text-lg mb-3">重置密码</h3>
+    <label class="block text-sm text-slate-500 mb-1">新密码（≥6 位）</label><input id="pwdNew" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none">
+    <button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveUserPwd(${id})">重置</button>`);
+}
+async function saveUserPwd(id){
+  const pwd = document.getElementById('pwdNew').value;
+  if(!pwd || pwd.length < 6){ toast('密码至少 6 位'); return; }
+  const j = await apiSend('PUT', '/admin/users/' + id + '/password', {password: pwd});
+  closeModalBox();
+  if(j && j.code === 0){ toast('密码已重置'); }
+  else toast('重置失败：' + (j.detail || j.message || '请重试'));
+}
+async function delUser(id){
+  const j = await apiSend('DELETE', '/admin/users/' + id, {});
+  closeModalBox();
+  if(j && j.code === 0){ toast('管理员已删除'); renderSysUsers(); }
+  else toast('删除失败：' + (j.detail || j.message || '请重试'));
+}
+
+/* ===== 新增 / 编辑 / 删除 / 回复 ===== */
+/* ===== 字段渲染（下拉框 / 多行文本 / 图片上传 / 只读 / 数组） ===== */
+let pendingImg='';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function imgField(cur){return `<label class="block text-sm text-slate-500 mb-1">图片（点击上传，本地预览）</label><input type="file" accept="image/*" id="upImg" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-2" onchange="previewImg(this)"><div id="imgPrev" class="mb-3">${cur?`<img src="${cur}" class="h-24 rounded-lg border">`:'<span class="text-xs text-slate-400">尚未上传</span>'}</div>`;}
+function previewImg(input){const f=input.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{pendingImg=rd.result;document.getElementById('imgPrev').innerHTML=`<img src="${pendingImg}" class="h-24 rounded-lg border">`;};rd.readAsDataURL(f);}
+function productUrl(series,cat,model){return `prototype_产品详情_YD家具.html?series=${encodeURIComponent(series||'')}&cat=${encodeURIComponent(cat||'')}&model=${encodeURIComponent(model||'')}`;}
+function fmtProductCell(prods){if(!Array.isArray(prods)||!prods.length)return '<span class="text-slate-300">—</span>';return prods.map(p=>`<span class="inline-block bg-slate-100 text-slate-600 rounded px-2 py-0.5 text-xs mr-1 mb-1">${esc(p.series+' · '+p.cat+' · '+p.model)}</span>`).join('');}
+function fieldHTML(mod,c,r,isAdd){
+  const key=c[0];
+  if(isAdd&&READONLY[mod]&&READONLY[mod].includes(key))return '';
+  if(key==='img')return imgField(r?r.img:'');
+  if(key==='products')return caseProductsField(r?r.products:[]);
+  if(mod==='product'&&(key==='series'||key==='cat')){
+    const kind=key==='series'?'series':'category';
+    const opts=CATS_ALL.filter(x=>x.kind===kind).map(x=>x.name);
+    const cur=r?(key==='series'?r.series:r.cat):'';
+    return `<label class="block text-sm text-slate-500 mb-1">${c[1]}</label><select data-f="${key}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none"><option value="">（不选）</option>${opts.map(o=>`<option ${o===cur?'selected':''}>${o}</option>`).join('')}</select>`;
+  }
+  if(TEXTAREAS[mod]&&TEXTAREAS[mod].includes(key))return `<label class="block text-sm text-slate-500 mb-1">${c[1]}</label><textarea data-f="${key}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none" rows="4">${r?esc(r[key]||''):''}</textarea>`;
+  if(SELECTS[mod]&&SELECTS[mod][key]){const opts=SELECTS[mod][key];const cur=r?r[key]:opts[0];return `<label class="block text-sm text-slate-500 mb-1">${c[1]}</label><select data-f="${key}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">${opts.map(o=>`<option ${o===cur?'selected':''}>${o}</option>`).join('')}</select>`;}
+  if(READONLY[mod]&&READONLY[mod].includes(key))return `<label class="block text-sm text-slate-500 mb-1">${c[1]}（只读）</label><input data-f="${key}" value="${r?esc(r[key]||''):''}" disabled class="w-full border border-slate-200 bg-slate-50 rounded-lg px-3 py-2 mb-3 text-slate-400">`;
+  if(mod==='recruit'&&key==='startTime'&&!r)return `<label class="block text-sm text-slate-500 mb-1">开始时间（只读）</label><input data-f="startTime" value="${new Date().toISOString().slice(0,10)}" disabled class="w-full border border-slate-200 bg-slate-50 rounded-lg px-3 py-2 mb-3 text-slate-400">`;
+  if(mod==='recruit'&&key==='endTime')return `<label class="block text-sm text-slate-500 mb-1">${c[1]}</label><input type="date" data-f="${key}" value="${r?esc(r[key]||''):''}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">`;
+  const val=r?(r[key]===true?'是':r[key]===false?'否':esc(r[key]??'')):'';
+  return `<label class="block text-sm text-slate-500 mb-1">${c[1]}</label><input data-f="${key}" value="${val}" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">`;
+}
+function caseProductsField(prods){let html='<label class="block text-sm text-slate-500 mb-1">所含产品（系列 / 类别 / 型号）</label><div id="caseProds">';prods.forEach((p,i)=>{html+=`<div class="flex gap-2 mb-2 case-prod-row"><input data-prod="${i}" data-key="series" value="${esc(p.series||'')}" placeholder="系列" class="flex-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm"><input data-prod="${i}" data-key="cat" value="${esc(p.cat||'')}" placeholder="类别" class="flex-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm"><input data-prod="${i}" data-key="model" value="${esc(p.model||'')}" placeholder="型号" class="flex-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm"><button type="button" onclick="removeCaseProd(${i})" class="text-red-500 text-xs px-2">删</button></div>`;});html+='</div><button type="button" onclick="addCaseProd()" class="text-sm text-primary hover:underline mb-3">+ 添加产品</button>';return html;}
+let caseProdsCache=[];
+function addCaseProd(){caseProdsCache.push({series:'',cat:'',model:''});document.getElementById('caseProds').insertAdjacentHTML('beforeend',`<div class="flex gap-2 mb-2 case-prod-row"><input data-prod="${caseProdsCache.length-1}" data-key="series" placeholder="系列" class="flex-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm"><input data-prod="${caseProdsCache.length-1}" data-key="cat" placeholder="类别" class="flex-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm"><input data-prod="${caseProdsCache.length-1}" data-key="model" placeholder="型号" class="flex-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm"><button type="button" onclick="removeCaseProd(${caseProdsCache.length-1})" class="text-red-500 text-xs px-2">删</button></div>`);}
+function removeCaseProd(i){caseProdsCache.splice(i,1);const p=document.querySelector('#caseProds').parentElement;const mod=document.getElementById('drawerBox').classList.contains('show')?'case':null;if(mod){const container=document.getElementById('drawerBody');container.querySelector('#caseProds').outerHTML=caseProductsField(caseProdsCache);}}
+function readCaseProds(){const rows=[];document.querySelectorAll('.case-prod-row').forEach(row=>{const o={};row.querySelectorAll('input').forEach(inp=>{o[inp.dataset.key]=inp.value.trim();});if(o.series||o.model)rows.push(o);});return rows;}
+
+/* ===== 右侧抽屉新增 ===== */
+let drawerMod='';
+function openAdd(mod){
+  drawerMod=mod;
+  if(mod==='carousel'||mod==='product')pendingImg='';
+  if(mod==='case')caseProdsCache=[];
+  if(mod==='about'){
+    showModal(`<h3 class="font-semibold text-lg mb-3">新增关于区块</h3>
+      <label class="block text-sm text-slate-500 mb-1">区块标识（code）</label>
+      <input id="aboutCode" value="about-yd" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none" placeholder="about-yd / history / brand / contact">
+      <label class="block text-sm text-slate-500 mb-1">标题</label>
+      <input id="aboutTitle" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+      <label class="block text-sm text-slate-500 mb-1">副标题</label>
+      <input id="aboutSubtitle" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none">
+      <label class="block text-sm text-slate-500 mb-1">正文（HTML 支持）</label>
+      <textarea id="aboutBody" rows="6" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none"></textarea>
+      <div class="flex gap-2 justify-end"><button class="btn-line px-4 py-2 rounded-lg" onclick="closeModalBox()">取消</button><button class="btn-primary px-4 py-2 rounded-lg" onclick="createAbout()">创建</button></div>`);
+    return;
+  }
+  const render=()=>{const cfg=TABLE_CFG[mod];let fields='';cfg.cols.forEach(c=>{fields+=fieldHTML(mod,c,null,true);});document.getElementById('drawerTitle').textContent='新增'+MOD_LABEL[mod];document.getElementById('drawerBody').innerHTML=`<div id="addForm">${fields}</div>`;document.getElementById('drawerSaveBtn').onclick=()=>saveAdd(mod);document.getElementById('drawerBox').classList.add('show');};
+  if(mod==='product'){loadCats().then(render);}else{render();}
+}
+async function createAbout(){
+  const payload = {
+    code: document.getElementById('aboutCode').value.trim() || 'about-yd',
+    title: document.getElementById('aboutTitle').value.trim(),
+    subtitle: document.getElementById('aboutSubtitle').value.trim() || null,
+    body: document.getElementById('aboutBody').value || null,
+    sort: 0, is_activate: 1, images: [],
+  };
+  if(!payload.title){ toast('请填写区块标题'); return; }
+  const j = await apiSend('POST', REMOTE_PATH.about, payload);
+  closeModalBox();
+  if(j && j.code === 0){ toast('已新增，前台刷新可见'); refreshRemote('about'); }
+  else { toast('新增失败：' + (j.detail || j.message || '请重试')); }
+}
+/* 状态流转（booking/order） */
+function openStatus(mod, id){
+  const stOpts = mod === 'order'
+    ? [['paid','已付款'],['shipped','已发货'],['completed','已完成'],['closed','已取消']]
+    : [['following','跟进中'],['converted','已成交'],['invalid','已关闭']];
+  showModal(`<h3 class="font-semibold text-lg mb-3">${MOD_LABEL[mod]} · 状态流转</h3>
+    <p class="text-sm text-slate-500 mb-3">选择目标状态并保存（实时同步前端）。</p>
+    <label class="block text-sm text-slate-500 mb-1">目标状态</label>
+    <select id="statusSel" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none">${stOpts.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select>
+    ${mod === 'booking' ? `<label class="block text-sm text-slate-500 mb-1">跟进备注</label><input id="followNote" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none">` : ''}
+    <div class="flex gap-2 justify-end"><button class="btn-line px-4 py-2 rounded-lg" onclick="closeModalBox()">取消</button><button class="btn-primary px-4 py-2 rounded-lg" onclick="doStatus('${mod}',${id})">保存状态</button></div>`);
+}
+async function doStatus(mod, id){
+  const status = document.getElementById('statusSel').value;
+  const payload = mod === 'order'
+    ? {status}
+    : {status, follow_note: (document.getElementById('followNote') || {}).value || null};
+  const j = await apiSend('PUT', REMOTE_PATH[mod] + '/' + id + '/status', payload);
+  closeModalBox();
+  if(j && j.code === 0){ toast('状态已更新，前台刷新可见'); refreshRemote(mod); }
+  else { toast('更新失败：' + (j.detail || j.message || '请重试')); }
+}
+function closeDrawer(){document.getElementById('drawerBox').classList.remove('show');}
+function saveAdd(mod){const cfg=TABLE_CFG[mod];const obj={id:Date.now()};cfg.cols.forEach(c=>{const key=c[0];if(READONLY[mod]&&READONLY[mod].includes(key))return;if(key==='img')return;if(key==='products'){obj.products=readCaseProds();return;}const el=document.querySelector(`#addForm [data-f="${key}"]`);if(el){let v=el.value;if(['price','cost','stock','amount','sort'].includes(key))v=+v||0;obj[key]=v;}});if(mod==='carousel'||mod==='product')obj.img=pendingImg||'';if(mod==='product'){const t=new Date().toISOString().slice(0,10);obj.publish=obj.publish||'草稿';obj.validTo=obj.validTo||'2027-12-31';obj.created=t;obj.updated=t;}if(mod==='recruit'){obj.startTime=new Date().toISOString().slice(0,10);}
+  if(mod==='booking'){obj.time=new Date().toISOString().slice(0,16).replace('T',' ');}
+  if(mod==='message'){obj.msgTime=new Date().toISOString().slice(0,16).replace('T',' ');obj.replyTime='';}
+  if(mod==='news'){obj.publishTime=new Date().toISOString().slice(0,16).replace('T',' ');}
+  if(mod==='case'){const t=new Date().toISOString().slice(0,10);obj.created=t;obj.updated=t;}
+  if(REMOTE_MODS.includes(mod)){
+    const payload=protoToApi(mod, obj, true);
+    apiSend('POST', REMOTE_PATH[mod], payload).then(j=>{
+      if(j && j.code===0){closeDrawer();toast('已新增，前台刷新可见');refreshRemote(mod);}
+      else{toast('新增失败：'+(j.detail||j.message||JSON.stringify(j||{}).slice(0,90)));}
+    });
+    return;
+  }
+  DB[mod].push(obj);closeDrawer();renderTable(mod);toast('已新增');}
+
+/* ===== 编辑抽屉 ===== */
+let drawerEditId=null;
+function openEdit(mod,id){const cfg=TABLE_CFG[mod];const r=(REMOTE_MODS.includes(mod)?(REMOTE_ITEMS[mod]||[]):(DB[mod]||[])).find(x=>x.id===id);if(!r)return;drawerMod=mod;drawerEditId=id;if(mod==='carousel'||mod==='product')pendingImg=r.img||'';if(mod==='case')caseProdsCache=JSON.parse(JSON.stringify(r.products||[]));let fields='';cfg.cols.forEach(c=>{fields+=fieldHTML(mod,c,r,false);});document.getElementById('drawerTitle').textContent='编辑'+MOD_LABEL[mod];document.getElementById('drawerBody').innerHTML=`<div id="editForm">${fields}</div>`;document.getElementById('drawerSaveBtn').onclick=()=>saveEdit(mod,id);document.getElementById('drawerBox').classList.add('show');}
+function saveEdit(mod,id){const cfg=TABLE_CFG[mod];const srcRows=REMOTE_MODS.includes(mod)?(REMOTE_ITEMS[mod]||[]):(DB[mod]||[]);const r=srcRows.find(x=>x.id===id);if(!r)return;const proto=Object.assign({},r);cfg.cols.forEach(c=>{const key=c[0];if(READONLY[mod]&&READONLY[mod].includes(key))return;if(key==='img')return;if(key==='products'){proto.products=readCaseProds();return;}const el=document.querySelector(`#editForm [data-f="${key}"]`);if(el){let v=el.value;if(['price','cost','stock','amount','sort','salaryMin','salaryMax','headcount'].includes(key))v=+v||0;proto[key]=v;}});if(mod==='carousel'||mod==='product')proto.img=pendingImg;if(mod==='product')proto.updated=new Date().toISOString().slice(0,10);if(mod==='case')proto.updated=new Date().toISOString().slice(0,10);if(mod==='news')proto.publishTime=proto.publishTime||new Date().toISOString().slice(0,16).replace('T',' ');
+  if(REMOTE_MODS.includes(mod)){
+    const payload=protoToApi(mod, proto, false);
+    apiSend('PUT', REMOTE_PATH[mod]+'/'+id, payload).then(j=>{
+      if(j && j.code===0){closeDrawer();toast('已保存，前台刷新可见');refreshRemote(mod);}
+      else{toast('保存失败：'+(j.detail||j.message||JSON.stringify(j||{}).slice(0,90)));}
+    });
+    return;
+  }
+  closeDrawer();renderTable(mod);toast('已保存');}
+function openDel(mod,id){showModal(`<h3 class="font-semibold text-lg mb-3">确认删除</h3><p class="text-sm text-slate-500 mb-5">该操作不可撤销，确定删除此项？</p><div class="flex gap-2 justify-end"><button class="btn-line px-4 py-2 rounded-lg" onclick="closeModalBox()">取消</button><button class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="doDel('${mod}',${id})">删除</button></div>`);}
+function doDel(mod,id){
+  if(REMOTE_MODS.includes(mod)){
+    apiSend('DELETE', REMOTE_PATH[mod]+'/'+id, {}).then(j=>{
+      closeModalBox();
+      if(j && j.code===0){toast('已删除，前台刷新可见');refreshRemote(mod);}
+      else{toast('删除失败：'+(j.detail||j.message||'请重试'));}
+    });
+    return;
+  }
+  DB[mod]=DB[mod].filter(x=>x.id!==id);closeModalBox();renderTable(mod);toast('已删除');}
+function openCarouselPreview(id){const r=DB.carousel.find(x=>x.id===id);if(!r)return;const url=productUrl(r.series,r.cat,r.model);showModal(`<h3 class="font-semibold text-lg mb-3">轮播图预览</h3><p class="text-sm text-stone-500 mb-2">标题：${esc(r.title)}</p><p class="text-sm text-stone-500 mb-2">跳转链接：</p><div class="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4 text-xs break-all text-slate-600">${esc(url)}</div><div class="flex gap-2"><a href="${esc(url)}" target="_blank" class="btn-primary flex-1 text-center py-2 rounded-lg">打开产品页</a><button class="btn-line flex-1 py-2 rounded-lg" onclick="closeModalBox()">关闭</button></div>`);}
+function openReply(id){
+  const m = (REMOTE_ITEMS.message || []).find(x => x.id === id);
+  if(!m) return;
+  showModal(`<h3 class="font-semibold text-lg mb-3">回复留言 #${id}</h3><p class="text-sm text-slate-500 mb-2">${esc(m.name)}：${esc(m.content)}</p><textarea id="replyText" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none" rows="3" placeholder="输入回复内容…"></textarea><button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveReplyRemote(${id})">发送回复</button>`);
+}
+async function saveReplyRemote(id){
+  const t = document.getElementById('replyText').value.trim();
+  if(!t){ toast('请输入回复内容'); return; }
+  const j = await apiSend('POST', REMOTE_PATH.message + '/' + id + '/reply', {reply_content: t});
+  closeModalBox();
+  if(j && j.code === 0){ toast('已回复，前台刷新可见'); refreshRemote('message'); }
+  else { toast('回复失败：' + (j.detail || j.message || '请重试')); }
+}
+function saveReply(id){const t=document.getElementById('replyText').value.trim();if(!t){toast('请输入回复内容');return;}const m=DB.message.find(x=>x.id===id);m.status='已回复';m.reply=t;m.replyTime=new Date().toISOString().slice(0,16).replace('T',' ');m.conv.push({role:'staff',text:t,time:m.replyTime});closeModalBox();renderTable('message');toast('已回复，状态标记为「已回复」');}
+
+/* ===== 顶部用户下拉 ===== */
+function toggleUserDropdown(e){e.stopPropagation();document.getElementById('userDropdownMenu').classList.toggle('show');}
+document.addEventListener('click',()=>{const d=document.getElementById('userDropdownMenu');if(d)d.classList.remove('show');});
+function openChangePwd(){showModal(`<h3 class="font-semibold text-lg mb-4">修改密码</h3><label class="block text-sm text-slate-500 mb-1">原密码</label><input id="oldPwd" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none"><label class="block text-sm text-slate-500 mb-1">新密码</label><input id="newPwd" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none"><button class="btn-primary w-full py-2.5 rounded-lg" onclick="saveChangePwd()">保存</button>`);}
+function saveChangePwd(){const oldP=document.getElementById('oldPwd').value;const newP=document.getElementById('newPwd').value;if(oldP!=='123456'){toast('原密码错误');return;}if(!newP){toast('请输入新密码');return;}localStorage.setItem('yd_admin_pwd',newP);closeModalBox();toast('密码已修改（演示：下次登录可用新密码）');}
+function openSwitchUser(){showModal(`<h3 class="font-semibold text-lg mb-4">切换账号</h3><label class="block text-sm text-slate-500 mb-1">账号</label><input id="swUser" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 focus:border-primary focus:outline-none" placeholder="admin / editor / product / service / order"><label class="block text-sm text-slate-500 mb-1">密码</label><input id="swPwd" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 focus:border-primary focus:outline-none" placeholder="密码"><button class="btn-primary w-full py-2.5 rounded-lg" onclick="doSwitchUser()">切换</button>`);}
+function doSwitchUser(){const u=document.getElementById('swUser').value.trim();const p=document.getElementById('swPwd').value;const savedPwd=localStorage.getItem('yd_admin_pwd');const expected=savedPwd||'123456';if(p!==expected){toast('密码错误');return;}const rk=ROLES[u]?u:'admin';currentRole=ROLES[rk];sessionStorage.setItem('yd_admin_logged','1');sessionStorage.setItem('yd_admin_role',rk);localStorage.setItem('yd_admin_logged','1');localStorage.setItem('yd_admin_role',rk);closeModalBox();enterApp();toast('已切换为 '+currentRole.name);}
+
+/* ===== 通用 ===== */
+function refreshModule(){if(currentMod==='dashboard')renderModule('dashboard');else if(REMOTE_MODS.includes(currentMod))refreshRemote(currentMod);else renderTable(currentMod,currentSearch);toast('已刷新数据');}
+function doSearch(v){currentSearch=v.trim();if(currentMod!=='dashboard'&&currentMod!=='about'&&currentMod!=='system'){if(REMOTE_MODS.includes(currentMod))renderRemoteTable(currentMod);else renderTable(currentMod,currentSearch);}}
+function showModal(html){document.getElementById('modalInner').innerHTML=html;document.getElementById('modalBox').classList.add('show');}
+function closeModalBox(){document.getElementById('modalBox').classList.remove('show');}
+function toast(t){const el=document.getElementById('toast');if(!el)return;el.textContent=t;el.classList.remove('hidden');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.add('hidden'),2200);}
+function tick(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleString('zh-CN',{hour12:false});}
+setInterval(tick,1000);
+function restoreAdmin(){
+  const logged = sessionStorage.getItem('yd_admin_logged') || localStorage.getItem('yd_admin_logged');
+  const role = sessionStorage.getItem('yd_admin_role') || localStorage.getItem('yd_admin_role');
+  ADMIN_TOKEN = sessionStorage.getItem('yd_admin_token') || '';
+  ADMIN_USERNAME = role || 'admin';
+  if(logged === '1'){
+    const rk = role || 'admin';
+    if(ROLES[rk]){
+      currentRole = ROLES[rk];
+      enterApp();
+    }
+  }else{
+    refreshCaptcha();
+  }
+}
+restoreAdmin();
+</script>
+</body>
+</html>

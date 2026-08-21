@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 760" width="100%">
+<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8C8C8C"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#185FA5"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="680" height="56" rx="0" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.6"/>
+<text x="340.0" y="24" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="500" fill="#042C53">后台系统模块架构图</text>
+<text x="340.0" y="44" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="400" fill="#185FA5">Backend 系统  →  React 18 + TypeScript + Ant Design 5 + Vite</text>
+<rect x="20" y="76" width="640" height="64" rx="10" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.6" opacity="0.55"/>
+<text x="28" y="94" text-anchor="start" font-family="sans-serif" font-size="12" font-weight="500" fill="#501313">① 认证体系 · Auth（全局配置）</text>
+<rect x="28" y="108" width="116" height="24" rx="4" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="86.0" y="120.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#501313">Login 登录页</text>
+<rect x="152" y="108" width="116" height="24" rx="4" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="210.0" y="120.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#501313">JWT Token 管理</text>
+<rect x="276" y="108" width="116" height="24" rx="4" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="334.0" y="120.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#501313">axios 拦截器</text>
+<rect x="400" y="108" width="116" height="24" rx="4" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="458.0" y="120.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#501313">路由守卫 RouteGuard</text>
+<rect x="524" y="108" width="116" height="24" rx="4" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="582.0" y="120.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#501313">角色守卫 RoleGuard</text>
+<rect x="20" y="156" width="640" height="240" rx="10" fill="#FAFAFA" stroke="#8C8C8C" stroke-width="0.6" opacity="0.4"/>
+<text x="28" y="174" text-anchor="start" font-family="sans-serif" font-size="12" font-weight="500" fill="#1F1F1F">② 核心管理模块 · 11 个页面</text>
+<text x="28" y="190" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#595959">通用 CRUD 模式（表格 + 弹窗 + 筛选）  ·  RBAC 权限控制（角色动态菜单）  ·  上传组件</text>
+<rect x="30.0" y="206" width="151.0" height="22" rx="4" fill="#FAECE7" stroke="#993C1D" stroke-width="0.6"/>
+<text x="105.5" y="217" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#4A1B0C">系统管理</text>
+<rect x="30.0" y="236" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.5"/>
+<text x="105.5" y="246" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#4A1B0C">M1 仪表盘</text>
+<text x="105.5" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#4A1B0C">Dashboard</text>
+<rect x="30.0" y="270" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.5"/>
+<text x="105.5" y="280" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#4A1B0C">M2 系统管理</text>
+<text x="105.5" y="292" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#4A1B0C">System</text>
+<rect x="30.0" y="304" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.5"/>
+<text x="105.5" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#4A1B0C">M3 审计日志</text>
+<text x="105.5" y="326" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#4A1B0C">Audit</text>
+<rect x="30.0" y="338" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.5"/>
+<text x="105.5" y="348" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#4A1B0C">M4 站点配置</text>
+<text x="105.5" y="360" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#4A1B0C">SiteConfig</text>
+<rect x="185.0" y="206" width="151.0" height="22" rx="4" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.6"/>
+<text x="260.5" y="217" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#173404">内容管理</text>
+<rect x="185.0" y="236" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="260.5" y="246" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#173404">M5 轮播图</text>
+<text x="260.5" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#173404">Carousels</text>
+<rect x="185.0" y="270" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="260.5" y="280" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#173404">M6 产品/分类</text>
+<text x="260.5" y="292" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#173404">Products</text>
+<rect x="185.0" y="304" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="260.5" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#173404">M7 SKU/库存</text>
+<text x="260.5" y="326" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#173404">SKUs</text>
+<rect x="185.0" y="338" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="260.5" y="348" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#173404">M8 案例</text>
+<text x="260.5" y="360" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#173404">Cases</text>
+<rect x="185.0" y="372" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="260.5" y="382" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#173404">M9 新闻</text>
+<text x="260.5" y="394" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#173404">News</text>
+<rect x="185.0" y="406" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="260.5" y="416" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#173404">M10 关于我们</text>
+<text x="260.5" y="428" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#173404">About</text>
+<rect x="340.0" y="206" width="151.0" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.6"/>
+<text x="415.5" y="217" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#042C53">客户管理</text>
+<rect x="340.0" y="236" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.5"/>
+<text x="415.5" y="246" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#042C53">M11 预约</text>
+<text x="415.5" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">Appointments</text>
+<rect x="340.0" y="270" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.5"/>
+<text x="415.5" y="280" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#042C53">M12 留言</text>
+<text x="415.5" y="292" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">Messages</text>
+<rect x="340.0" y="304" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.5"/>
+<text x="415.5" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#042C53">M13 会员</text>
+<text x="415.5" y="326" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">Members</text>
+<rect x="495.0" y="206" width="151.0" height="22" rx="4" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.6"/>
+<text x="570.5" y="217" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#633806">订单/招聘</text>
+<rect x="495.0" y="236" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="0.5"/>
+<text x="570.5" y="246" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#633806">M14 订单</text>
+<text x="570.5" y="258" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#633806">Orders</text>
+<rect x="495.0" y="270" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="0.5"/>
+<text x="570.5" y="280" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#633806">M15 招聘</text>
+<text x="570.5" y="292" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#633806">Jobs</text>
+<rect x="495.0" y="304" width="151.0" height="28" rx="4" fill="#FFFFFF" stroke="#BA7517" stroke-width="0.5"/>
+<text x="570.5" y="314" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="500" fill="#633806">M16 投递</text>
+<text x="570.5" y="326" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#633806">Applications</text>
+<rect x="20" y="412" width="640" height="64" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.6" opacity="0.55"/>
+<text x="28" y="430" text-anchor="start" font-family="sans-serif" font-size="12" font-weight="500" fill="#042C53">③ 后台 API 调用层（src/api/admin/）</text>
+<rect x="28" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="71.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">auth.ts</text>
+<rect x="122" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="165.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">dashboard.ts</text>
+<rect x="216" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="259.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">products.ts</text>
+<rect x="310" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="353.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">categories.ts</text>
+<rect x="404" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="447.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">skus.ts</text>
+<rect x="498" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="541.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">cases.ts</text>
+<rect x="592" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="635.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">news.ts</text>
+<rect x="686" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="729.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">jobs.ts</text>
+<rect x="780" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="823.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">orders.ts</text>
+<rect x="874" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="917.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">upload.ts</text>
+<rect x="968" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="1011.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">roles.ts</text>
+<rect x="1062" y="446" width="86" height="22" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="1105.0" y="457.0" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="400" fill="#042C53">audit.ts</text>
+<rect x="20" y="492" width="640" height="52" rx="10" fill="#FBEAF0" stroke="#993556" stroke-width="0.6" opacity="0.55"/>
+<text x="28" y="510" text-anchor="start" font-family="sans-serif" font-size="12" font-weight="500" fill="#4B1528">④ 共享模块（packages/shared/）</text>
+<rect x="28" y="522" width="116" height="18" rx="4" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+<text x="86.0" y="531.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#4B1528">types/</text>
+<rect x="152" y="522" width="116" height="18" rx="4" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+<text x="210.0" y="531.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#4B1528">utils/request</text>
+<rect x="276" y="522" width="116" height="18" rx="4" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+<text x="334.0" y="531.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#4B1528">ProLayout</text>
+<rect x="400" y="522" width="116" height="18" rx="4" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+<text x="458.0" y="531.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#4B1528">useAuth/usePerms</text>
+<rect x="524" y="522" width="116" height="18" rx="4" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+<text x="582.0" y="531.0" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#4B1528">i18n 预留</text>
+<rect x="180" y="560" width="320" height="40" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+<text x="340" y="575" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="500" fill="#04342C">FastAPI 服务（api/）</text>
+<text x="340" y="590" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#0F6E56">/api/admin/*  ·  JWT 认证 + RBAC 装饰器</text>
+<rect x="180" y="612" width="320" height="56" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.8" opacity="0.6"/>
+<text x="340" y="628" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#4A1B0C">中间件：日志 / 异常 / 限流 / 审计</text>
+<text x="340" y="646" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#4A1B0C">Storage 抽象（OSS/COS/S3 可插拔）</text>
+<text x="340" y="662" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#4A1B0C">统计采集（PV/UV → stats_visit）</text>
+<rect x="280" y="680" width="120" height="32" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.8"/>
+<text x="340" y="696" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="500" fill="#2C2C2A">MySQL 8.0</text>
+<line x1="340" y1="140" x2="340" y2="156" stroke="#A32D2D" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="340" y1="396" x2="340" y2="412" stroke="#185FA5" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="340" y1="476" x2="340" y2="492" stroke="#993556" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="340" y1="544" x2="340" y2="560" stroke="#0F6E56" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="340" y1="680" x2="340" y2="680" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow)"/>
+<text x="20" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#595959">图例：</text>
+<rect x="70" y="720" width="14" height="12" rx="2" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="88" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">认证体系</text>
+<rect x="146" y="720" width="14" height="12" rx="2" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="164" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">系统管理</text>
+<rect x="222" y="720" width="14" height="12" rx="2" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="240" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">内容管理</text>
+<rect x="298" y="720" width="14" height="12" rx="2" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="316" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">客户管理</text>
+<rect x="374" y="720" width="14" height="12" rx="2" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+<text x="392" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">订单/招聘</text>
+<rect x="450" y="720" width="14" height="12" rx="2" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="468" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">API 调用</text>
+<rect x="526" y="720" width="14" height="12" rx="2" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="544" y="730" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">API 服务</text>
+</svg>

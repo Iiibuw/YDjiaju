@@ -46,7 +46,7 @@ export default function Contact() {
       </section>
 
       {/* ===== 门店信息 ===== */}
-      <section className="bg-card py-16">
+      <section className="bg-white py-16">
         <div className="container-yf">
           <h2 className="text-2xl font-bold text-coal">门店地址</h2>
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -68,7 +68,7 @@ export default function Contact() {
       {/* ===== 留言表单 ===== */}
       <section className="bg-sand py-16">
         <div className="container-yf mx-auto max-w-2xl">
-          <div className="rounded-2xl bg-card p-8 shadow-sm ring-1 ring-coal/5">
+          <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-coal/5">
             <h2 className="text-2xl font-bold text-coal">在线留言</h2>
             <p className="mt-2 text-sm text-coal/60">留下您的需求，我们将在 1-2 个工作日内回复。</p>
 

@@ -1,7 +1,10 @@
 """后台资讯管理 API（需 JWT）。"""
-from fastapi import APIRouter, HTTPException, status
+from typing import Annotated
 
-from app.core.deps import CurrentAdmin, DbDep
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from app.core.deps import DbDep, require_permission
+from app.models.admin_user import AdminUser
 from app.schemas.common import ApiResponse, PaginationMeta
 from app.schemas.news import NewsCreate, NewsDetail, NewsListOut
 from app.services import news_service
@@ -12,7 +15,7 @@ router = APIRouter(prefix="/admin/news", tags=["后台-资讯"])
 @router.get("", response_model=ApiResponse[NewsListOut])
 def list_news(
     db: DbDep,
-    _admin: CurrentAdmin,
+    _admin: Annotated[AdminUser, Depends(require_permission("news.view"))],
     category: str | None = None,
     is_published: bool | None = None,
     keyword: str | None = None,
@@ -38,7 +41,7 @@ def list_news(
 
 
 @router.get("/{news_id}", response_model=ApiResponse[NewsDetail])
-def get_news(news_id: int, db: DbDep, _admin: CurrentAdmin):
+def get_news(news_id: int, db: DbDep, _admin: Annotated[AdminUser, Depends(require_permission("news.view"))]):
     """后台：资讯编辑页（含 content）。"""
     n = news_service.get_news_admin(db, news_id)
     if not n:
@@ -47,14 +50,14 @@ def get_news(news_id: int, db: DbDep, _admin: CurrentAdmin):
 
 
 @router.post("", response_model=ApiResponse[NewsDetail])
-def create_news(payload: NewsCreate, db: DbDep, admin: CurrentAdmin):
+def create_news(payload: NewsCreate, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("news.create"))]):
     """后台：新建资讯。"""
     n = news_service.create_news(db, payload, admin.id)
     return ApiResponse(data=n, message=f"资讯《{n.title}》创建成功")
 
 
 @router.put("/{news_id}", response_model=ApiResponse[NewsDetail])
-def update_news(news_id: int, payload: NewsCreate, db: DbDep, admin: CurrentAdmin):
+def update_news(news_id: int, payload: NewsCreate, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("news.edit"))]):
     """后台：更新资讯。"""
     n = news_service.update_news(db, news_id, payload, admin.id)
     if not n:
@@ -63,7 +66,7 @@ def update_news(news_id: int, payload: NewsCreate, db: DbDep, admin: CurrentAdmi
 
 
 @router.delete("/{news_id}", response_model=ApiResponse[dict])
-def delete_news(news_id: int, db: DbDep, admin: CurrentAdmin):
+def delete_news(news_id: int, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("news.delete"))]):
     """后台：软删除资讯。"""
     ok = news_service.delete_news(db, news_id, admin.id)
     if not ok:

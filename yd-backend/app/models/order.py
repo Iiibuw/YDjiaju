@@ -1,7 +1,7 @@
 """订单主表。"""
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, Enum, Index, Integer, SmallInteger, String, Text, UniqueConstraint, func
+from sqlalchemy import BigInteger, CheckConstraint, DateTime, Enum, ForeignKey, Index, Integer, SmallInteger, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -12,9 +12,15 @@ class Order(Base, AuditMixin):
     __tablename__ = "orders"
     __table_args__ = (
         UniqueConstraint("order_no", name="UNQ_orders_order_no"),
-        Index("IDX_orders_user_id", "user_id"),
-        Index("IDX_orders_status", "status"),
-        Index("IDX_orders_created_date", "created_date"),
+        CheckConstraint(
+            "total_cents >= 0 AND shipping_cents >= 0 AND discount_cents >= 0 "
+            "AND final_cents = total_cents + shipping_cents - discount_cents",
+            name="chk_orders_amount",
+        ),
+        Index("IDX_orders_user_status", "user_id", "status", "created_date"),
+        Index("IDX_orders_status_date", "status", "created_date"),
+        Index("IDX_orders_region_store", "region_code", "store_code"),
+        Index("IDX_orders_final_cents", "final_cents"),
         {
             "mysql_engine": "InnoDB",
             "mysql_charset": "utf8mb4",
@@ -30,7 +36,7 @@ class Order(Base, AuditMixin):
     receiver_phone: Mapped[str | None] = mapped_column(String(20), nullable=True, comment="收货人手机（快照）")
     receiver_address: Mapped[str | None] = mapped_column(String(255), nullable=True, comment="收货地址文本（快照）")
     status: Mapped[str] = mapped_column(
-        Enum("pending", "paid", "shipped", "completed", "closed", name="enum_order_status"),
+        Enum("pending", "paid", "shipped", "completed", "refunding", "refunded", "closed", name="enum_order_status"),
         nullable=False, default="pending", server_default="pending",
         comment="订单状态：pending待付款/paid已付款/shipped已发货/completed已完成/closed已关闭",
     )
@@ -43,3 +49,11 @@ class Order(Base, AuditMixin):
     shipped_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, comment="发货时间")
     completed_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, comment="完成时间")
     closed_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, comment="关闭时间")
+    address_id: Mapped[int | None] = mapped_column(
+        BigInteger,
+        ForeignKey("user_addresses.id", ondelete="SET NULL", onupdate="CASCADE"),
+        nullable=True,
+        comment="收货地址快照",
+    )
+    region_code: Mapped[str | None] = mapped_column(String(32), nullable=True, comment="收货区域")
+    store_code: Mapped[str | None] = mapped_column(String(32), nullable=True, comment="归属门店")

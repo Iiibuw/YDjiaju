@@ -1,0 +1,316 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 720" width="100%">
+<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8C8C8C"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#185FA5"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="880" height="48" rx="0" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.6"/>
+<text x="440.0" y="22" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="500" fill="#2C2C2A">数据库 ER 图（25+ 表核心实体）</text>
+<text x="440.0" y="40" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="400" fill="#5F5E5A">MySQL 8.0  ·  InnoDB  ·  utf8mb4_unicode_ci</text>
+<rect x="40" y="70" width="170" height="122" rx="4" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.8"/>
+<rect x="40" y="70" width="170" height="22" rx="4" fill="#534AB7" stroke="#534AB7" stroke-width="0.8"/>
+<text x="125.0" y="84" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">users 前台会员</text>
+<text x="48" y="102" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="202" y="102" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="48" y="116" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">phone</text>
+<text x="202" y="116" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(20) UQ</text>
+<text x="48" y="130" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">password_hash</text>
+<text x="202" y="130" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(128)</text>
+<text x="48" y="144" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">nickname</text>
+<text x="202" y="144" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="48" y="158" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">avatar_url</text>
+<text x="202" y="158" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="48" y="172" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">status</text>
+<text x="202" y="172" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<text x="48" y="186" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">created_at</text>
+<text x="202" y="186" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">DATETIME</text>
+<rect x="40" y="230" width="170" height="122" rx="4" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.8"/>
+<rect x="40" y="230" width="170" height="22" rx="4" fill="#534AB7" stroke="#534AB7" stroke-width="0.8"/>
+<text x="125.0" y="244" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">user_addresses</text>
+<text x="48" y="262" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="202" y="262" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="48" y="276" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">user_id</text>
+<text x="202" y="276" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→users</text>
+<text x="48" y="290" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">receiver</text>
+<text x="202" y="290" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="48" y="304" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">phone</text>
+<text x="202" y="304" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(20)</text>
+<text x="48" y="318" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">province/city</text>
+<text x="202" y="318" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="48" y="332" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">detail</text>
+<text x="202" y="332" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="48" y="346" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">is_default</text>
+<text x="202" y="346" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<rect x="40" y="410" width="170" height="108" rx="4" fill="#FFFFFF" stroke="#A32D2D" stroke-width="0.8"/>
+<rect x="40" y="410" width="170" height="22" rx="4" fill="#A32D2D" stroke="#A32D2D" stroke-width="0.8"/>
+<text x="125.0" y="424" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">admin_users</text>
+<text x="48" y="442" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="202" y="442" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="48" y="456" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">username</text>
+<text x="202" y="456" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64) UQ</text>
+<text x="48" y="470" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">password_hash</text>
+<text x="202" y="470" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(128)</text>
+<text x="48" y="484" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">display_name</text>
+<text x="202" y="484" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="48" y="498" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">status</text>
+<text x="202" y="498" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<text x="48" y="512" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">last_login_at</text>
+<text x="202" y="512" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">DATETIME</text>
+<rect x="40" y="560" width="170" height="108" rx="4" fill="#FFFFFF" stroke="#A32D2D" stroke-width="0.8"/>
+<rect x="40" y="560" width="170" height="22" rx="4" fill="#A32D2D" stroke="#A32D2D" stroke-width="0.8"/>
+<text x="125.0" y="574" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">audit_logs</text>
+<text x="48" y="592" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="202" y="592" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="48" y="606" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">admin_id</text>
+<text x="202" y="606" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→admin_users</text>
+<text x="48" y="620" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">action</text>
+<text x="202" y="620" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="48" y="634" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">resource</text>
+<text x="202" y="634" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="48" y="648" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">ip</text>
+<text x="202" y="648" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(45)</text>
+<text x="48" y="662" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">created_at</text>
+<text x="202" y="662" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">DATETIME</text>
+<rect x="250" y="70" width="170" height="80" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="250" y="70" width="170" height="22" rx="4" fill="#993C1D" stroke="#993C1D" stroke-width="0.8"/>
+<text x="335.0" y="84" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">roles 角色</text>
+<text x="258" y="102" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="412" y="102" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT PK</text>
+<text x="258" y="116" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">code</text>
+<text x="412" y="116" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32) UQ</text>
+<text x="258" y="130" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">name</text>
+<text x="412" y="130" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="258" y="144" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">data_scope</text>
+<text x="412" y="144" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<rect x="250" y="200" width="170" height="80" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="250" y="200" width="170" height="22" rx="4" fill="#993C1D" stroke="#993C1D" stroke-width="0.8"/>
+<text x="335.0" y="214" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">permissions 权限</text>
+<text x="258" y="232" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="412" y="232" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT PK</text>
+<text x="258" y="246" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">module</text>
+<text x="412" y="246" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="258" y="260" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">action</text>
+<text x="412" y="260" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="258" y="274" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">code</text>
+<text x="412" y="274" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64) UQ</text>
+<rect x="250" y="330" width="170" height="66" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="250" y="330" width="170" height="22" rx="4" fill="#993C1D" stroke="#993C1D" stroke-width="0.8"/>
+<text x="335.0" y="344" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">admin_roles</text>
+<text x="258" y="362" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">admin_id</text>
+<text x="412" y="362" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→admin_users</text>
+<text x="258" y="376" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">role_id</text>
+<text x="412" y="376" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→roles</text>
+<text x="258" y="390" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">PRIMARY KEY</text>
+<text x="412" y="390" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">(admin_id, role_id)</text>
+<rect x="250" y="420" width="170" height="66" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="250" y="420" width="170" height="22" rx="4" fill="#993C1D" stroke="#993C1D" stroke-width="0.8"/>
+<text x="335.0" y="434" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">role_permissions</text>
+<text x="258" y="452" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">role_id</text>
+<text x="412" y="452" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→roles</text>
+<text x="258" y="466" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">permission_id</text>
+<text x="412" y="466" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→permissions</text>
+<text x="258" y="480" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">PRIMARY KEY</text>
+<text x="412" y="480" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">(role_id, permission_id)</text>
+<rect x="250" y="510" width="170" height="80" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="250" y="510" width="170" height="22" rx="4" fill="#993C1D" stroke="#993C1D" stroke-width="0.8"/>
+<text x="335.0" y="524" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">admin_regions 数据范围</text>
+<text x="258" y="542" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="412" y="542" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="258" y="556" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">admin_id</text>
+<text x="412" y="556" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→admin_users</text>
+<text x="258" y="570" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">region_code</text>
+<text x="412" y="570" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="258" y="584" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">store_code</text>
+<text x="412" y="584" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<rect x="250" y="620" width="170" height="80" rx="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="250" y="620" width="170" height="22" rx="4" fill="#993C1D" stroke="#993C1D" stroke-width="0.8"/>
+<text x="335.0" y="634" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">site_configs</text>
+<text x="258" y="652" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="412" y="652" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT PK</text>
+<text x="258" y="666" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">key</text>
+<text x="412" y="666" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64) UQ</text>
+<text x="258" y="680" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">value</text>
+<text x="412" y="680" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TEXT</text>
+<text x="258" y="694" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">group</text>
+<text x="412" y="694" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<rect x="460" y="70" width="170" height="94" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.8"/>
+<rect x="460" y="70" width="170" height="22" rx="4" fill="#3B6D11" stroke="#3B6D11" stroke-width="0.8"/>
+<text x="545.0" y="84" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">categories 分类</text>
+<text x="468" y="102" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="622" y="102" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT PK</text>
+<text x="468" y="116" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">type</text>
+<text x="622" y="116" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">ENUM 系列/空间/品类</text>
+<text x="468" y="130" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">name</text>
+<text x="622" y="130" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="468" y="144" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">parent_id</text>
+<text x="622" y="144" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→categories</text>
+<text x="468" y="158" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">sort</text>
+<text x="622" y="158" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT</text>
+<rect x="460" y="230" width="170" height="136" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.8"/>
+<rect x="460" y="230" width="170" height="22" rx="4" fill="#3B6D11" stroke="#3B6D11" stroke-width="0.8"/>
+<text x="545.0" y="244" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">products 产品</text>
+<text x="468" y="262" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="622" y="262" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="468" y="276" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">name</text>
+<text x="622" y="276" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(128)</text>
+<text x="468" y="290" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">series_id</text>
+<text x="622" y="290" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→categories</text>
+<text x="468" y="304" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">space_id</text>
+<text x="622" y="304" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→categories</text>
+<text x="468" y="318" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">category_id</text>
+<text x="622" y="318" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→categories</text>
+<text x="468" y="332" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">material/style</text>
+<text x="622" y="332" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="468" y="346" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">is_custom</text>
+<text x="622" y="346" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<text x="468" y="360" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">support_order</text>
+<text x="622" y="360" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<rect x="460" y="410" width="170" height="136" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.8"/>
+<rect x="460" y="410" width="170" height="22" rx="4" fill="#3B6D11" stroke="#3B6D11" stroke-width="0.8"/>
+<text x="545.0" y="424" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">product_skus</text>
+<text x="468" y="442" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="622" y="442" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="468" y="456" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">product_id</text>
+<text x="622" y="456" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→products</text>
+<text x="468" y="470" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">color</text>
+<text x="622" y="470" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="468" y="484" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">size</text>
+<text x="622" y="484" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="468" y="498" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">material</text>
+<text x="622" y="498" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="468" y="512" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">price</text>
+<text x="622" y="512" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">DECIMAL(10,2)</text>
+<text x="468" y="526" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">stock</text>
+<text x="622" y="526" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT</text>
+<text x="468" y="540" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">code</text>
+<text x="622" y="540" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64) UQ</text>
+<rect x="460" y="580" width="170" height="94" rx="4" fill="#FFFFFF" stroke="#3B6D11" stroke-width="0.8"/>
+<rect x="460" y="580" width="170" height="22" rx="4" fill="#3B6D11" stroke="#3B6D11" stroke-width="0.8"/>
+<text x="545.0" y="594" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">product_images</text>
+<text x="468" y="612" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="622" y="612" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="468" y="626" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">product_id</text>
+<text x="622" y="626" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→products</text>
+<text x="468" y="640" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">url</text>
+<text x="622" y="640" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="468" y="654" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">sort</text>
+<text x="622" y="654" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT</text>
+<text x="468" y="668" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">is_cover</text>
+<text x="622" y="668" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<rect x="670" y="70" width="170" height="108" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.8"/>
+<rect x="670" y="70" width="170" height="22" rx="4" fill="#185FA5" stroke="#185FA5" stroke-width="0.8"/>
+<text x="755.0" y="84" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">cases 案例</text>
+<text x="678" y="102" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="832" y="102" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="678" y="116" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">title</text>
+<text x="832" y="116" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(128)</text>
+<text x="678" y="130" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">space/style</text>
+<text x="832" y="130" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="678" y="144" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">area</text>
+<text x="832" y="144" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(64)</text>
+<text x="678" y="158" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">content</text>
+<text x="832" y="158" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">LONGTEXT</text>
+<text x="678" y="172" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">status</text>
+<text x="832" y="172" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<rect x="670" y="230" width="170" height="66" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.8"/>
+<rect x="670" y="230" width="170" height="22" rx="4" fill="#185FA5" stroke="#185FA5" stroke-width="0.8"/>
+<text x="755.0" y="244" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">case_products</text>
+<text x="678" y="262" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">case_id</text>
+<text x="832" y="262" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→cases</text>
+<text x="678" y="276" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">product_id</text>
+<text x="832" y="276" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">FK→products</text>
+<text x="678" y="290" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">PRIMARY KEY</text>
+<text x="832" y="290" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">(case_id, product_id)</text>
+<rect x="670" y="300" width="170" height="108" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.8"/>
+<rect x="670" y="300" width="170" height="22" rx="4" fill="#185FA5" stroke="#185FA5" stroke-width="0.8"/>
+<text x="755.0" y="314" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">news 新闻</text>
+<text x="678" y="332" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="832" y="332" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="678" y="346" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">title</text>
+<text x="832" y="346" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="678" y="360" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">category</text>
+<text x="832" y="360" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">ENUM 企业/行业</text>
+<text x="678" y="374" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">cover_url</text>
+<text x="832" y="374" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="678" y="388" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">content</text>
+<text x="832" y="388" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">LONGTEXT</text>
+<text x="678" y="402" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">status</text>
+<text x="832" y="402" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TINYINT</text>
+<rect x="670" y="440" width="170" height="108" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.8"/>
+<rect x="670" y="440" width="170" height="22" rx="4" fill="#185FA5" stroke="#185FA5" stroke-width="0.8"/>
+<text x="755.0" y="454" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">carousels 轮播图</text>
+<text x="678" y="472" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="832" y="472" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="678" y="486" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">title</text>
+<text x="832" y="486" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(128)</text>
+<text x="678" y="500" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">image_url</text>
+<text x="832" y="500" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="678" y="514" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">link</text>
+<text x="832" y="514" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="678" y="528" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">position</text>
+<text x="832" y="528" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(32)</text>
+<text x="678" y="542" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">sort</text>
+<text x="832" y="542" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT</text>
+<rect x="670" y="560" width="170" height="94" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.8"/>
+<rect x="670" y="560" width="170" height="22" rx="4" fill="#185FA5" stroke="#185FA5" stroke-width="0.8"/>
+<text x="755.0" y="574" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">downloads 下载中心</text>
+<text x="678" y="592" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="832" y="592" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">BIGINT PK</text>
+<text x="678" y="606" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">title</text>
+<text x="832" y="606" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(128)</text>
+<text x="678" y="620" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">file_url</text>
+<text x="832" y="620" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(255)</text>
+<text x="678" y="634" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">language</text>
+<text x="832" y="634" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(8)</text>
+<text x="678" y="648" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">sort</text>
+<text x="832" y="648" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT</text>
+<rect x="670" y="650" width="170" height="94" rx="4" fill="#FFFFFF" stroke="#185FA5" stroke-width="0.8"/>
+<rect x="670" y="650" width="170" height="22" rx="4" fill="#185FA5" stroke="#185FA5" stroke-width="0.8"/>
+<text x="755.0" y="664" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">timeline_events 时间线</text>
+<text x="678" y="682" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">id</text>
+<text x="832" y="682" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT PK</text>
+<text x="678" y="696" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">year</text>
+<text x="832" y="696" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(8)</text>
+<text x="678" y="710" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">title</text>
+<text x="832" y="710" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">VARCHAR(128)</text>
+<text x="678" y="724" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">description</text>
+<text x="832" y="724" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">TEXT</text>
+<text x="678" y="738" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#1F1F1F">sort</text>
+<text x="832" y="738" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#595959">INT</text>
+<line x1="125" y1="145" x2="125" y2="230" stroke="#534AB7" stroke-width="1" marker-end="url(#arrow)"/>
+<text x="105" y="188" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#534AB7">1:N</text>
+<line x1="125" y1="488" x2="125" y2="560" stroke="#A32D2D" stroke-width="1" marker-end="url(#arrow)"/>
+<text x="105" y="524" text-anchor="end" font-family="sans-serif" font-size="8" font-weight="400" fill="#A32D2D">1:N</text>
+<line x1="210" y1="450" x2="250" y2="350" stroke="#A32D2D" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+<line x1="335" y1="130" x2="335" y2="330" stroke="#993C1D" stroke-width="1" marker-end="url(#arrow)"/>
+<text x="345" y="230" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#993C1D">1:N</text>
+<line x1="335" y1="260" x2="335" y2="420" stroke="#993C1D" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="420" y1="110" x2="420" y2="440" stroke="#993C1D" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+<line x1="210" y1="488" x2="250" y2="555" stroke="#A32D2D" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+<line x1="420" y1="130" x2="460" y2="270" stroke="#3B6D11" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+<line x1="420" y1="150" x2="460" y2="290" stroke="#3B6D11" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+<line x1="420" y1="170" x2="460" y2="310" stroke="#3B6D11" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+<line x1="545" y1="405" x2="545" y2="410" stroke="#3B6D11" stroke-width="1" marker-end="url(#arrow)"/>
+<text x="555" y="402" text-anchor="start" font-family="sans-serif" font-size="8" font-weight="400" fill="#3B6D11">1:N</text>
+<line x1="545" y1="380" x2="545" y2="580" stroke="#3B6D11" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="630" y1="330" x2="670" y2="250" stroke="#3B6D11" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+<line x1="755" y1="165" x2="755" y2="230" stroke="#185FA5" stroke-width="1" marker-end="url(#arrow)"/>
+<text x="440.0" y="760" text-anchor="end" font-family="sans-serif" font-size="10" font-weight="400" fill="#595959">图例（按颜色区分域）：</text>
+<rect x="450.0" y="750" width="12" height="12" rx="2" fill="#534AB7" stroke="#534AB7" stroke-width="0.5"/>
+<text x="466.0" y="760" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">前台用户域</text>
+<rect x="560.0" y="750" width="12" height="12" rx="2" fill="#A32D2D" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="576.0" y="760" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">后台用户域</text>
+<rect x="670.0" y="750" width="12" height="12" rx="2" fill="#993C1D" stroke="#993C1D" stroke-width="0.5"/>
+<text x="686.0" y="760" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">权限 / 配置</text>
+<rect x="780.0" y="750" width="12" height="12" rx="2" fill="#3B6D11" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="796.0" y="760" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">产品域</text>
+<rect x="890.0" y="750" width="12" height="12" rx="2" fill="#185FA5" stroke="#185FA5" stroke-width="0.5"/>
+<text x="906.0" y="760" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#1F1F1F">内容域</text>
+<rect x="40" y="800" width="800" height="56" rx="6" fill="#FAFAFA" stroke="#D9D9D9" stroke-width="0.6" opacity="0.6"/>
+<text x="50" y="818" text-anchor="start" font-family="sans-serif" font-size="11" font-weight="500" fill="#1F1F1F">业务/订单域（关联字段）：</text>
+<text x="50" y="836" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#595959">jobs(招聘) → job_applications(投递, 5 阶段状态机) → users（会员可投递）</text>
+<text x="50" y="850" text-anchor="start" font-family="sans-serif" font-size="10" font-weight="400" fill="#595959">appointments(预约, 4 类型) / messages(留言) / orders → order_items → product_skus → products（库存联动）</text>
+</svg>

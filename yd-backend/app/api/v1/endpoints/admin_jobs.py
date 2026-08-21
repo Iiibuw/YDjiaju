@@ -1,7 +1,10 @@
 """后台招聘管理 API（需 JWT）。"""
-from fastapi import APIRouter, HTTPException, Query, status
+from typing import Annotated
 
-from app.core.deps import CurrentAdmin, DbDep
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from app.core.deps import DbDep, require_permission
+from app.models.admin_user import AdminUser
 from app.schemas.common import ApiResponse, PaginationMeta
 from app.schemas.job import (
     JobApplicationListOut,
@@ -19,7 +22,7 @@ router = APIRouter(prefix="/admin/jobs", tags=["后台-招聘"])
 @router.get("", response_model=ApiResponse[JobListOut])
 def list_jobs(
     db: DbDep,
-    _admin: CurrentAdmin,
+    _admin: Annotated[AdminUser, Depends(require_permission("job.view"))],
     category: str | None = None,
     keyword: str | None = None,
     page: int = Query(1, ge=1),
@@ -43,14 +46,14 @@ def list_jobs(
 
 
 @router.post("", response_model=ApiResponse[JobDetail])
-def create_job(payload: JobCreate, db: DbDep, admin: CurrentAdmin):
+def create_job(payload: JobCreate, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("job.edit"))]):
     """后台：新建岗位。"""
     j = job_service.create_job(db, payload, admin.id)
     return ApiResponse(data=j, message=f"岗位《{j.title}》创建成功")
 
 
 @router.put("/{job_id}", response_model=ApiResponse[JobDetail])
-def update_job(job_id: int, payload: JobCreate, db: DbDep, admin: CurrentAdmin):
+def update_job(job_id: int, payload: JobCreate, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("job.edit"))]):
     """后台：更新岗位。"""
     j = job_service.update_job(db, job_id, payload, admin.id)
     if not j:
@@ -59,7 +62,7 @@ def update_job(job_id: int, payload: JobCreate, db: DbDep, admin: CurrentAdmin):
 
 
 @router.delete("/{job_id}", response_model=ApiResponse[dict])
-def delete_job(job_id: int, db: DbDep, admin: CurrentAdmin):
+def delete_job(job_id: int, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("job.edit"))]):
     """后台：软删除岗位。"""
     ok = job_service.delete_job(db, job_id, admin.id)
     if not ok:
@@ -70,7 +73,7 @@ def delete_job(job_id: int, db: DbDep, admin: CurrentAdmin):
 @router.get("/applications", response_model=ApiResponse[JobApplicationListOut])
 def list_applications(
     db: DbDep,
-    _admin: CurrentAdmin,
+    _admin: Annotated[AdminUser, Depends(require_permission("job.view"))],
     job_id: int | None = Query(None, description="按岗位过滤"),
     stage: str | None = Query(None, description="applied/screening/interview/offer/rejected"),
     page: int = Query(1, ge=1),

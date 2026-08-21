@@ -36,18 +36,21 @@ def seed_initial_data(db) -> bool:
     db.add(tech_dept)
     db.flush()
 
-    # ----- 角色 -----
-    admin_role = _model(
-        "Role",
-        name="超级管理员",
-        code="admin",
-        data_scope="ALL",
-        description="内置超管",
-        sort=1,
-        is_activate=1,
-    )
-    db.add(admin_role)
-    db.flush()
+    # ----- 角色（5 类 RBAC，对齐开发技术文档 §2.3.1 / 后台 ROLES 约定） -----
+    role_specs = [
+        ("admin", "超级管理员", "ALL", "内置超管", 1),
+        ("editor", "内容编辑", "ALL", "内容与运营编辑", 2),
+        ("product", "产品管理员", "ALL", "产品/分类/SKU 管理（产品全局共享，不做区域隔离）", 3),
+        ("service", "客服主管", "REGION", "预约/留言/订单跟进", 4),
+        ("order", "订单管理员", "REGION", "订单处理/发货", 5),
+    ]
+    roles_by_code = {}
+    for code, name, scope, desc, sort in role_specs:
+        r = _model("Role", name=name, code=code, data_scope=scope, description=desc, sort=sort, is_activate=1)
+        db.add(r)
+        db.flush()
+        roles_by_code[code] = r
+    admin_role = roles_by_code["admin"]
 
     # ----- 管理员 -----
     admin = _model(
@@ -388,6 +391,93 @@ def seed_initial_data(db) -> bool:
         created_at=1, updated_at=1,
     )
     db.add_all([a1, a2])
+
+    # ----- 权限点 + 角色授权（RBAC 基线，对齐开发技术文档 §2.3.1） -----
+    perm_specs = [
+        ("dashboard.view", "dashboard", "仪表盘查看"),
+        ("product.view", "product", "产品查看"),
+        ("product.create", "product", "产品新增"),
+        ("product.edit", "product", "产品编辑"),
+        ("product.delete", "product", "产品删除"),
+        ("order.view", "order", "订单查看"),
+        ("order.ship", "order", "订单发货"),
+        ("order.refund", "order", "订单退款"),
+        ("news.view", "news", "新闻查看"),
+        ("news.create", "news", "新闻新增"),
+        ("news.edit", "news", "新闻编辑"),
+        ("news.delete", "news", "新闻删除"),
+        ("case.view", "case", "案例查看"),
+        ("case.create", "case", "案例新增"),
+        ("case.edit", "case", "案例编辑"),
+        ("case.delete", "case", "案例删除"),
+        ("job.view", "job", "招聘查看"),
+        ("job.edit", "job", "招聘编辑"),
+        ("appointment.view", "appointment", "预约查看"),
+        ("appointment.reply", "appointment", "预约跟进"),
+        ("message.view", "message", "留言查看"),
+        ("message.reply", "message", "留言回复"),
+        ("user.view", "user", "会员查看"),
+        ("dept.view", "dept", "部门查看"),
+        ("dept.edit", "dept", "部门管理"),
+        ("category.view", "category", "分类查看"),
+        ("category.create", "category", "分类新增"),
+        ("category.edit", "category", "分类编辑"),
+        ("category.delete", "category", "分类删除"),
+        ("banner.view", "banner", "轮播查看"),
+        ("banner.create", "banner", "轮播新增"),
+        ("banner.edit", "banner", "轮播编辑"),
+        ("banner.delete", "banner", "轮播删除"),
+        ("download.view", "download", "下载中心查看"),
+        ("download.create", "download", "下载中心新增"),
+        ("download.edit", "download", "下载中心编辑"),
+        ("download.delete", "download", "下载中心删除"),
+        ("about.view", "about", "关于我们查看"),
+        ("about.create", "about", "关于我们新增"),
+        ("about.edit", "about", "关于我们编辑"),
+        ("about.delete", "about", "关于我们删除"),
+        ("chat.view", "chat", "客服关键词查看"),
+        ("chat.edit", "chat", "客服关键词编辑"),
+        ("system.config", "system", "站点配置"),
+        ("system.role", "system", "角色管理"),
+        ("system.permission", "system", "权限管理"),
+        ("system.audit", "system", "审计查看"),
+    ]
+    perms_by_code = {}
+    for code, module, desc in perm_specs:
+        p = _model("Permission", name=desc, code=code, module=module, description=desc, is_activate=1)
+        db.add(p)
+        db.flush()
+        perms_by_code[code] = p
+
+    # 授权：admin/editor 拥有全部；product/service/order 按原型 ROLES 精确授权（对齐 PRD §3.2 / §6.12）
+    role_perms: dict[str, list[str]] = {
+        "product": [
+            "dashboard.view",
+            "product.view", "product.create", "product.edit", "product.delete",
+            "banner.view", "banner.create", "banner.edit", "banner.delete",
+            "category.view", "order.view",
+        ],
+        "service": [
+            "dashboard.view",
+            "appointment.view", "appointment.reply",
+            "message.view", "message.reply",
+            "order.view",
+        ],
+        "order": [
+            "dashboard.view",
+            "order.view", "order.ship", "order.refund",
+            "appointment.view", "appointment.reply",
+        ],
+    }
+    for code, r in roles_by_code.items():
+        if code in ("admin", "editor"):
+            granted = list(perms_by_code.values())
+        else:
+            codes = role_perms.get(code, [])
+            granted = [p for c, p in perms_by_code.items() if c in codes]
+        for p in granted:
+            db.add(_model("RolePermission", role_id=r.id, permission_id=p.id, is_activate=1))
+    db.flush()
 
     db.commit()
     return True

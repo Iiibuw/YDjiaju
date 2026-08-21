@@ -1,7 +1,10 @@
 """后台案例管理 API（需 JWT）。"""
-from fastapi import APIRouter, HTTPException, Query, status
+from typing import Annotated
 
-from app.core.deps import CurrentAdmin, DbDep
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from app.core.deps import DbDep, require_permission
+from app.models.admin_user import AdminUser
 from app.schemas.case import CaseCreate, CaseDetail, CaseListItem
 from app.schemas.common import ApiResponse, PaginationMeta
 from app.services import case_service
@@ -12,7 +15,7 @@ router = APIRouter(prefix="/admin/cases", tags=["后台-案例"])
 @router.get("", response_model=ApiResponse[dict])
 def list_cases(
     db: DbDep,
-    _admin: CurrentAdmin,
+    _admin: Annotated[AdminUser, Depends(require_permission("case.view"))],
     keyword: str | None = None,
     category_id: int | None = None,
     page: int = Query(1, ge=1),
@@ -33,7 +36,7 @@ def list_cases(
 
 
 @router.get("/{case_id}", response_model=ApiResponse[CaseDetail])
-def get_case(case_id: int, db: DbDep, _admin: CurrentAdmin):
+def get_case(case_id: int, db: DbDep, _admin: Annotated[AdminUser, Depends(require_permission("case.view"))]):
     c = case_service.get_case_admin(db, case_id)
     if not c:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="案例不存在")
@@ -41,13 +44,13 @@ def get_case(case_id: int, db: DbDep, _admin: CurrentAdmin):
 
 
 @router.post("", response_model=ApiResponse[CaseDetail])
-def create_case(payload: CaseCreate, db: DbDep, admin: CurrentAdmin):
+def create_case(payload: CaseCreate, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("case.create"))]):
     c = case_service.create_case(db, payload, admin.id)
     return ApiResponse(data=c, message=f"案例《{c.title}》已创建")
 
 
 @router.put("/{case_id}", response_model=ApiResponse[CaseDetail])
-def update_case(case_id: int, payload: CaseCreate, db: DbDep, admin: CurrentAdmin):
+def update_case(case_id: int, payload: CaseCreate, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("case.edit"))]):
     c = case_service.update_case(db, case_id, payload, admin.id)
     if not c:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="案例不存在")
@@ -55,7 +58,7 @@ def update_case(case_id: int, payload: CaseCreate, db: DbDep, admin: CurrentAdmi
 
 
 @router.delete("/{case_id}", response_model=ApiResponse[dict])
-def delete_case(case_id: int, db: DbDep, admin: CurrentAdmin):
+def delete_case(case_id: int, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("case.delete"))]):
     ok = case_service.delete_case(db, case_id, admin.id)
     if not ok:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="案例不存在")

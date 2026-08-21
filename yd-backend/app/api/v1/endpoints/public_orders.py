@@ -1,7 +1,9 @@
 """前台订单 + 预约 API。"""
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query
 
-from app.core.deps import DbDep, get_current_member
+from app.core.deps import DbDep, get_current_member, get_optional_member
 from app.models.user import User
 from app.schemas.appointment import AppointmentCreate, AppointmentOut
 from app.schemas.common import ApiResponse, PaginationMeta
@@ -12,9 +14,13 @@ router = APIRouter(prefix="", tags=["前台-订单与预约"])
 
 
 @router.post("/orders", response_model=ApiResponse[OrderOut])
-def create_order(payload: OrderCreate, db: DbDep):
-    """下单（M2-3：会员可传 user_id 由前端维护，简化版生成游客订单）。"""
-    o = order_service.create_order(payload, db, user_id=None)
+def create_order(
+    payload: OrderCreate,
+    db: DbDep,
+    member: Annotated[User | None, Depends(get_optional_member)] = None,
+):
+    """下单（游客可下；已登录会员关联 user_id，可在「我的订单」查看）。"""
+    o = order_service.create_order(payload, db, user_id=member.id if member else None)
     return ApiResponse(data=o, message=f"订单 {o.order_no} 创建成功")
 
 
@@ -35,9 +41,13 @@ def list_my_orders(
 
 
 @router.post("/appointments", response_model=ApiResponse[AppointmentOut])
-def create_appointment(payload: AppointmentCreate, db: DbDep):
-    """预约（游客/会员均可）。"""
-    a = appointment_service.create_appointment(payload, db, user_id=None)
+def create_appointment(
+    payload: AppointmentCreate,
+    db: DbDep,
+    member: Annotated[User | None, Depends(get_optional_member)] = None,
+):
+    """预约（游客/会员均可；登录会员关联 user_id）。"""
+    a = appointment_service.create_appointment(payload, db, user_id=member.id if member else None)
     return ApiResponse(data=a, message="预约成功，我们将尽快与您联系")
 
 

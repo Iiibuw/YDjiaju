@@ -1,0 +1,3511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YD家居 UI/UX 设计规格文档</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --c-bg: #FAFAF9;
+  --c-surface: #FFFFFF;
+  --c-ink: #1C1917;
+  --c-text: #44403C;
+  --c-muted: #78716C;
+  --c-border: #E7E5E4;
+  --c-gold: #CA8A04;
+  --c-gold-light: #FEF3C7;
+  --c-primary: #1677ff;
+  --c-code-bg: #1C1917;
+  --c-code-text: #F5F5F4;
+  --sidebar-w: 280px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Source Sans 3', 'Inter', sans-serif;
+  background: var(--c-bg);
+  color: var(--c-text);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+/* ===== Sidebar ===== */
+#sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--c-ink);
+  color: #D6D3D1;
+  overflow-y: auto;
+  padding: 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+#sidebar .logo {
+  padding: 20px 24px;
+  border-bottom: 1px solid #44403C;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#sidebar .logo .badge {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--c-gold);
+  color: var(--c-ink);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#sidebar .logo .title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #FAFAF9;
+}
+#sidebar .logo .subtitle {
+  font-size: 11px;
+  color: #A8A29E;
+}
+#sidebar nav { padding: 12px 0; }
+#sidebar nav a {
+  display: block;
+  padding: 6px 24px;
+  font-size: 13px;
+  color: #A8A29E;
+  text-decoration: none;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+#sidebar nav a.toc-l1 {
+  font-weight: 600;
+  color: #FAFAF9;
+  font-size: 13px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-bottom: 1px solid #292524;
+}
+#sidebar nav a.toc-l1:first-child { margin-top: 0; }
+#sidebar nav a.toc-l2 {
+  padding-left: 36px;
+  font-size: 12.5px;
+}
+#sidebar nav a:hover {
+  color: var(--c-gold);
+  background: #292524;
+  border-left-color: var(--c-gold);
+}
+#sidebar nav a.active {
+  color: var(--c-gold);
+  border-left-color: var(--c-gold);
+}
+
+/* ===== Main Content ===== */
+#main {
+  margin-left: var(--sidebar-w);
+  padding: 40px 48px 80px;
+  max-width: 1100px;
+}
+#main h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--c-ink);
+  margin: 48px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--c-gold);
+  line-height: 1.3;
+}
+#main h1:first-child { margin-top: 0; }
+#main h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--c-ink);
+  margin: 36px 0 16px;
+  padding-left: 12px;
+  border-left: 4px solid var(--c-gold);
+}
+#main h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--c-ink);
+  margin: 28px 0 12px;
+}
+#main h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin: 20px 0 8px;
+}
+#main p { margin: 10px 0; }
+#main ul, #main ol { margin: 10px 0 10px 24px; }
+#main li { margin: 4px 0; }
+
+/* Tables */
+#main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13.5px;
+  background: var(--c-surface);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+#main th {
+  background: #1C1917;
+  color: #FAFAF9;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+#main td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--c-border);
+  vertical-align: top;
+}
+#main tr:last-child td { border-bottom: none; }
+#main tr:hover td { background: #FAFAF9; }
+
+/* Code */
+#main code {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+  background: #F5F5F4;
+  color: #B45309;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+#main pre {
+  background: var(--c-code-bg);
+  color: var(--c-code-text);
+  padding: 18px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+#main pre code {
+  background: none;
+  color: var(--c-code-text);
+  padding: 0;
+  font-size: 13px;
+}
+
+/* Blockquotes */
+#main blockquote {
+  border-left: 4px solid var(--c-gold);
+  background: var(--c-gold-light);
+  padding: 12px 18px;
+  margin: 16px 0;
+  border-radius: 0 8px 8px 0;
+  color: var(--c-ink);
+}
+#main blockquote p { margin: 4px 0; }
+
+/* HR */
+#main hr {
+  border: none;
+  border-top: 2px solid var(--c-border);
+  margin: 40px 0;
+}
+
+/* Links */
+#main a {
+  color: var(--c-gold);
+  text-decoration: none;
+  font-weight: 500;
+}
+#main a:hover { text-decoration: underline; }
+
+/* ASCII art / pre without code */
+#main pre:not(:has(code)) {
+  background: #F5F5F4;
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+}
+
+/* Mobile toggle */
+#sidebarToggle {
+  display: none;
+  position: fixed;
+  top: 16px; left: 16px;
+  z-index: 200;
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: var(--c-ink);
+  color: var(--c-gold);
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; padding: 60px 24px 60px; }
+  #sidebarToggle { display: flex; }
+}
+
+/* Print */
+@media print {
+  #sidebar { display: none; }
+  #main { margin-left: 0; padding: 0; }
+  #sidebarToggle { display: none; }
+}
+
+/* Scrollbar */
+#sidebar::-webkit-scrollbar { width: 6px; }
+#sidebar::-webkit-scrollbar-track { background: #1C1917; }
+#sidebar::-webkit-scrollbar-thumb { background: #44403C; border-radius: 3px; }
+#main pre::-webkit-scrollbar { height: 6px; }
+#main pre::-webkit-scrollbar-thumb { background: #44403C; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<button id="sidebarToggle" aria-label="切换目录">☰</button>
+
+<aside id="sidebar">
+  <div class="logo">
+    <span class="badge">YD</span>
+    <div>
+      <div class="title">UI/UX 设计规格</div>
+      <div class="subtitle">v1.0 · 2026-08-18</div>
+    </div>
+  </div>
+  <nav id="tocNav">
+<a href="#yd家居-平台-uiux-设计规格文档" class="toc-l1">YD家居 平台 UI/UX 设计规格文档</a>
+  <a href="#目录" class="toc-l2">目录</a>
+<a href="#第一篇-基础与策略" class="toc-l1">第一篇 · 基础与策略</a>
+  <a href="#1-文档信息与版本" class="toc-l2">1. 文档信息与版本</a>
+  <a href="#2-项目背景与设计目标" class="toc-l2">2. 项目背景与设计目标</a>
+  <a href="#3-设计原则" class="toc-l2">3. 设计原则</a>
+  <a href="#4-用户角色与核心场景" class="toc-l2">4. 用户角色与核心场景</a>
+<a href="#第二篇-前台设计系统react-tailwind" class="toc-l1">第二篇 · 前台设计系统（React + Tailwind）</a>
+  <a href="#5-色彩系统" class="toc-l2">5. 色彩系统</a>
+  <a href="#6-字体系统" class="toc-l2">6. 字体系统</a>
+  <a href="#7-间距与栅格" class="toc-l2">7. 间距与栅格</a>
+  <a href="#8-图标与图形" class="toc-l2">8. 图标与图形</a>
+  <a href="#9-阴影圆角与边框" class="toc-l2">9. 阴影、圆角与边框</a>
+  <a href="#10-动效规范" class="toc-l2">10. 动效规范</a>
+<a href="#第三篇-后台设计系统react-ant-design" class="toc-l1">第三篇 · 后台设计系统（React + Ant Design）</a>
+  <a href="#11-色彩系统" class="toc-l2">11. 色彩系统</a>
+  <a href="#12-字体系统" class="toc-l2">12. 字体系统</a>
+  <a href="#13-布局规范" class="toc-l2">13. 布局规范</a>
+  <a href="#14-表格与表单规范" class="toc-l2">14. 表格与表单规范</a>
+<a href="#第四篇-信息架构与导航" class="toc-l1">第四篇 · 信息架构与导航</a>
+  <a href="#15-前台站点地图" class="toc-l2">15. 前台站点地图</a>
+  <a href="#16-前台导航结构" class="toc-l2">16. 前台导航结构</a>
+  <a href="#17-后台菜单结构" class="toc-l2">17. 后台菜单结构</a>
+  <a href="#18-页面路由与跳转逻辑" class="toc-l2">18. 页面路由与跳转逻辑</a>
+<a href="#第五篇-前台页面规格" class="toc-l1">第五篇 · 前台页面规格</a>
+  <a href="#19-首页" class="toc-l2">19. 首页</a>
+  <a href="#20-产品中心" class="toc-l2">20. 产品中心</a>
+  <a href="#21-产品详情" class="toc-l2">21. 产品详情</a>
+  <a href="#22-案例展示" class="toc-l2">22. 案例展示</a>
+  <a href="#23-新闻资讯" class="toc-l2">23. 新闻资讯</a>
+  <a href="#24-新闻详情" class="toc-l2">24. 新闻详情</a>
+  <a href="#25-招聘" class="toc-l2">25. 招聘</a>
+  <a href="#26-关于我们" class="toc-l2">26. 关于我们</a>
+  <a href="#27-下载中心" class="toc-l2">27. 下载中心</a>
+  <a href="#28-购物车结算" class="toc-l2">28. 购物车结算</a>
+  <a href="#29-我的订单-我的预约" class="toc-l2">29. 我的订单 / 我的预约</a>
+<a href="#第六篇-后台页面规格" class="toc-l1">第六篇 · 后台页面规格</a>
+  <a href="#30-登录页" class="toc-l2">30. 登录页</a>
+  <a href="#31-仪表盘" class="toc-l2">31. 仪表盘</a>
+  <a href="#32-轮播图管理" class="toc-l2">32. 轮播图管理</a>
+  <a href="#33-产品管理" class="toc-l2">33. 产品管理</a>
+  <a href="#331-分类管理v11-新增" class="toc-l2">33.1 分类管理（v1.1 新增）</a>
+  <a href="#3441-其他后台模块" class="toc-l2">34–41. 其他后台模块</a>
+<a href="#第七篇-组件库规范" class="toc-l1">第七篇 · 组件库规范</a>
+  <a href="#42-前台通用组件" class="toc-l2">42. 前台通用组件</a>
+  <a href="#43-前台业务组件" class="toc-l2">43. 前台业务组件</a>
+  <a href="#44-后台通用组件" class="toc-l2">44. 后台通用组件</a>
+  <a href="#45-弹窗体系" class="toc-l2">45. 弹窗体系</a>
+<a href="#第八篇-交互与体验规范" class="toc-l1">第八篇 · 交互与体验规范</a>
+  <a href="#46-交互模式" class="toc-l2">46. 交互模式</a>
+  <a href="#47-状态反馈" class="toc-l2">47. 状态反馈</a>
+  <a href="#48-表单规范" class="toc-l2">48. 表单规范</a>
+  <a href="#49-在线客服交互" class="toc-l2">49. 在线客服交互</a>
+  <a href="#50-会员登录态交互" class="toc-l2">50. 会员登录态交互</a>
+<a href="#第九篇-响应式与移动端" class="toc-l1">第九篇 · 响应式与移动端</a>
+  <a href="#51-断点定义" class="toc-l2">51. 断点定义</a>
+  <a href="#52-移动端导航折叠" class="toc-l2">52. 移动端导航折叠</a>
+  <a href="#53-移动端关键路径" class="toc-l2">53. 移动端关键路径</a>
+  <a href="#54-图片自适应与触摸目标" class="toc-l2">54. 图片自适应与触摸目标</a>
+<a href="#第十篇-可访问性与交付清单" class="toc-l1">第十篇 · 可访问性与交付清单</a>
+  <a href="#55-无障碍规范" class="toc-l2">55. 无障碍规范</a>
+  <a href="#56-交付前检查清单" class="toc-l2">56. 交付前检查清单</a>
+  <a href="#57-版本记录与变更日志" class="toc-l2">57. 版本记录与变更日志</a>
+  </nav>
+</aside>
+
+<main id="main">
+<h1 id="yd家居-平台-uiux-设计规格文档">YD家居 平台 UI/UX 设计规格文档</h1>
+<blockquote>
+<p><strong>版本</strong>：v1.0 ｜ <strong>日期</strong>：2026-08-18 ｜ <strong>状态</strong>：正式发布
+<strong>依据</strong>：PRD v1.2 + 14 个高保真原型 HTML
+<strong>技术栈</strong>：前台 React + Tailwind CSS ｜ 后台 React + Ant Design ｜ 后端 FastAPI
+<strong>设计工具</strong>：ui-ux-pro-max 设计智能（设计系统检索 + UX 规范库）</p>
+</blockquote>
+<hr />
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#第一篇--基础与策略">第一篇 · 基础与策略</a></li>
+<li><a href="#第二篇--前台设计系统react--tailwind">第二篇 · 前台设计系统（React + Tailwind）</a></li>
+<li><a href="#第三篇--后台设计系统react--ant-design">第三篇 · 后台设计系统（React + Ant Design）</a></li>
+<li><a href="#第四篇--信息架构与导航">第四篇 · 信息架构与导航</a></li>
+<li><a href="#第五篇--前台页面规格">第五篇 · 前台页面规格</a></li>
+<li><a href="#第六篇--后台页面规格">第六篇 · 后台页面规格</a></li>
+<li><a href="#第七篇--组件库规范">第七篇 · 组件库规范</a></li>
+<li><a href="#第八篇--交互与体验规范">第八篇 · 交互与体验规范</a></li>
+<li><a href="#第九篇--响应式与移动端">第九篇 · 响应式与移动端</a></li>
+<li><a href="#第十篇--可访问性与交付清单">第十篇 · 可访问性与交付清单</a></li>
+</ul>
+<hr />
+<h1 id="第一篇-基础与策略">第一篇 · 基础与策略</h1>
+<h2 id="1-文档信息与版本">1. 文档信息与版本</h2>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文档名称</td>
+<td>YD家居平台 UI/UX 设计规格文档</td>
+</tr>
+<tr>
+<td>版本</td>
+<td>v1.1</td>
+</tr>
+<tr>
+<td>创建日期</td>
+<td>2026-08-18</td>
+</tr>
+<tr>
+<td>依据</td>
+<td>PRD v1.2（§1–§13.1）+ 14 个高保真原型 HTML</td>
+</tr>
+<tr>
+<td>覆盖范围</td>
+<td>前台展示系统 12 页 + 后台管理系统 11 模块 + 设计系统 + 组件库 + 交互规范</td>
+</tr>
+<tr>
+<td>读者对象</td>
+<td>前端工程师、UI 设计师、产品经理、测试工程师</td>
+</tr>
+<tr>
+<td>验收用途</td>
+<td>开发还原依据 + UI 走查清单 + 测试验收参考</td>
+</tr>
+<tr>
+<td>本版更新</td>
+<td><strong>v1.1（2026-08-21）</strong>：① 重写 §33 产品管理——表格列对齐开发实现（封面/标题/副标题/系列/空间/品类/最低价/最高价/排序/状态/创建时间/操作 12 列），表单新增「风格」字段；② 新增 §33.1 分类管理（空间/系列/品类 三 Tab，后台维护、前台筛选栏自动同步）；③ §17 后台菜单新增「分类管理」</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-项目背景与设计目标">2. 项目背景与设计目标</h2>
+<p>YD家居平台是"展示 + 线索 + 部分电商"的混合模式官网及后台系统。参考站点蓝鸟家居为典型展示型官网，本项目在其基础上扩展为支持部分商品在线下单、预约线索、招聘投递、智能客服的完整运营闭环。</p>
+<p><strong>设计目标</strong>：</p>
+<ol>
+<li><strong>品牌温润感</strong> — 前台以暖灰石色 + 金色点缀传递家居品牌的温度与品质，区别于冷色调科技站</li>
+<li><strong>展示优先、线索为本</strong> — 视觉重心在产品图与案例图，转化路径以预约/咨询留资为主要目标</li>
+<li><strong>前后台风格分离</strong> — 前台 Tailwind 暖色优雅（Lexend + Source Sans 3），后台 AntD 蓝色专业（Inter），各成体系</li>
+<li><strong>角色驱动</strong> — 后台按 5 类角色渲染菜单与权限，数据隔离</li>
+<li><strong>移动端闭环</strong> — 关键路径（浏览/预约/下单）在移动端完整可用</li>
+<li><strong>渐进增强</strong> — 动效尊重 <code>prefers-reduced-motion</code>，图片懒加载，无障碍可达</li>
+</ol>
+<h2 id="3-设计原则">3. 设计原则</h2>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>原则</th>
+<th>说明</th>
+<th>落地要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>品牌温润</td>
+<td>暖灰石色（stone/sand）为底，金色（gold #CA8A04）为品牌强调色</td>
+<td>前台全站统一 Token，不引入冷色调</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>展示优先</td>
+<td>产品/案例图占据视觉重心，文字辅助</td>
+<td>卡片图占比 ≥ 60%，标题简洁</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>线索为本</td>
+<td>每个页面均有明确的预约/咨询/下单入口</td>
+<td>顶部操作区 + 页脚 + 浮窗三重触达</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>风格分离</td>
+<td>前台暖色优雅，后台蓝色专业</td>
+<td>两套独立 Design Token，不混用</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>角色驱动</td>
+<td>后台菜单按角色权限渲染</td>
+<td>5 角色 × 11 模块映射，前端控制显隐 + 服务端强制</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>渐进增强</td>
+<td>动效可降级，图片懒加载，无障碍可达</td>
+<td><code>prefers-reduced-motion</code> + aria-label + 键盘导航</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-用户角色与核心场景">4. 用户角色与核心场景</h2>
+<h3 id="41-前台用户">4.1 前台用户</h3>
+<table>
+<thead>
+<tr>
+<th>用户类型</th>
+<th>核心场景</th>
+<th>关键路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C 端消费者</td>
+<td>浏览产品/案例 → 查价格库存 → 在线咨询/预约 → 部分商品下单</td>
+<td>首页→产品中心→产品详情→加购→结算→我的订单</td>
+</tr>
+<tr>
+<td>B 端客户</td>
+<td>了解品牌实力 → 招商加盟咨询 → 批量采购询价</td>
+<td>关于我们→案例→在线预约→客服咨询</td>
+</tr>
+<tr>
+<td>求职者</td>
+<td>查看招聘信息 → 投递简历 → 跟踪进度</td>
+<td>招聘→岗位详情→投递→我的投递</td>
+</tr>
+<tr>
+<td>海外访客</td>
+<td>英文版浏览（本期不做，二期规划）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-后台角色">4.2 后台角色</h3>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>菜单权限</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>超级管理员（admin）</td>
+<td>全部 11 模块</td>
+<td>系统配置、权限分配、全局监控</td>
+</tr>
+<tr>
+<td>内容编辑（editor）</td>
+<td>仪表盘/轮播图/新闻/案例/关于我们/招聘/留言</td>
+<td>新闻发布、案例维护、留言回复</td>
+</tr>
+<tr>
+<td>产品管理员（product）</td>
+<td>仪表盘/轮播图/产品/订单</td>
+<td>产品上下架、SKU/库存维护</td>
+</tr>
+<tr>
+<td>客服运营（service）</td>
+<td>仪表盘/预约/留言/订单</td>
+<td>线索跟进、客服回复、订单处理</td>
+</tr>
+<tr>
+<td>订单专员（order）</td>
+<td>仪表盘/订单/预约</td>
+<td>订单发货、退款处理</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="第二篇-前台设计系统react-tailwind">第二篇 · 前台设计系统（React + Tailwind）</h1>
+<h2 id="5-色彩系统">5. 色彩系统</h2>
+<h3 id="51-品牌-token-定义">5.1 品牌 Token 定义</h3>
+<p>前台采用 Tailwind 自定义色彩，以暖灰石色为底、金色为品牌强调色：</p>
+<pre class="highlight"><code class="language-javascript">// tailwind.config.js
+colors: {
+  ink:   '#1C1917',  // 主标题/Logo底/深色背景
+  stone2:'#44403C',  // 次级文字/导航默认态
+  gold:  '#CA8A04',  // 品牌强调色（按钮/链接/装饰线/徽标）
+  sand:  '#FAFAF9',  // 页面背景
+  coal:  '#0C0A09',  // 最深文字
+}</code></pre>
+<h3 id="52-色彩使用规范">5.2 色彩使用规范</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>语义</th>
+<th>用途</th>
+<th>Tailwind 类名示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ink</td>
+<td><code>#1C1917</code></td>
+<td>主色</td>
+<td>标题文字、Logo 底色、深色区块背景、按钮描边</td>
+<td><code>text-ink</code> <code>bg-ink</code> <code>border-ink</code></td>
+</tr>
+<tr>
+<td>stone2</td>
+<td><code>#44403C</code></td>
+<td>次级</td>
+<td>导航默认态、次级文字、图标</td>
+<td><code>text-stone2</code></td>
+</tr>
+<tr>
+<td>gold</td>
+<td><code>#CA8A04</code></td>
+<td>强调</td>
+<td>品牌按钮、链接、激活态、装饰线、徽标</td>
+<td><code>bg-gold</code> <code>text-gold</code> <code>border-gold</code></td>
+</tr>
+<tr>
+<td>sand</td>
+<td><code>#FAFAF9</code></td>
+<td>背景</td>
+<td>页面背景、卡片底色</td>
+<td><code>bg-sand</code></td>
+</tr>
+<tr>
+<td>coal</td>
+<td><code>#0C0A09</code></td>
+<td>极深</td>
+<td>最深文字（少用）</td>
+<td><code>text-coal</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-语义色补充">5.3 语义色（补充）</h3>
+<table>
+<thead>
+<tr>
+<th>语义</th>
+<th>Hex</th>
+<th>用途</th>
+<th>Tailwind 类名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>成功</td>
+<td><code>#16A34A</code></td>
+<td>成功状态、已发布、已回复</td>
+<td><code>text-green-600</code> <code>bg-green-50</code></td>
+</tr>
+<tr>
+<td>警告</td>
+<td><code>#CA8A04</code></td>
+<td>待处理、提醒（与品牌色一致）</td>
+<td><code>text-gold</code></td>
+</tr>
+<tr>
+<td>危险</td>
+<td><code>#EF4444</code></td>
+<td>删除、错误、退出登录</td>
+<td><code>text-red-500</code> <code>text-red-600</code></td>
+</tr>
+<tr>
+<td>信息</td>
+<td><code>#3B82F6</code></td>
+<td>信息提示（少用，避免与后台蓝色混淆）</td>
+<td><code>text-blue-500</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-中性色阶tailwind-stone-系列">5.4 中性色阶（Tailwind stone 系列）</h3>
+<table>
+<thead>
+<tr>
+<th>色阶</th>
+<th>Hex</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stone-50</td>
+<td><code>#FAFAF9</code></td>
+<td>等同 sand，页面背景</td>
+</tr>
+<tr>
+<td>stone-100</td>
+<td><code>#F5F5F4</code></td>
+<td>卡片 hover 背景、分隔区</td>
+</tr>
+<tr>
+<td>stone-200</td>
+<td><code>#E7E5E4</code></td>
+<td>边框、分隔线</td>
+</tr>
+<tr>
+<td>stone-300</td>
+<td><code>#D6D3D1</code></td>
+<td>输入框边框、禁用态</td>
+</tr>
+<tr>
+<td>stone-400</td>
+<td><code>#A8A29E</code></td>
+<td>占位文字、辅助文字</td>
+</tr>
+<tr>
+<td>stone-500</td>
+<td><code>#78716C</code></td>
+<td>次级说明文字</td>
+</tr>
+<tr>
+<td>stone-600</td>
+<td><code>#57534E</code></td>
+<td>表单 label</td>
+</tr>
+<tr>
+<td>stone-800</td>
+<td><code>#292524</code></td>
+<td>深色区块次级文字</td>
+</tr>
+<tr>
+<td>stone-900</td>
+<td><code>#1C1917</code></td>
+<td>等同 ink</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-字体系统">6. 字体系统</h2>
+<h3 id="61-字体家族">6.1 字体家族</h3>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>字体</th>
+<th>字重</th>
+<th>引入方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标题</td>
+<td>Lexend</td>
+<td>300/400/500/600/700</td>
+<td>Google Fonts</td>
+</tr>
+<tr>
+<td>正文</td>
+<td>Source Sans 3</td>
+<td>300/400/500/600/700</td>
+<td>Google Fonts</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-html">&lt;link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;family=Source+Sans+3:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" /&gt;</code></pre>
+<pre class="highlight"><code class="language-javascript">// tailwind.config.js
+fontFamily: {
+  head: ['Lexend', 'sans-serif'],   // h1–h6, .font-head
+  body: ['Source Sans 3', 'sans-serif'], // body 默认
+}</code></pre>
+<pre class="highlight"><code class="language-css">body { font-family: 'Source Sans 3', sans-serif; }
+h1, h2, h3, .font-head { font-family: 'Lexend', sans-serif; }</code></pre>
+<h3 id="62-字号阶梯">6.2 字号阶梯</h3>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>Tailwind 类</th>
+<th>字号</th>
+<th>行高</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Display</td>
+<td><code>text-5xl</code></td>
+<td>48px</td>
+<td>leading-tight</td>
+<td>首页 Hero 主标题</td>
+</tr>
+<tr>
+<td>H1</td>
+<td><code>text-4xl</code></td>
+<td>36px</td>
+<td>leading-tight</td>
+<td>页面主标题（产品中心/关于我们 banner）</td>
+</tr>
+<tr>
+<td>H2</td>
+<td><code>text-3xl</code></td>
+<td>30px</td>
+<td>leading-tight</td>
+<td>区块标题</td>
+</tr>
+<tr>
+<td>H3</td>
+<td><code>text-xl</code></td>
+<td>20px</td>
+<td>leading-snug</td>
+<td>卡片标题、弹窗标题</td>
+</tr>
+<tr>
+<td>H4</td>
+<td><code>text-lg</code></td>
+<td>18px</td>
+<td>leading-snug</td>
+<td>子区块标题</td>
+</tr>
+<tr>
+<td>Body</td>
+<td><code>text-base</code></td>
+<td>16px</td>
+<td>leading-relaxed</td>
+<td>正文（移动端最小 16px）</td>
+</tr>
+<tr>
+<td>Body-sm</td>
+<td><code>text-sm</code></td>
+<td>14px</td>
+<td>leading-normal</td>
+<td>次级正文、表单、按钮</td>
+</tr>
+<tr>
+<td>Caption</td>
+<td><code>text-xs</code></td>
+<td>12px</td>
+<td>leading-normal</td>
+<td>标签、辅助说明、脚注</td>
+</tr>
+<tr>
+<td>Micro</td>
+<td><code>text-[11px]</code></td>
+<td>11px</td>
+<td>leading-normal</td>
+<td>进度阶段标签、徽标数字</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-字重规范">6.3 字重规范</h3>
+<table>
+<thead>
+<tr>
+<th>字重</th>
+<th>数值</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Light</td>
+<td>300</td>
+<td>大标题装饰性文字</td>
+</tr>
+<tr>
+<td>Regular</td>
+<td>400</td>
+<td>正文</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>500</td>
+<td>导航、按钮、卡片标题</td>
+</tr>
+<tr>
+<td>Semibold</td>
+<td>600</td>
+<td>区块标题、强调</td>
+</tr>
+<tr>
+<td>Bold</td>
+<td>700</td>
+<td>Logo、Hero 标题、KPI 数值</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-间距与栅格">7. 间距与栅格</h2>
+<h3 id="71-间距基准">7.1 间距基准</h3>
+<p>采用 <strong>8px 基准</strong>（Tailwind 默认 4px 间距体系，实际使用 8 的倍数）：</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>值</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>space-1</td>
+<td>4px</td>
+<td>图标与文字间距</td>
+</tr>
+<tr>
+<td>space-2</td>
+<td>8px</td>
+<td>紧凑元素间距</td>
+</tr>
+<tr>
+<td>space-3</td>
+<td>12px</td>
+<td>按钮内边距、列表项间距</td>
+</tr>
+<tr>
+<td>space-4</td>
+<td>16px</td>
+<td>卡片内边距、表单项间距</td>
+</tr>
+<tr>
+<td>space-6</td>
+<td>24px</td>
+<td>区块间距、卡片间距</td>
+</tr>
+<tr>
+<td>space-8</td>
+<td>32px</td>
+<td>区块内边距</td>
+</tr>
+<tr>
+<td>space-12</td>
+<td>48px</td>
+<td>区块垂直间距</td>
+</tr>
+<tr>
+<td>space-14</td>
+<td>56px</td>
+<td>大区块垂直间距</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-容器与栅格">7.2 容器与栅格</h3>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最大宽度</td>
+<td><code>max-w-7xl</code> (1280px)</td>
+<td>全站统一内容区</td>
+</tr>
+<tr>
+<td>水平内边距</td>
+<td><code>px-4 sm:px-6</code></td>
+<td>移动端 16px / 桌面端 24px</td>
+</tr>
+<tr>
+<td>栅格列数</td>
+<td>12 列（Tailwind grid）</td>
+<td>产品网格使用 <code>grid-cols-2 md:grid-cols-4</code></td>
+</tr>
+<tr>
+<td>卡片间距</td>
+<td><code>gap-6</code> (24px)</td>
+<td>产品/案例/新闻卡片统一</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-断点定义">7.3 断点定义</h3>
+<table>
+<thead>
+<tr>
+<th>断点</th>
+<th>前缀</th>
+<th>宽度</th>
+<th>布局变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>默认</td>
+<td>—</td>
+<td>&lt;640px</td>
+<td>单列、移动端导航折叠</td>
+</tr>
+<tr>
+<td>sm</td>
+<td><code>sm:</code></td>
+<td>≥640px</td>
+<td>部分双列、Hero 高度增加</td>
+</tr>
+<tr>
+<td>md</td>
+<td><code>md:</code></td>
+<td>≥768px</td>
+<td>2 列网格、操作区显示</td>
+</tr>
+<tr>
+<td>lg</td>
+<td><code>lg:</code></td>
+<td>≥1024px</td>
+<td>4 列网格、顶部导航完整显示</td>
+</tr>
+<tr>
+<td>xl</td>
+<td><code>xl:</code></td>
+<td>≥1280px</td>
+<td>max-w-7xl 容器居中</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-图标与图形">8. 图标与图形</h2>
+<h3 id="81-图标规范">8.1 图标规范</h3>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>规范</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图标库</td>
+<td>内联 SVG（线性风格，stroke-width 1.5–2）</td>
+</tr>
+<tr>
+<td>尺寸</td>
+<td>导航/操作区 <code>w-5 h-5</code> (20px)；移动端菜单 <code>w-6 h-6</code> (24px)；客服浮窗 <code>w-7 h-7</code> (28px)</td>
+</tr>
+<tr>
+<td>颜色</td>
+<td>跟随 <code>currentColor</code>，使用 <code>text-stone2</code> / <code>text-gold</code> / <code>text-sand</code></td>
+</tr>
+<tr>
+<td>viewBox</td>
+<td>统一 <code>0 0 24 24</code></td>
+</tr>
+<tr>
+<td>stroke</td>
+<td><code>fill="none" stroke="currentColor" stroke-width="1.8"</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>禁止</strong>：使用 emoji 作为 UI 图标。</p>
+<h3 id="82-品牌徽标">8.2 品牌徽标</h3>
+<pre class="highlight"><code class="language-html">&lt;!-- 导航栏 Logo --&gt;
+&lt;span class="inline-flex items-center justify-center w-9 h-9 rounded-md bg-ink text-gold font-head font-bold"&gt;YD&lt;/span&gt;
+&lt;span class="font-head text-xl font-semibold text-ink"&gt;YD家具&lt;/span&gt;</code></pre>
+<h3 id="83-占位图规范">8.3 占位图规范</h3>
+<p>原型中产品/案例图采用 CSS 渐变 + 内联 SVG 家具图标作为占位：</p>
+<pre class="highlight"><code class="language-css">.prod-thumb {
+  background: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 深色版本（页脚等） */
+.prod-thumb-dark {
+  background: linear-gradient(135deg, #1C1917, #44403C);
+}</code></pre>
+<p>生产环境替换为真实产品图，使用 <code>&lt;img loading="lazy"&gt;</code> + WebP 格式 + srcset 响应式。</p>
+<h2 id="9-阴影圆角与边框">9. 阴影、圆角与边框</h2>
+<h3 id="91-圆角">9.1 圆角</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>值</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rounded-md</td>
+<td>6px</td>
+<td>小按钮、输入框、徽标</td>
+</tr>
+<tr>
+<td>rounded-lg</td>
+<td>8px</td>
+<td>按钮、卡片图、输入框</td>
+</tr>
+<tr>
+<td>rounded-xl</td>
+<td>12px</td>
+<td>卡片、弹窗内层</td>
+</tr>
+<tr>
+<td>rounded-2xl</td>
+<td>16px</td>
+<td>弹窗、大型卡片</td>
+</tr>
+<tr>
+<td>rounded-full</td>
+<td>9999px</td>
+<td>圆形头像、胶囊按钮、标签 chip、客服浮窗</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92-阴影">9.2 阴影</h3>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>Tailwind 类</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基础</td>
+<td><code>shadow</code></td>
+<td>卡片默认</td>
+</tr>
+<tr>
+<td>悬浮</td>
+<td><code>shadow-lg</code></td>
+<td>下拉菜单、弹窗</td>
+</tr>
+<tr>
+<td>强悬浮</td>
+<td><code>shadow-xl</code></td>
+<td>客服浮窗按钮</td>
+</tr>
+<tr>
+<td>极强</td>
+<td><code>shadow-2xl</code></td>
+<td>用户菜单下拉</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-边框">9.3 边框</h3>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>类名</th>
+<th>色值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卡片边框</td>
+<td><code>border border-stone-200</code></td>
+<td>#E7E5E4</td>
+</tr>
+<tr>
+<td>输入框边框</td>
+<td><code>border border-stone-300</code></td>
+<td>#D6D3D1</td>
+</tr>
+<tr>
+<td>输入框聚焦</td>
+<td><code>focus:border-gold</code></td>
+<td>#CA8A04</td>
+</tr>
+<tr>
+<td>深色区块边框</td>
+<td><code>border-gold/20</code></td>
+<td>gold 20% 透明度</td>
+</tr>
+<tr>
+<td>分隔线</td>
+<td><code>border-stone-200</code> / <code>border-white/10</code>（深色）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-动效规范">10. 动效规范</h2>
+<h3 id="101-过渡时长">10.1 过渡时长</h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>时长</th>
+<th>缓动函数</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>微交互</td>
+<td>150–200ms</td>
+<td>ease</td>
+<td>hover 颜色变化、按钮态切换</td>
+</tr>
+<tr>
+<td>展开</td>
+<td>200ms</td>
+<td>ease-out</td>
+<td>下拉菜单、子导航</td>
+</tr>
+<tr>
+<td>弹窗</td>
+<td>200–300ms</td>
+<td>opacity ease</td>
+<td>Modal 显示/隐藏</td>
+</tr>
+<tr>
+<td>轮播</td>
+<td>600ms</td>
+<td>opacity ease</td>
+<td>幻灯片切换</td>
+</tr>
+<tr>
+<td>抽屉</td>
+<td>250ms</td>
+<td>transform ease</td>
+<td>后台 Drawer 滑入</td>
+</tr>
+</tbody>
+</table>
+<h3 id="102-hover-反馈">10.2 Hover 反馈</h3>
+<pre class="highlight"><code class="language-css">/* 导航链接下划线动画 */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 2px;
+  width: 0;
+  background: #CA8A04;
+  transition: width .2s ease;
+}
+.nav-link:hover::after,
+.nav-link.active::after { width: 100%; }
+
+/* 子导航展开 */
+.sub-nav {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: all .2s ease;
+}
+.nav-item:hover .sub-nav {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}</code></pre>
+<h3 id="103-轮播">10.3 轮播</h3>
+<pre class="highlight"><code class="language-css">.carousel-slide {
+  transition: opacity .6s ease;
+  cursor: pointer;
+}
+.carousel-slide:hover .slide-hint { opacity: 1; }</code></pre>
+<h3 id="104-toast">10.4 Toast</h3>
+<pre class="highlight"><code class="language-css">#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  transition: all .3s;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+/* 2.2s 后自动消失 */</code></pre>
+<h3 id="105-购物车徽标动画">10.5 购物车徽标动画</h3>
+<pre class="highlight"><code class="language-javascript">// 徽标数字变化时的弹性动画
+badge.animate(
+  [{ transform: 'scale(1)' }, { transform: 'scale(1.4)' }, { transform: 'scale(1)' }],
+  { duration: 350 }
+);</code></pre>
+<h3 id="106-降级策略">10.6 降级策略</h3>
+<pre class="highlight"><code class="language-css">@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}</code></pre>
+<hr />
+<h1 id="第三篇-后台设计系统react-ant-design">第三篇 · 后台设计系统（React + Ant Design）</h1>
+<h2 id="11-色彩系统">11. 色彩系统</h2>
+<h3 id="111-品牌-token-定义">11.1 品牌 Token 定义</h3>
+<p>后台采用 Ant Design 蓝色为主色，配合暗色侧边栏，体现专业管理感：</p>
+<pre class="highlight"><code class="language-javascript">// tailwind.config.js（后台自定义）
+colors: {
+  primary:  '#1677ff',  // 主操作色（AntD Blue 6）
+  primaryh: '#4096ff',  // hover 色（AntD Blue 5）
+  ink:      '#1f2937',  // 主文字（slate-800）
+  stone2:   '#6b7280',  // 次级文字（gray-500）
+  sand:     '#f5f7fa',  // 内容区背景
+}</code></pre>
+<h3 id="112-色彩使用规范">11.2 色彩使用规范</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>语义</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>primary</td>
+<td><code>#1677ff</code></td>
+<td>主操作</td>
+<td>按钮、激活态菜单、链接、图表主线</td>
+</tr>
+<tr>
+<td>primaryh</td>
+<td><code>#4096ff</code></td>
+<td>hover</td>
+<td>按钮 hover、链接 hover</td>
+</tr>
+<tr>
+<td>ink</td>
+<td><code>#1f2937</code></td>
+<td>主文字</td>
+<td>标题、正文</td>
+</tr>
+<tr>
+<td>stone2</td>
+<td><code>#6b7280</code></td>
+<td>次级</td>
+<td>说明文字、表头</td>
+</tr>
+<tr>
+<td>sand</td>
+<td><code>#f5f7fa</code></td>
+<td>背景</td>
+<td>内容区底色</td>
+</tr>
+</tbody>
+</table>
+<h3 id="113-侧边栏暗色系">11.3 侧边栏暗色系</h3>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>色值</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>侧边栏背景</td>
+<td><code>bg-slate-900</code> (#0F172A)</td>
+<td>暗色侧边栏</td>
+</tr>
+<tr>
+<td>菜单默认文字</td>
+<td><code>text-slate-300</code> (#CBD5E1)</td>
+<td>未激活菜单项</td>
+</tr>
+<tr>
+<td>菜单 hover</td>
+<td><code>bg-slate-800</code> (#1E293B) + <code>text-white</code></td>
+<td>hover 高亮</td>
+</tr>
+<tr>
+<td>菜单激活</td>
+<td><code>bg-primary</code> (#1677ff) + <code>text-white</code></td>
+<td>当前模块</td>
+</tr>
+<tr>
+<td>侧边栏边框</td>
+<td><code>border-slate-700</code> (#334155)</td>
+<td>分隔线</td>
+</tr>
+</tbody>
+</table>
+<h3 id="114-语义色">11.4 语义色</h3>
+<table>
+<thead>
+<tr>
+<th>语义</th>
+<th>操作色类</th>
+<th>Hex</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编辑</td>
+<td><code>.act-edit</code></td>
+<td><code>#1677ff</code></td>
+<td>编辑按钮</td>
+</tr>
+<tr>
+<td>删除</td>
+<td><code>.act-del</code></td>
+<td><code>#ef4444</code></td>
+<td>删除按钮</td>
+</tr>
+<tr>
+<td>新增</td>
+<td><code>.act-add</code></td>
+<td><code>#16a34a</code></td>
+<td>新增/回复按钮</td>
+</tr>
+<tr>
+<td>成功</td>
+<td><code>text-green-600</code></td>
+<td><code>#16a34a</code></td>
+<td>已发布、已回复、✓</td>
+</tr>
+<tr>
+<td>危险</td>
+<td><code>text-red-600</code></td>
+<td><code>#ef4444</code></td>
+<td>错误、删除确认</td>
+</tr>
+<tr>
+<td>禁用</td>
+<td><code>text-slate-300</code></td>
+<td><code>#CBD5E1</code></td>
+<td>— 占位</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-字体系统">12. 字体系统</h2>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>字体</th>
+<th>字重</th>
+<th>引入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全局</td>
+<td>Inter</td>
+<td>300/400/500/600/700</td>
+<td>Google Fonts</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-html">&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" /&gt;</code></pre>
+<pre class="highlight"><code class="language-css">body { font-family: 'Inter', sans-serif; }</code></pre>
+<h3 id="字号阶梯">字号阶梯</h3>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>Tailwind 类</th>
+<th>字号</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H1</td>
+<td><code>text-2xl</code></td>
+<td>24px</td>
+<td>登录页标题</td>
+</tr>
+<tr>
+<td>H2</td>
+<td><code>text-lg</code></td>
+<td>18px</td>
+<td>模块标题（顶栏）</td>
+</tr>
+<tr>
+<td>H3</td>
+<td><code>text-base</code></td>
+<td>16px</td>
+<td>卡片标题</td>
+</tr>
+<tr>
+<td>Body</td>
+<td><code>text-sm</code></td>
+<td>14px</td>
+<td>表格、表单、正文</td>
+</tr>
+<tr>
+<td>Caption</td>
+<td><code>text-xs</code></td>
+<td>12px</td>
+<td>说明文字、表头</td>
+</tr>
+<tr>
+<td>KPI</td>
+<td><code>text-2xl font-bold</code></td>
+<td>24px</td>
+<td>仪表盘指标数值</td>
+</tr>
+<tr>
+<td>微标</td>
+<td><code>text-[10px]</code></td>
+<td>10px</td>
+<td>图表轴标签</td>
+</tr>
+</tbody>
+</table>
+<h2 id="13-布局规范">13. 布局规范</h2>
+<h3 id="131-整体框架">13.1 整体框架</h3>
+<pre class="highlight"><code>┌──────────────────────────────────────────────┐
+│ 侧边栏 224px  │  顶栏（模块标题 + 刷新 + 用户）  │
+│ (w-56)        ├──────────────────────────────┤
+│               │                              │
+│  Logo + 菜单   │  内容区 #adminContent         │
+│               │  padding: 1.5rem (p-6)       │
+│               │  overflow-y: auto            │
+│               │                              │
+│  底部：角色信息  │                              │
+└───────────────┴──────────────────────────────┘</code></pre>
+<table>
+<thead>
+<tr>
+<th>区域</th>
+<th>尺寸</th>
+<th>样式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>侧边栏宽度</td>
+<td>224px (<code>w-56</code>)</td>
+<td><code>bg-slate-900</code> 固定左侧</td>
+</tr>
+<tr>
+<td>顶栏高度</td>
+<td>~52px (<code>py-3</code>)</td>
+<td><code>bg-white border-b border-slate-200</code></td>
+</tr>
+<tr>
+<td>内容区内边距</td>
+<td>24px (<code>p-6</code>)</td>
+<td><code>overflow-y-auto</code></td>
+</tr>
+<tr>
+<td>登录页</td>
+<td>全屏居中</td>
+<td><code>min-h-screen</code> + 渐变背景</td>
+</tr>
+</tbody>
+</table>
+<h3 id="132-登录页">13.2 登录页</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────┐
+│       渐变背景 (slate-900 → slate-800)  │
+│                                     │
+│        ┌─────────────────┐          │
+│        │  YD 后台管理      │          │
+│        │  企业管理运营平台   │          │
+│        │                  │          │
+│        │  账号 [________]  │          │
+│        │  密码 [________]  │          │
+│        │  [    登录    ]   │          │
+│        │                  │          │
+│        │  演示账号提示框     │          │
+│        └─────────────────┘          │
+│           max-w-sm, rounded-2xl      │
+└─────────────────────────────────────┘</code></pre>
+<h3 id="133-modal-与-drawer">13.3 Modal 与 Drawer</h3>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>尺寸</th>
+<th>触发</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modal</td>
+<td><code>max-w-lg</code> 居中</td>
+<td><code>.modal.show</code> → <code>display:flex</code></td>
+<td>新增/编辑/删除确认</td>
+</tr>
+<tr>
+<td>Drawer</td>
+<td>右侧滑出 <code>max-w-[480px]</code></td>
+<td><code>transform: translateX(100%→0)</code></td>
+<td>详情查看、复杂表单</td>
+</tr>
+</tbody>
+</table>
+<h2 id="14-表格与表单规范">14. 表格与表单规范</h2>
+<h3 id="141-表格规范">14.1 表格规范</h3>
+<pre class="highlight"><code class="language-css">table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th {
+  text-align: left;
+  color: #6b7280;
+  font-weight: 500;
+  padding: .6rem .8rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+td { padding: .6rem .8rem; border-bottom: 1px solid #f1f5f9; }
+tr:hover td { background: #f8fafc; }</code></pre>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>样式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表头</td>
+<td><code>bg-gray-50</code> + <code>text-gray-500</code> + <code>font-medium</code></td>
+</tr>
+<tr>
+<td>表体行</td>
+<td>默认白底，hover <code>#f8fafc</code></td>
+</tr>
+<tr>
+<td>行分隔</td>
+<td><code>border-bottom: 1px solid #f1f5f9</code></td>
+</tr>
+<tr>
+<td>图片列</td>
+<td><code>h-10 w-16 object-cover rounded border</code></td>
+</tr>
+<tr>
+<td>长文本列</td>
+<td><code>max-w-[220px] truncate</code> + <code>title</code> 悬停显示全文</td>
+</tr>
+<tr>
+<td>空数据</td>
+<td><code>text-slate-400 text-center py-6</code> "暂无数据"</td>
+</tr>
+</tbody>
+</table>
+<h3 id="142-表单规范">14.2 表单规范</h3>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>样式</th>
+<th>校验</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输入框</td>
+<td><code>border-slate-300 rounded-lg px-3 py-2.5 focus:border-primary focus:outline-none</code></td>
+<td>required 属性 + 失焦校验</td>
+</tr>
+<tr>
+<td>下拉框</td>
+<td>同输入框（SELECTS 配置驱动）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>多行文本</td>
+<td><code>rows="6"</code> textarea（新闻正文/产品描述）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>文件上传</td>
+<td><code>&lt;input type="file" accept="image/*"&gt;</code> + 本地预览</td>
+<td>FileReader</td>
+</tr>
+<tr>
+<td>只读字段</td>
+<td>新增时不渲染（READONLY 配置）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>label</td>
+<td><code>block text-sm text-slate-500 mb-1</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="第四篇-信息架构与导航">第四篇 · 信息架构与导航</h1>
+<h2 id="15-前台站点地图">15. 前台站点地图</h2>
+<pre class="highlight"><code>首页
+├─ 产品中心（筛选：系列/空间/品类） → 产品详情（SKU/价格/库存/加购）
+├─ 案例（实景案例列表） → 案例详情
+├─ 新闻（企业新闻 / 行业资讯） → 新闻详情
+├─ 招聘（社会招聘 / 校园招聘） → 岗位详情 + 投递 + 我的投递
+├─ 关于我们（关于YD / 发展历程 / 品牌介绍 / 联系我们）
+├─ 下载中心（画册PDF，仅页脚/搜索触达）
+├─ 在线预约（表单弹窗）
+├─ 在线客服（浮窗 + 智能应答）
+├─ 站内搜索（弹窗 + 结果聚合）
+├─ 购物车结算 → 我的订单
+└─ 会员中心（登录/注册/个人中心/我的订单/我的预约）</code></pre>
+<h2 id="16-前台导航结构">16. 前台导航结构</h2>
+<h3 id="161-顶部导航pc-端-lg">16.1 顶部导航（PC 端 lg+）</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────────────────────────┐
+│ [YD] YD家具  │ 首页 产品中心▼ 案例 新闻▼ 招聘▼ 关于我们▼ │ 🔍 📅 💬 🛒 会员登录 │
+└─────────────────────────────────────────────────────────────────┘
+                  一级导航(6项) + 二级下拉       右侧操作区(5项)</code></pre>
+<p><strong>一级导航</strong>：首页 / 产品中心 / 案例 / 新闻 / 招聘 / 关于我们</p>
+<p><strong>二级下拉</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>一级</th>
+<th>二级项</th>
+<th>路由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品中心</td>
+<td>全部产品 / 客厅精选 / 卧室精选 / 书房精选 / 茶室精选 / 办公家具</td>
+<td><code>?space=客厅</code> 等</td>
+</tr>
+<tr>
+<td>新闻</td>
+<td>企业新闻 / 行业资讯</td>
+<td><code>#corp</code> / <code>#ind</code></td>
+</tr>
+<tr>
+<td>招聘</td>
+<td>社会招聘 / 校园招聘</td>
+<td><code>#social</code> / <code>#campus</code></td>
+</tr>
+<tr>
+<td>关于我们</td>
+<td>关于YD / 发展历程 / 品牌介绍 / 联系我们</td>
+<td><code>#about-yd</code> / <code>#history</code> / <code>#brand</code> / <code>#contact</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>右侧操作区</strong>：站内搜索(🔍) / 在线预约(📅) / 在线客服(💬) / 购物车(🛒+badge) / 会员登录(按钮→登录后变头像)</p>
+<p><strong>导航样式</strong>：
+- <code>sticky top-0 z-50 bg-sand/95 backdrop-blur border-b border-stone-200</code>
+- 导航链接：hover 下划线展开动画（gold 色，200ms）
+- 激活态：<code>text-ink font-medium</code> + 下划线满宽</p>
+<h3 id="162-移动端导航ltlg">16.2 移动端导航（&lt;lg）</h3>
+<ul>
+<li>汉堡菜单按钮 <code>lg:hidden</code></li>
+<li>点击展开手风琴式折叠菜单</li>
+<li>二级菜单使用 <code>&lt;details&gt;</code> 标签实现展开/收起</li>
+<li>底部含在线预约 + 会员登录按钮</li>
+</ul>
+<h3 id="163-全局浮窗">16.3 全局浮窗</h3>
+<ul>
+<li><strong>客服浮窗</strong>：<code>fixed right-5 bottom-5 z-50 w-14 h-14 rounded-full bg-gold</code>，hover 放大 1.05</li>
+<li><strong>Toast</strong>：<code>fixed bottom-40px center</code>，2.2s 自动消失</li>
+</ul>
+<h2 id="17-后台菜单结构">17. 后台菜单结构</h2>
+<h3 id="171-角色权限映射">17.1 角色权限映射</h3>
+<table>
+<thead>
+<tr>
+<th>模块 key</th>
+<th>模块名</th>
+<th style="text-align: center;">admin</th>
+<th style="text-align: center;">editor</th>
+<th style="text-align: center;">product</th>
+<th style="text-align: center;">service</th>
+<th style="text-align: center;">order</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dashboard</td>
+<td>仪表盘</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td>carousel</td>
+<td>轮播图管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>product</td>
+<td>产品管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>category</td>
+<td>分类管理（v1.1 新增）</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>case</td>
+<td>案例管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>news</td>
+<td>新闻管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>recruit</td>
+<td>招聘管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>about</td>
+<td>关于我们管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>booking</td>
+<td>预约管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td>message</td>
+<td>留言管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>order</td>
+<td>订单管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td>system</td>
+<td>系统管理</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>实际菜单顺序（v1.1 对齐实现）</strong>：仪表盘 → 产品管理 → 分类管理 → 资讯管理 → 招聘管理 → 案例管理 → 订单管理 → 预约管理 → 会员管理 → 留言管理 → 部门管理</p>
+</blockquote>
+<h3 id="172-菜单渲染逻辑">17.2 菜单渲染逻辑</h3>
+<pre class="highlight"><code class="language-javascript">// 登录后按角色过滤模块
+buildSideMenu() {
+  sideMenu.innerHTML = currentRole.modules.map(m =&gt;
+    `&lt;div class="side-item ${m===currentMod?'active':''}" onclick="goMod('${m}')"&gt;${MOD_LABEL[m]}&lt;/div&gt;`
+  ).join('');
+}</code></pre>
+<ul>
+<li>菜单项样式：<code>side-item</code>（<code>cursor-pointer</code> + <code>rounded-lg</code> + <code>hover:bg-slate-800</code> + <code>active:bg-primary</code>）</li>
+<li>底部显示当前角色头像 + 角色名 + 角色 key + 退出按钮</li>
+</ul>
+<h2 id="18-页面路由与跳转逻辑">18. 页面路由与跳转逻辑</h2>
+<h3 id="181-前台路由">18.1 前台路由</h3>
+<table>
+<thead>
+<tr>
+<th>页面</th>
+<th>文件</th>
+<th>路由参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首页</td>
+<td><code>prototype_前台首页_YD家具.html</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>产品中心</td>
+<td><code>prototype_产品中心_YD家具.html</code></td>
+<td><code>?space=客厅</code>（空间筛选）</td>
+</tr>
+<tr>
+<td>产品详情</td>
+<td><code>prototype_产品详情_YD家具.html</code></td>
+<td><code>?id=1</code> 或 <code>?series=&amp;cat=&amp;model=</code></td>
+</tr>
+<tr>
+<td>案例展示</td>
+<td><code>prototype_案例展示_YD家具.html</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>新闻资讯</td>
+<td><code>prototype_新闻资讯_YD家具.html</code></td>
+<td><code>#corp</code> / <code>#ind</code>（hash 锚点）</td>
+</tr>
+<tr>
+<td>新闻详情</td>
+<td><code>prototype_新闻详情_YD家具.html</code></td>
+<td><code>?id=1</code></td>
+</tr>
+<tr>
+<td>招聘</td>
+<td><code>prototype_招聘_YD家具.html</code></td>
+<td><code>#social</code> / <code>#campus</code></td>
+</tr>
+<tr>
+<td>关于我们</td>
+<td><code>prototype_关于我们_YD家具.html</code></td>
+<td><code>#about-yd</code> / <code>#history</code> / <code>#brand</code> / <code>#contact</code></td>
+</tr>
+<tr>
+<td>下载中心</td>
+<td><code>prototype_下载中心_YD家具.html</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>购物车结算</td>
+<td><code>prototype_购物车结算_YD家具.html</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>我的订单</td>
+<td><code>prototype_我的订单_YD家具.html</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>我的预约</td>
+<td><code>prototype_我的预约_YD家具.html</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="182-本地存储-key">18.2 本地存储 Key</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>用途</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yd_member</code></td>
+<td>会员登录态</td>
+<td><code>{name, phone}</code> JSON（仅昵称+手机号，<strong>密码不落地存储</strong>）</td>
+</tr>
+<tr>
+<td><code>yd_cart</code></td>
+<td>购物车</td>
+<td><code>[{id,name,price,img,qty,color,size}]</code></td>
+</tr>
+<tr>
+<td><code>yd_orders</code></td>
+<td>订单列表</td>
+<td><code>[{no,items,total,status,created,eta,log}]</code></td>
+</tr>
+<tr>
+<td><code>yd_booking</code></td>
+<td>预约记录</td>
+<td><code>{name,phone,type,msg,time,status}</code></td>
+</tr>
+<tr>
+<td><code>yd_applications</code></td>
+<td>招聘投递</td>
+<td><code>[{job,stage,time}]</code></td>
+</tr>
+<tr>
+<td><code>yd_admin_logged</code></td>
+<td>后台登录态</td>
+<td><code>'1'</code></td>
+</tr>
+<tr>
+<td><code>yd_admin_role</code></td>
+<td>后台角色</td>
+<td><code>'admin'</code> 等</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="第五篇-前台页面规格">第五篇 · 前台页面规格</h1>
+<blockquote>
+<p>每页统一规格：路由 / 布局结构 / 核心区块 / 交互行为 / 响应式 / 验收要点</p>
+</blockquote>
+<h2 id="19-首页">19. 首页</h2>
+<p><strong>路由</strong>：<code>prototype_前台首页_YD家具.html</code></p>
+<h3 id="布局结构">布局结构</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────┐
+│ 顶部导航（sticky）                             │
+├─────────────────────────────────────────────┤
+│ Hero 轮播（h-420px / sm:h-520px）              │
+│ 6 张幻灯片 + 左右箭头 + 圆点指示器              │
+├─────────────────────────────────────────────┤
+│ 推荐产品（grid-cols-2 md:grid-cols-4 gap-6）   │
+├─────────────────────────────────────────────┤
+│ 最新案例（横向卡片 / grid）                     │
+├─────────────────────────────────────────────┤
+│ 新闻头条（列表 / 卡片）                        │
+├─────────────────────────────────────────────┤
+│ 页脚（4 列：品牌/关于/快捷入口/联系方式）        │
+└─────────────────────────────────────────────┘</code></pre>
+<h3 id="核心区块">核心区块</h3>
+<table>
+<thead>
+<tr>
+<th>区块</th>
+<th>组件</th>
+<th>数据来源</th>
+<th>交互</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hero 轮播</td>
+<td>Carousel</td>
+<td>后台轮播图管理（6 张）</td>
+<td>整张可点击 <code>data-href</code> 跳转；hover 显示提示；左右箭头切换；圆点跳转</td>
+</tr>
+<tr>
+<td>推荐产品</td>
+<td>ProductCard ×4</td>
+<td>产品列表（buy=true）</td>
+<td>点击跳转产品详情</td>
+</tr>
+<tr>
+<td>最新案例</td>
+<td>CaseCard ×3</td>
+<td>案例列表</td>
+<td>点击跳转案例详情</td>
+</tr>
+<tr>
+<td>新闻头条</td>
+<td>NewsCard ×3</td>
+<td>新闻列表</td>
+<td>点击跳转新闻详情</td>
+</tr>
+</tbody>
+</table>
+<h3 id="轮播图交互">轮播图交互</h3>
+<ul>
+<li>自动播放：5s 间隔切换</li>
+<li>切换方式：opacity 渐变（600ms）</li>
+<li>点击跳转：<code>data-href</code> 指向产品详情/案例/预约/产品中心</li>
+<li>第 4 张 <code>data-book="1"</code> 触发预约弹窗</li>
+<li>hover 显示 <code>.slide-hint</code> 提示文字</li>
+</ul>
+<h3 id="验收要点">验收要点</h3>
+<ul>
+<li>[ ] 6 张轮播图均可点击跳转</li>
+<li>[ ] 轮播自动播放 + 手动箭头 + 圆点三种切换方式</li>
+<li>[ ] 移动端 Hero 高度 420px，桌面端 520px</li>
+<li>[ ] 推荐产品 4 列（桌面）/ 2 列（移动）</li>
+<li>[ ] 页脚含下载中心快捷入口</li>
+</ul>
+<h2 id="20-产品中心">20. 产品中心</h2>
+<p><strong>路由</strong>：<code>prototype_产品中心_YD家具.html</code>（支持 <code>?space=客厅</code> 筛选）</p>
+<h3 id="布局结构">布局结构</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────┐
+│ Banner 区（bg-ink text-sand py-12）           │
+│ "PRODUCTS" + "产品中心" + 副标题               │
+├─────────────────────────────────────────────┤
+│ 筛选区                                         │
+│ 系列：[全部] [胡桃禮] [柏悦] [如意春] ...      │
+│ 空间：[全部] [客厅] [卧室] [书房] ...          │
+│ 品类：[全部] [沙发] [床] [桌] ...             │
+│ 关键词：[________________]                    │
+├─────────────────────────────────────────────┤
+│ "共 20 款产品"                                │
+│ 产品网格 grid-cols-2 md:grid-cols-4 gap-6     │
+├─────────────────────────────────────────────┤
+│ 页脚                                          │
+└─────────────────────────────────────────────┘</code></pre>
+<h3 id="筛选交互">筛选交互</h3>
+<ul>
+<li><strong>三维筛选</strong>：系列 / 空间 / 品类，使用 chip 组件（<code>rounded-full</code>）</li>
+<li><strong>URL 参数</strong>：<code>?space=客厅</code> 初始化空间筛选</li>
+<li><strong>关键词搜索</strong>：<code>oninput</code> 实时过滤</li>
+<li><strong>chip 样式</strong>：默认 <code>border-stone-300 text-stone2</code>，激活 <code>bg-gold text-ink border-gold</code></li>
+</ul>
+<h3 id="产品卡片">产品卡片</h3>
+<pre class="highlight"><code>┌──────────────────┐
+│   占位图 (4:3)    │  ← prod-thumb 渐变 + SVG 图标
+│                  │
+├──────────────────┤
+│ 胡桃禮 · 客厅     │  ← series + space（text-xs text-gold）
+│ 实木沙发          │  ← name（font-semibold text-ink）
+│ ¥12,800          │  ← price（text-gold font-bold）
+│ [库存 12 件]     │  ← stock（text-xs）
+└──────────────────┘</code></pre>
+<h3 id="验收要点">验收要点</h3>
+<ul>
+<li>[ ] 三维筛选可组合使用</li>
+<li>[ ] <code>?space=</code> URL 参数正确初始化筛选</li>
+<li>[ ] 关键词实时过滤</li>
+<li>[ ] 产品卡片点击跳转详情页</li>
+<li>[ ] 共 20 个产品数据</li>
+</ul>
+<h2 id="21-产品详情">21. 产品详情</h2>
+<p><strong>路由</strong>：<code>prototype_产品详情_YD家具.html?id=1</code>（或 <code>?series=&amp;cat=&amp;model=</code>）</p>
+<h3 id="布局结构">布局结构</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────┐
+│ 面包屑：首页 / 产品中心 / 胡桃禮·实木沙发        │
+├──────────────────┬──────────────────────────┤
+│                  │ 胡桃禮 · 客厅 · 沙发       │
+│  主图 (prod-thumb) │ 实木沙发                  │
+│  w-full h-80     │ ¥12,800                  │
+│                  │ 库存 12 件 · 支持在线下单    │
+│                  │                          │
+│ [图1][图2][图3]  │ 颜色：[原木色][深胡桃][墨黑] │
+│                  │ 尺寸：[单人][双人][三人]    │
+│                  │ [加入购物车] [立即购买]    │
+├──────────────────┴──────────────────────────┤
+│ 产品参数                                      │
+│ 材质：黑胡桃实木                                │
+│ 风格：现代简约                                 │
+│ 适用空间：客厅                                 │
+│ 是否定制：否                                   │
+│ 标签：客厅/实木                                │
+│ 描述：胡桃禮实木沙发以北美黑胡桃为主材...        │
+└─────────────────────────────────────────────┘</code></pre>
+<h3 id="sku-选择交互">SKU 选择交互</h3>
+<ul>
+<li>颜色/尺寸使用 <code>.sku-opt</code> 组件</li>
+<li>激活态：<code>active</code> class（<code>bg-gold text-ink</code>）</li>
+<li>选择后更新 <code>curColor</code> / <code>curSize</code> 变量</li>
+</ul>
+<h3 id="加购购买">加购/购买</h3>
+<ul>
+<li><strong>加入购物车</strong>：写入 <code>yd_cart</code>（同 ID + 同 color + 同 size 则 qty++），更新徽标，toast 提示</li>
+<li><strong>立即购买</strong>：未登录 → 弹登录弹窗 + toast"请先登录会员"；已登录 → 加购后 600ms 跳结算页</li>
+<li><strong>仅展示产品</strong>（<code>buy=false</code>）：toast"该商品仅展示，暂不支持在线下单"</li>
+</ul>
+<h3 id="验收要点">验收要点</h3>
+<ul>
+<li>[ ] 图集缩略图可切换主图</li>
+<li>[ ] SKU 颜色/尺寸可选择</li>
+<li>[ ] 加购后购物车徽标数字 +1 并弹性动画</li>
+<li>[ ] 立即购买需登录态校验</li>
+<li>[ ] 仅展示产品不显示购买按钮或点击提示</li>
+</ul>
+<h2 id="22-案例展示">22. 案例展示</h2>
+<p><strong>路由</strong>：<code>prototype_案例展示_YD家具.html</code></p>
+<h3 id="布局">布局</h3>
+<ul>
+<li>Banner 区 + 筛选（空间/风格）+ 案例卡片网格</li>
+<li>案例卡片：实景图 + 空间/风格标签 + 标题 + 所用产品</li>
+<li>点击进入案例详情（图集 + 所用产品 + 户型/面积/描述）</li>
+</ul>
+<h2 id="23-新闻资讯">23. 新闻资讯</h2>
+<p><strong>路由</strong>：<code>prototype_新闻资讯_YD家具.html#corp</code>（企业新闻）/ <code>#ind</code>（行业资讯）</p>
+<h3 id="布局">布局</h3>
+<ul>
+<li>二级导航通过 hash 锚点驱动分类</li>
+<li>新闻卡片：封面图 + 分类标签 + 标题 + 日期 + 摘要</li>
+<li>点击跳转新闻详情页（<code>prototype_新闻详情_YD家具.html?id=</code>）</li>
+<li>支持分页</li>
+</ul>
+<h2 id="24-新闻详情">24. 新闻详情</h2>
+<p><strong>路由</strong>：<code>prototype_新闻详情_YD家具.html?id=1</code></p>
+<h3 id="布局">布局</h3>
+<ul>
+<li>面包屑 + 标题 + 发布时间/分类</li>
+<li>富文本正文渲染</li>
+<li>相关推荐（同分类新闻）</li>
+</ul>
+<h2 id="25-招聘">25. 招聘</h2>
+<p><strong>路由</strong>：<code>prototype_招聘_YD家具.html#social</code>（社招）/ <code>#campus</code>（校招）</p>
+<h3 id="布局">布局</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────┐
+│ Banner 区                                     │
+├─────────────────────────────────────────────┤
+│ [社会招聘] [校园招聘] [我的投递]  ← chip 切换    │
+├─────────────────────────────────────────────┤
+│ 岗位卡片列表                                    │
+│ ┌─────────────────────────┐                  │
+│ │ 实木家具结构设计师  研发设计  │                  │
+│ │ 上海                     │                  │
+│ │ 负责实木家具结构设计...    │                  │
+│ │ [投递简历]               │                  │
+│ └─────────────────────────┘                  │
+├─────────────────────────────────────────────┤
+│ 页脚                                          │
+└─────────────────────────────────────────────┘</code></pre>
+<h3 id="我的投递进度跟踪">我的投递进度跟踪</h3>
+<p>5 阶段进度条：</p>
+<pre class="highlight"><code>  ①          ②          ③          ④          ⑤
+职位申请  →  简历筛选  →  面试考核  →  Offer签约 → 入职报到
+  ●———————●———————————●———————————○———————————○
+ gold     gold       gold       stone      stone</code></pre>
+<ul>
+<li>已完成阶段：<code>bg-gold text-ink</code>（实心圆 + gold 连线）</li>
+<li>未完成阶段：<code>bg-stone-200 text-stone-500</code>（空心圆 + stone 连线）</li>
+<li>当前阶段：<code>text-gold font-semibold</code>（文字高亮）</li>
+<li>支持撤销申请（<code>splice</code> 删除 + toast）</li>
+</ul>
+<h3 id="投递交互">投递交互</h3>
+<ul>
+<li>未登录点击投递 → 弹登录弹窗 + toast"请先登录会员再投递"</li>
+<li>已登录 → 弹投递表单 → 提交写入 <code>yd_applications</code> → toast"投递成功，可在「我的投递」跟踪进度"</li>
+</ul>
+<h3 id="验收要点">验收要点</h3>
+<ul>
+<li>[ ] hash 锚点正确切换社招/校招/我的投递</li>
+<li>[ ] 投递需登录态校验</li>
+<li>[ ] 我的投递 5 阶段进度正确渲染</li>
+<li>[ ] 撤销申请可用</li>
+</ul>
+<h2 id="26-关于我们">26. 关于我们</h2>
+<p><strong>路由</strong>：<code>prototype_关于我们_YD家具.html#about-yd</code> / <code>#history</code> / <code>#brand</code> / <code>#contact</code></p>
+<h3 id="发展历程时间线">发展历程时间线</h3>
+<pre class="highlight"><code>  1953      1985      2008      2020      2026      2053
+品牌创立 → 规模化 → 全国零售 → 数字化 → 温润生活 → 百年愿景
+   ●—————————●——————————●——————————●——————————●——————————○
+ gold      gold      gold      gold      gold      gold(愿景)</code></pre>
+<ul>
+<li>横向时间线（<code>flex</code> 布局，6 节点）</li>
+<li>节点：金色圆点 <code>bg-gold ring-4 ring-gold/20</code> + 卡片（年份/标题/描述）</li>
+<li>连接线：<code>bg-gradient-to-r from-gold/60 to-gold/20</code></li>
+<li>覆盖品牌"百年店"叙事（1953 创立 → 2053 愿景）</li>
+</ul>
+<h3 id="联系我们">联系我们</h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>公司地址</td>
+<td>上海市黄浦区南京东路 1 号 YD 大厦</td>
+</tr>
+<tr>
+<td>销售热线</td>
+<td>400-888-8888（<code>tel:</code> 链接）</td>
+</tr>
+<tr>
+<td>服务热线</td>
+<td>400-888-9999（<code>tel:</code> 链接）</td>
+</tr>
+<tr>
+<td>邮箱</td>
+<td>contact@yd-home.com</td>
+</tr>
+<tr>
+<td>社交媒体</td>
+<td>微信 / 视频号 / 抖音 / 小红书</td>
+</tr>
+<tr>
+<td>预约按钮</td>
+<td>"预约到店咨询" → 打开预约弹窗</td>
+</tr>
+</tbody>
+</table>
+<h3 id="验收要点">验收要点</h3>
+<ul>
+<li>[ ] 4 个区块通过 hash 锚点定位</li>
+<li>[ ] 时间线横向渲染 6 节点</li>
+<li>[ ] 联系我们电话为 <code>tel:</code> 可点击链接</li>
+<li>[ ] 预约按钮触发预约弹窗</li>
+</ul>
+<h2 id="27-下载中心">27. 下载中心</h2>
+<p><strong>路由</strong>：<code>prototype_下载中心_YD家具.html</code>（仅页脚/搜索触达）</p>
+<h3 id="布局">布局</h3>
+<ul>
+<li>画册 PDF 列表（3 份）</li>
+<li>每项：标题 + 文件信息 + 下载按钮</li>
+<li>下载交互：点击 → "下载中…" → "下载完成" 状态切换</li>
+</ul>
+<h2 id="28-购物车结算">28. 购物车结算</h2>
+<p><strong>路由</strong>：<code>prototype_购物车结算_YD家具.html</code></p>
+<h3 id="布局">布局</h3>
+<pre class="highlight"><code>┌─────────────────────────────────────────────┐
+│ 购物车（标题）                                 │
+├─────────────────────────────────────────────┤
+│ ┌──────────────────────────────────────┐    │
+│ │ [图] 胡桃禮·实木沙发  ¥12,800         │    │
+│ │      [- 1 +]  [删除]                 │    │
+│ └──────────────────────────────────────┘    │
+│ ┌──────────────────────────────────────┐    │
+│ │ [图] 柏悦·真皮软床    ¥8,800          │    │
+│ │      [- 1 +]  [删除]                 │    │
+│ └──────────────────────────────────────┘    │
+├─────────────────────────────────────────────┤
+│ 小计：¥21,600                                │
+│ 总计：¥21,600                                │
+│ [提交订单]                                   │
+├─────────────────────────────────────────────┤
+│ 空状态：购物车为空（cartEmpty）                 │
+└─────────────────────────────────────────────┘</code></pre>
+<h3 id="交互">交互</h3>
+<ul>
+<li><strong>数量调整</strong>：<code>-</code> / <code>+</code> 按钮，最小 1</li>
+<li><strong>删除</strong>：移除该项 + toast"已移除"</li>
+<li><strong>提交订单</strong>：未登录 → 弹登录 + toast"请先登录会员再结算"；空车 → toast"购物车为空"；正常 → 生成订单写入 <code>yd_orders</code>，清空购物车，800ms 跳转我的订单</li>
+<li><strong>订单数据</strong>：<code>{no, items, total, status:'待付款', created, eta:3天后, log:['待付款·等待仓库拣货']}</code></li>
+</ul>
+<h2 id="29-我的订单-我的预约">29. 我的订单 / 我的预约</h2>
+<h3 id="我的订单">我的订单</h3>
+<p><strong>路由</strong>：<code>prototype_我的订单_YD家具.html</code></p>
+<ul>
+<li>订单列表（来自 <code>yd_orders</code>）</li>
+<li>每项：订单号 + 商品列表 + 总金额 + 状态 + 创建时间 + 预计送达</li>
+<li>状态流转：待付款 → 已付款 → 已发货 → 已完成（退款中 / 已退款 / 已关闭 为异常分支）</li>
+</ul>
+<h3 id="我的预约">我的预约</h3>
+<p><strong>路由</strong>：<code>prototype_我的预约_YD家具.html</code></p>
+<ul>
+<li>预约列表（来自 <code>yd_booking</code>）</li>
+<li>每项：姓名 + 电话 + 需求类型 + 留言 + 状态 + 时间</li>
+</ul>
+<hr />
+<h1 id="第六篇-后台页面规格">第六篇 · 后台页面规格</h1>
+<blockquote>
+<p>每模块统一规格：菜单 key + 角色权限 + 页面布局 + 数据字段 + 操作 + 弹窗</p>
+</blockquote>
+<h2 id="30-登录页">30. 登录页</h2>
+<p><strong>路由</strong>：<code>prototype_后台管理_YD家具.html</code>（初始状态）</p>
+<h3 id="布局">布局</h3>
+<ul>
+<li>全屏渐变背景 <code>bg-gradient-to-br from-slate-900 to-slate-800</code></li>
+<li>居中卡片 <code>max-w-sm rounded-2xl shadow-xl p-8</code></li>
+<li>标题"YD 后台管理" + 副标题"企业管理运营平台"</li>
+<li>表单：账号 + 密码 + 登录按钮</li>
+<li>演示账号提示框（5 个角色 + 密码 123456）</li>
+</ul>
+<h3 id="登录逻辑">登录逻辑</h3>
+<pre class="highlight"><code class="language-javascript">function doLogin(e) {
+  // 1. 校验密码（演示密码 123456）
+  // 2. 匹配角色 key（ROLES[u] || 'admin'）
+  // 3. 写入 sessionStorage + localStorage
+  // 4. enterApp() → 隐藏登录页 + 显示主框架 + 渲染菜单 + 默认进入仪表盘
+}</code></pre>
+<h3 id="验收要点">验收要点</h3>
+<ul>
+<li>[ ] 密码错误 toast 提示</li>
+<li>[ ] 登录成功跳转仪表盘</li>
+<li>[ ] 5 个角色均可登录</li>
+<li>[ ] 会话过期重定向登录页</li>
+</ul>
+<h2 id="31-仪表盘">31. 仪表盘</h2>
+<p><strong>菜单 key</strong>：<code>dashboard</code> ｜ <strong>角色权限</strong>：全部</p>
+<h3 id="布局">布局</h3>
+<pre class="highlight"><code>┌──────────────────────────────────────────────┐
+│ KPI 卡片区（grid-cols-2 md:grid-cols-5）       │
+│ ┌─────┐┌─────┐┌─────┐┌─────┐┌─────┐         │
+│ │访问量││预约量││留言量││订单量││销售额│         │
+│ │7,239││  2  ││  2  ││  2  ││21,000│         │
+│ └─────┘└─────┘└─────┘└─────┘└─────┘         │
+├──────────────────────────────────────────────┤
+│ ┌──────────────┐ ┌──────────────┐           │
+│ │ 近 7 日访问量   │ │ 销售额趋势(万元)│           │
+│ │  柱状图        │ │  折线图        │           │
+│ │  带数值标注     │ │  带数值标注     │           │
+│ │  周一~周日     │ │  周一~周日     │           │
+│ └──────────────┘ └──────────────┘           │
+└──────────────────────────────────────────────┘</code></pre>
+<h3 id="kpi-卡片">KPI 卡片</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数据来源</th>
+<th>格式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>访问量(PV/UV)</td>
+<td>seedStats() 动态计算</td>
+<td><code>toLocaleString()</code></td>
+</tr>
+<tr>
+<td>预约量</td>
+<td><code>DB.booking.length</code></td>
+<td>整数</td>
+</tr>
+<tr>
+<td>留言量</td>
+<td><code>DB.message.length</code></td>
+<td>整数</td>
+</tr>
+<tr>
+<td>订单量</td>
+<td><code>DB.order.length</code></td>
+<td>整数</td>
+</tr>
+<tr>
+<td>销售额(趋势)</td>
+<td>seedStats() 计算</td>
+<td><code>toLocaleString()</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="图表">图表</h3>
+<ul>
+<li><strong>柱状图</strong>：近 7 日访问量，<code>bg-primary</code> 柱条，顶部数值标注，底部周一~周日标签</li>
+<li><strong>折线图</strong>：销售额趋势，SVG <code>polyline</code> + 圆点 + 数值标注 + 轴标签</li>
+</ul>
+<h2 id="32-轮播图管理">32. 轮播图管理</h2>
+<p><strong>菜单 key</strong>：<code>carousel</code> ｜ <strong>角色权限</strong>：admin / editor / product</p>
+<h3 id="表格字段">表格字段</h3>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>字段</th>
+<th>类型</th>
+<th>可编辑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图片</td>
+<td>img</td>
+<td>图片上传</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>标题</td>
+<td>title</td>
+<td>文本</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>位置</td>
+<td>pos</td>
+<td>下拉（首页/案例详情/新闻）</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>跳转类型</td>
+<td>link</td>
+<td>下拉（产品/案例/新闻）</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>系列</td>
+<td>series</td>
+<td>文本</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>类别</td>
+<td>cat</td>
+<td>文本</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>型号</td>
+<td>model</td>
+<td>文本</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>排序</td>
+<td>sort</td>
+<td>数字</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>启用</td>
+<td>on</td>
+<td>下拉（是/否）</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<h3 id="操作">操作</h3>
+<ul>
+<li>新增 / 编辑（Modal 表单）/ 删除（二次确认）/ 预览</li>
+</ul>
+<h2 id="33-产品管理">33. 产品管理</h2>
+<p><strong>菜单 key</strong>：<code>product</code> ｜ <strong>角色权限</strong>：admin / product ｜ <strong>路由</strong>：<code>/admin/products</code>（列表）、<code>/admin/products/new</code>（新增）、<code>/admin/products/edit/:id</code>（编辑）</p>
+<h3 id="表格字段v11-对齐开发实现共-12-列">表格字段（v1.1 对齐开发实现，共 12 列）</h3>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID</td>
+<td>id</td>
+<td>只读</td>
+<td>自增主键</td>
+</tr>
+<tr>
+<td>封面</td>
+<td>cover_url</td>
+<td>图片</td>
+<td>缩略图 48×48，无图显示占位</td>
+</tr>
+<tr>
+<td>产品标题</td>
+<td>name</td>
+<td>文本</td>
+<td>主标题，加粗</td>
+</tr>
+<tr>
+<td>副标题</td>
+<td>subtitle</td>
+<td>文本</td>
+<td>次行小字，灰色</td>
+</tr>
+<tr>
+<td>系列</td>
+<td>series_name</td>
+<td>文本</td>
+<td>关联 categories.type='series'</td>
+</tr>
+<tr>
+<td>空间</td>
+<td>space_name</td>
+<td>文本</td>
+<td>关联 categories.type='space'</td>
+</tr>
+<tr>
+<td>品类</td>
+<td>category_name</td>
+<td>文本</td>
+<td>关联 categories.type='category'</td>
+</tr>
+<tr>
+<td>最低价 / 最高价</td>
+<td>min_price_cents / max_price_cents</td>
+<td>金额</td>
+<td><strong>存储单位分，展示 ÷100 转元</strong>，如 ¥9.80 – 10.80</td>
+</tr>
+<tr>
+<td>排序</td>
+<td>sort</td>
+<td>数字</td>
+<td>数值大者靠前（前台优先级高）</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>status</td>
+<td>Tag</td>
+<td>草稿灰 / 上架绿 / 下架橙</td>
+</tr>
+<tr>
+<td>创建时间</td>
+<td>created_date</td>
+<td>时间</td>
+<td>—</td>
+</tr>
+<tr>
+<td>操作</td>
+<td>—</td>
+<td>按钮组</td>
+<td>编辑 / 上架·下架切换 / 删除（二次确认 Modal）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>筛选栏</strong>：标题关键词搜索 + 空间下拉（读取 <code>/admin/categories?kind=space</code>）+ 状态下拉（<code>status_filter</code>）。</p>
+<h3 id="产品表单新增-编辑">产品表单（新增 / 编辑）</h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>控件</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品标题</td>
+<td>Input</td>
+<td>✅</td>
+<td>1–128 字</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>Radio</td>
+<td>✅</td>
+<td>草稿 draft / 上架 on_sale / 下架 off_sale</td>
+</tr>
+<tr>
+<td>副标题</td>
+<td>Input</td>
+<td>-</td>
+<td>≤255 字</td>
+</tr>
+<tr>
+<td><strong>风格</strong></td>
+<td>Input</td>
+<td>-</td>
+<td><strong>v1.1 新增</strong>（products.style），如 现代简约 / 新中式 / 轻奢风</td>
+</tr>
+<tr>
+<td>系列 / 空间 / 品类</td>
+<td>Select 下拉</td>
+<td>三选一</td>
+<td>选项来自分类管理接口（不再手输）</td>
+</tr>
+<tr>
+<td>封面图</td>
+<td>Upload</td>
+<td>-</td>
+<td>单图，上传后回显缩略图</td>
+</tr>
+<tr>
+<td>产品详情</td>
+<td>富文本 HTML</td>
+<td>-</td>
+<td>详情页渲染</td>
+</tr>
+<tr>
+<td>最低价 / 最高价</td>
+<td>InputNumber</td>
+<td>-</td>
+<td><strong>单位：分</strong>；前端校验 最低价 ≤ 最高价（后端 CHECK <code>chk_products_amount</code> 双保险）</td>
+</tr>
+<tr>
+<td>排序号</td>
+<td>InputNumber</td>
+<td>-</td>
+<td>默认 0，数值大靠前</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sku-与库存">SKU 与库存</h3>
+<ul>
+<li>预留：<code>product_skus</code> 表（颜色/尺寸/材质组合变体），当前实现未接入，后续迭代启用</li>
+<li>库存：SKU 级，后台可调整（预留）</li>
+</ul>
+<hr />
+<h2 id="331-分类管理v11-新增">33.1 分类管理（v1.1 新增）</h2>
+<p><strong>菜单 key</strong>：<code>category</code> ｜ <strong>角色权限</strong>：admin / product ｜ <strong>路由</strong>：<code>/admin/categories</code></p>
+<blockquote>
+<p>空间 / 系列 / 品类 三类字典统一维护，<strong>前台产品中心筛选栏自动同步</strong>（读取 <code>/public/categories?kind=</code>）。</p>
+</blockquote>
+<h3 id="页面布局">页面布局</h3>
+<ul>
+<li>顶部 <strong>Tabs 三个</strong>：<code>空间</code> / <code>系列</code> / <code>品类</code></li>
+<li>每个 Tab 一张表格 + 右上「新增」按钮</li>
+</ul>
+<h3 id="表格字段">表格字段</h3>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID</td>
+<td>id</td>
+<td>只读</td>
+</tr>
+<tr>
+<td>名称</td>
+<td>name</td>
+<td>中文名，如 客厅 / 胡桃禮 / 实木餐桌</td>
+</tr>
+<tr>
+<td>排序</td>
+<td>sort</td>
+<td>数值大靠前</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>is_activate</td>
+<td>启用 Tag / 禁用</td>
+</tr>
+<tr>
+<td>操作</td>
+<td>—</td>
+<td>编辑（Modal）/ 删除（二次确认，被产品引用时后端拒绝 → 400）/ 启用·禁用</td>
+</tr>
+</tbody>
+</table>
+<h3 id="新增-编辑modal">新增 / 编辑（Modal）</h3>
+<ul>
+<li>名称（必填）、排序号（选填，默认 0）、启用状态开关</li>
+<li>保存后<strong>前台筛选栏实时出现新分类</strong>（react-query 轮询 30s + 聚焦刷新）</li>
+</ul>
+<h3 id="验收要点">验收要点</h3>
+<ol>
+<li>后台新增空间分类「书房」→ 前台产品中心左侧筛选「空间」立即出现「书房」</li>
+<li>删除被产品引用的分类 → 弹「该分类已被产品引用，无法删除」错误提示</li>
+<li>分类禁用后，前台筛选栏不再显示该分类</li>
+</ol>
+<h2 id="3441-其他后台模块">34–41. 其他后台模块</h2>
+<h3 id="案例管理case">案例管理（case）</h3>
+<p>角色：admin / editor ｜ 字段：标题/空间/风格/所含产品(数组)/创建时间/修改时间</p>
+<h3 id="新闻管理news">新闻管理（news）</h3>
+<p>角色：admin / editor ｜ 字段：标题/分类(下拉)/内容(textarea)/状态(下拉)/发布时间</p>
+<h3 id="招聘管理recruit">招聘管理（recruit）</h3>
+<p>角色：admin / editor ｜ 字段：岗位/类型(下拉)/部门(下拉)/状态(下拉)/开始时间(只读)/结束时间
+- 投递状态 5 阶段流转与前台"我的投递"对齐</p>
+<h3 id="关于我们管理about">关于我们管理（about）</h3>
+<p>角色：admin / editor ｜ 4 区块列表（关于YD/发展历程/品牌介绍/联系我们）
+- 点击"维护"打开 Modal 编辑区块内容
+- 发展历程含时间线节点维护</p>
+<h3 id="预约管理booking">预约管理（booking）</h3>
+<p>角色：admin / service / order ｜ 字段：姓名/电话/需求类型(下拉)/状态(下拉)/来源(下拉)/预约时间</p>
+<h3 id="留言管理message">留言管理（message）</h3>
+<p>角色：admin / editor / service ｜ 字段：姓名/来源(下拉)/内容/状态(下拉)/留言时间/回复时间
+- "回复"按钮打开回复表单，保存后状态标记"已回复"</p>
+<h3 id="订单管理order">订单管理（order）</h3>
+<p>角色：admin / product / service / order ｜ 字段：订单号/用户/金额/状态(下拉)
+- 状态：待付款/已付款/已发货/已完成/退款中/已退款/已关闭</p>
+<h3 id="系统管理system">系统管理（system）</h3>
+<p>角色：admin ｜ 含两个子模块：
+1. <strong>角色权限矩阵</strong>：5 角色 × 11 模块的 ✓/— 矩阵表
+2. <strong>操作审计日志</strong>：操作/操作人/对象/IP/时间（示例数据）</p>
+<hr />
+<h1 id="第七篇-组件库规范">第七篇 · 组件库规范</h1>
+<h2 id="42-前台通用组件">42. 前台通用组件</h2>
+<h3 id="421-button-按钮">42.1 Button 按钮</h3>
+<table>
+<thead>
+<tr>
+<th>变体</th>
+<th>样式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary</td>
+<td><code>bg-gold text-white hover:bg-amber-700</code></td>
+<td>主要操作（登录/提交/预约）</td>
+</tr>
+<tr>
+<td>Outline</td>
+<td><code>border border-ink text-ink hover:bg-ink hover:text-white</code></td>
+<td>次要操作（会员登录按钮）</td>
+</tr>
+<tr>
+<td>Gold（CSS类）</td>
+<td><code>.btn-gold { background:#CA8A04;color:#1C1917; }</code> hover→<code>#B45309</code></td>
+<td>弹窗内主按钮</td>
+</tr>
+<tr>
+<td>Ghost</td>
+<td><code>hover:bg-stone-100</code></td>
+<td>图标按钮</td>
+</tr>
+</tbody>
+</table>
+<pre class="highlight"><code class="language-html">&lt;!-- Primary --&gt;
+&lt;button class="px-3 py-2 rounded-md bg-gold text-white text-sm font-medium hover:bg-amber-700 transition-colors cursor-pointer"&gt;在线预约&lt;/button&gt;
+
+&lt;!-- Outline --&gt;
+&lt;button class="px-3 py-2 rounded-md border border-ink text-ink text-sm hover:bg-ink hover:text-white transition-colors cursor-pointer"&gt;会员登录&lt;/button&gt;</code></pre>
+<h3 id="422-navbar-导航栏">42.2 NavBar 导航栏</h3>
+<pre class="highlight"><code class="language-html">&lt;header class="sticky top-0 z-50 bg-sand/95 backdrop-blur border-b border-stone-200"&gt;
+  &lt;div class="max-w-7xl mx-auto px-4 sm:px-6"&gt;
+    &lt;div class="flex items-center justify-between h-16"&gt;
+      &lt;!-- Logo --&gt;
+      &lt;!-- Nav (hidden lg:flex) --&gt;
+      &lt;!-- Actions (hidden md:flex) --&gt;
+      &lt;!-- Mobile menu button (lg:hidden) --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;</code></pre>
+<h3 id="423-productcard-产品卡片">42.3 ProductCard 产品卡片</h3>
+<pre class="highlight"><code class="language-html">&lt;a href="产品详情?id=1" class="block bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"&gt;
+  &lt;div class="prod-thumb aspect-[4/3] flex items-center justify-center"&gt;
+    &lt;!-- SVG 家具图标 --&gt;
+  &lt;/div&gt;
+  &lt;div class="p-4"&gt;
+    &lt;p class="text-xs text-gold"&gt;胡桃禮 · 客厅&lt;/p&gt;
+    &lt;h3 class="font-semibold text-ink mt-1"&gt;实木沙发&lt;/h3&gt;
+    &lt;p class="text-gold font-bold mt-2"&gt;¥12,800&lt;/p&gt;
+    &lt;p class="text-xs text-stone-500 mt-1"&gt;库存 12 件&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/a&gt;</code></pre>
+<h3 id="424-carousel-轮播">42.4 Carousel 轮播</h3>
+<pre class="highlight"><code class="language-html">&lt;section class="relative h-[420px] sm:h-[520px] overflow-hidden bg-ink"&gt;
+  &lt;div id="carouselTrack" class="relative w-full h-full"&gt;
+    &lt;div class="carousel-slide absolute inset-0" data-href="跳转URL"&gt;
+      &lt;!-- 幻灯片内容 --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2"&gt;‹&lt;/button&gt;
+  &lt;button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2"&gt;›&lt;/button&gt;
+  &lt;div id="carouselDots" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2"&gt;&lt;/div&gt;
+&lt;/section&gt;</code></pre>
+<h3 id="425-modal-弹窗">42.5 Modal 弹窗</h3>
+<pre class="highlight"><code class="language-html">&lt;div id="xxxModal" class="modal-mask" onclick="if(event.target===this)this.classList.remove('show')"&gt;
+  &lt;div class="bg-white rounded-2xl w-full max-w-md p-7"&gt;
+    &lt;div class="flex justify-between items-center mb-5"&gt;
+      &lt;h3 class="font-head text-2xl text-ink"&gt;标题&lt;/h3&gt;
+      &lt;button class="text-stone-400 text-2xl" onclick="closeModal('xxxModal')"&gt;&amp;times;&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;!-- 内容 --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<pre class="highlight"><code class="language-css">.modal-mask {
+  position: fixed; inset: 0;
+  background: rgba(12,10,9,.6);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal-mask.show { display: flex; }</code></pre>
+<h3 id="426-chatwidget-客服浮窗">42.6 ChatWidget 客服浮窗</h3>
+<pre class="highlight"><code class="language-html">&lt;!-- 悬浮按钮 --&gt;
+&lt;button class="fixed right-5 bottom-5 z-50 w-14 h-14 rounded-full bg-gold text-ink shadow-xl flex items-center justify-center hover:scale-105 transition" aria-label="在线客服"&gt;
+  &lt;svg&gt;...&lt;/svg&gt;
+&lt;/button&gt;
+
+&lt;!-- 会话浮窗 --&gt;
+&lt;div id="chatModal" class="modal-mask"&gt;
+  &lt;div class="bg-white rounded-2xl w-full max-w-md h-[480px] flex flex-col"&gt;
+    &lt;!-- 头部：在线状态 + 标题 + 关闭 --&gt;
+    &lt;!-- 消息区：chat-body h-320px overflow-y-auto --&gt;
+    &lt;!-- 快捷问题：chat-quick 胶囊按钮 --&gt;
+    &lt;!-- 输入区：input + 发送按钮 --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<h3 id="427-其他前台组件">42.7 其他前台组件</h3>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>规格</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CaseCard</td>
+<td>同 ProductCard，标签为空间/风格</td>
+</tr>
+<tr>
+<td>NewsCard</td>
+<td>封面 + 分类标签 + 标题 + 日期</td>
+</tr>
+<tr>
+<td>Chip 筛选标签</td>
+<td><code>rounded-full border px-4 py-1.5</code> + active 态 <code>bg-gold text-ink</code></td>
+</tr>
+<tr>
+<td>Toast</td>
+<td><code>fixed bottom-40px center</code> + <code>bg-ink text-white border-gold</code> + 2.2s 消失</td>
+</tr>
+<tr>
+<td>Avatar</td>
+<td><code>w-10 h-10 rounded-full bg-gold text-ink font-bold</code></td>
+</tr>
+<tr>
+<td>Timeline</td>
+<td>横向 6 节点 + 金色圆点 + 渐变连线</td>
+</tr>
+<tr>
+<td>Footer</td>
+<td>4 列 grid + 深色 bg-ink + gold 链接 hover</td>
+</tr>
+</tbody>
+</table>
+<h2 id="43-前台业务组件">43. 前台业务组件</h2>
+<h3 id="431-bookform-预约表单">43.1 BookForm 预约表单</h3>
+<pre class="highlight"><code class="language-html">&lt;form id="bookForm" onsubmit="return doBooking(event)"&gt;
+  &lt;input id="bkName" required placeholder="姓名" class="..."&gt;
+  &lt;input id="bkPhone" required placeholder="电话" class="..."&gt;
+  &lt;select id="bkType" class="..."&gt;
+    &lt;option&gt;到店预约&lt;/option&gt;
+    &lt;option&gt;产品咨询&lt;/option&gt;
+    &lt;option&gt;定制需求&lt;/option&gt;
+    &lt;option&gt;其它&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;textarea id="bkMsg" rows="3" placeholder="留言" class="..."&gt;&lt;/textarea&gt;
+  &lt;button class="btn-gold w-full py-2.5 rounded-lg"&gt;提交预约&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<h3 id="432-loginform-登录表单">43.2 LoginForm 登录表单</h3>
+<ul>
+<li>手机号 + 密码</li>
+<li>登录成功：写 <code>yd_member</code> + 关弹窗 + 头像替换按钮 + toast</li>
+</ul>
+<h3 id="433-投递进度组件">43.3 投递进度组件</h3>
+<p>5 阶段横向进度条，详见 §25。</p>
+<h2 id="44-后台通用组件">44. 后台通用组件</h2>
+<h3 id="441-datatable-数据表格">44.1 DataTable 数据表格</h3>
+<pre class="highlight"><code class="language-javascript">// TABLE_CFG 配置驱动
+const TABLE_CFG = {
+  product: {
+    cols: [['series','系列'],['cat','类别'],...],
+    ops: true  // 显示操作列
+  }
+};</code></pre>
+<pre class="highlight"><code class="language-html">&lt;table id="tbl_product"&gt;
+  &lt;tr&gt;&lt;th&gt;系列&lt;/th&gt;&lt;th&gt;类别&lt;/th&gt;...&lt;th&gt;操作&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;胡桃禮&lt;/td&gt;&lt;td&gt;沙发&lt;/td&gt;...
+    &lt;td&gt;
+      &lt;span class="act-btn act-edit" onclick="openEdit('product',1)"&gt;编辑&lt;/span&gt;
+      &lt;span class="act-btn act-del" onclick="openDel('product',1)"&gt;删除&lt;/span&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+<h3 id="442-actbtn-操作按钮">44.2 ActBtn 操作按钮</h3>
+<pre class="highlight"><code class="language-css">.act-btn { cursor: pointer; padding: .25rem .6rem; border-radius: 6px; font-size: .8rem; transition: all .15s; }
+.act-edit { color: #1677ff; }
+.act-edit:hover { background: #e6f0ff; }
+.act-del { color: #ef4444; }
+.act-del:hover { background: #fee2e2; }
+.act-add { color: #16a34a; }
+.act-add:hover { background: #dcfce7; }</code></pre>
+<h3 id="443-kpicard-指标卡">44.3 KpiCard 指标卡</h3>
+<pre class="highlight"><code class="language-html">&lt;div class="kpi"&gt;
+  &lt;p class="text-xs text-slate-400"&gt;访问量(PV/UV)&lt;/p&gt;
+  &lt;p class="text-2xl font-bold text-slate-800 mt-1"&gt;7,239&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+<h3 id="444-sidemenu-侧边栏菜单">44.4 SideMenu 侧边栏菜单</h3>
+<pre class="highlight"><code class="language-html">&lt;aside class="w-56 bg-slate-900 text-white shrink-0 flex flex-col"&gt;
+  &lt;div class="px-5 py-4 border-b border-slate-700"&gt;YD 后台&lt;/div&gt;
+  &lt;nav id="sideMenu" class="flex-1 p-3 space-y-1"&gt;
+    &lt;div class="side-item active" data-mod="dashboard"&gt;仪表盘&lt;/div&gt;
+    &lt;!-- 角色过滤后的菜单项 --&gt;
+  &lt;/nav&gt;
+  &lt;div class="p-3 border-t border-slate-700"&gt;
+    &lt;!-- 角色头像 + 名称 + 退出 --&gt;
+  &lt;/div&gt;
+&lt;/aside&gt;</code></pre>
+<h3 id="445-其他后台组件">44.5 其他后台组件</h3>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>规格</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SearchBar</td>
+<td><code>input + border-slate-300 + focus:border-primary</code> + 新增按钮</td>
+</tr>
+<tr>
+<td>EditModal</td>
+<td><code>max-w-lg</code> 居中 + 表单字段配置驱动</td>
+</tr>
+<tr>
+<td>EditDrawer</td>
+<td>右侧滑出 <code>max-w-[480px]</code> + transform 动画</td>
+</tr>
+<tr>
+<td>ConfirmDialog</td>
+<td>删除二次确认 Modal</td>
+</tr>
+<tr>
+<td>RefreshBtn</td>
+<td><code>⟳ 刷新</code> + toast"已刷新数据"</td>
+</tr>
+<tr>
+<td>UserDropdown</td>
+<td>头像 + 下拉（修改密码/切换账号/退出）</td>
+</tr>
+<tr>
+<td>StatusTag</td>
+<td>状态色映射</td>
+</tr>
+</tbody>
+</table>
+<h2 id="45-弹窗体系">45. 弹窗体系</h2>
+<table>
+<thead>
+<tr>
+<th>弹窗 ID</th>
+<th>触发</th>
+<th>用途</th>
+<th>尺寸</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>loginModal</td>
+<td>会员登录按钮 / 需登录操作</td>
+<td>登录表单</td>
+<td>max-w-md</td>
+</tr>
+<tr>
+<td>bookingModal</td>
+<td>在线预约按钮</td>
+<td>预约表单</td>
+<td>max-w-md</td>
+</tr>
+<tr>
+<td>chatModal</td>
+<td>客服按钮 / 浮窗</td>
+<td>客服会话</td>
+<td>max-w-md h-480px</td>
+</tr>
+<tr>
+<td>searchModal</td>
+<td>搜索按钮</td>
+<td>站内搜索</td>
+<td>max-w-lg</td>
+</tr>
+<tr>
+<td>changePwdModal</td>
+<td>修改密码</td>
+<td>密码修改</td>
+<td>max-w-md</td>
+</tr>
+<tr>
+<td>applyModal</td>
+<td>投递简历</td>
+<td>招聘投递</td>
+<td>max-w-md</td>
+</tr>
+<tr>
+<td>memberModal</td>
+<td>个人中心</td>
+<td>会员中心</td>
+<td>max-w-md</td>
+</tr>
+<tr>
+<td>modalBox（后台）</td>
+<td>新增/编辑/删除</td>
+<td>后台表单</td>
+<td>max-w-lg</td>
+</tr>
+<tr>
+<td>drawerBox（后台）</td>
+<td>详情/复杂表单</td>
+<td>后台抽屉</td>
+<td>max-w-480px</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="第八篇-交互与体验规范">第八篇 · 交互与体验规范</h1>
+<h2 id="46-交互模式">46. 交互模式</h2>
+<h3 id="461-hover-反馈">46.1 Hover 反馈</h3>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>Hover 效果</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>导航链接</td>
+<td>gold 下划线展开</td>
+<td><code>.nav-link::after</code> width 0→100%</td>
+</tr>
+<tr>
+<td>卡片</td>
+<td>阴影加深</td>
+<td><code>hover:shadow-lg transition-shadow</code></td>
+</tr>
+<tr>
+<td>按钮</td>
+<td>背景色变化</td>
+<td><code>hover:bg-amber-700 transition-colors</code></td>
+</tr>
+<tr>
+<td>表格行</td>
+<td>浅灰高亮</td>
+<td><code>tr:hover td { background:#f8fafc }</code></td>
+</tr>
+<tr>
+<td>客服浮窗</td>
+<td>放大 1.05</td>
+<td><code>hover:scale-105 transition</code></td>
+</tr>
+<tr>
+<td>图标按钮</td>
+<td>背景高亮</td>
+<td><code>hover:bg-stone-100</code> / <code>hover:bg-slate-100</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="462-cursor-规范">46.2 Cursor 规范</h3>
+<p><strong>所有可点击元素必须添加 <code>cursor-pointer</code></strong>：</p>
+<ul>
+<li>导航链接 <code>&lt;a&gt;</code></li>
+<li>按钮 <code>&lt;button&gt;</code></li>
+<li>可点击卡片</li>
+<li>操作按钮（编辑/删除/新增）</li>
+<li>菜单项</li>
+<li>下拉触发器</li>
+</ul>
+<h3 id="463-点击防抖">46.3 点击防抖</h3>
+<ul>
+<li>异步操作（登录/提交/下单）期间禁用按钮</li>
+<li>表单 <code>onsubmit="return doXxx(event)"</code> + <code>e.preventDefault()</code> 防止重复提交</li>
+</ul>
+<h2 id="47-状态反馈">47. 状态反馈</h2>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>表现</th>
+<th>触发</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loading</td>
+<td>按钮禁用 + spinner</td>
+<td>异步操作 &gt;300ms</td>
+</tr>
+<tr>
+<td>Skeleton</td>
+<td>骨架屏占位</td>
+<td>内容加载中</td>
+</tr>
+<tr>
+<td>Empty</td>
+<td>"暂无数据" / "购物车为空"</td>
+<td>列表为空</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>红色文字 + toast</td>
+<td>校验失败/操作错误</td>
+</tr>
+<tr>
+<td>Success</td>
+<td>toast 提示（2.2s）</td>
+<td>操作成功</td>
+</tr>
+<tr>
+<td>Badge</td>
+<td>购物车数字 + 弹性动画</td>
+<td>加购成功</td>
+</tr>
+</tbody>
+</table>
+<h3 id="toast-规范">Toast 规范</h3>
+<pre class="highlight"><code class="language-javascript">function toast(t) {
+  const el = document.getElementById('toast');
+  el.textContent = t;
+  el.classList.add('show');
+  setTimeout(() =&gt; el.classList.remove('show'), 2200);
+}</code></pre>
+<ul>
+<li>位置：<code>fixed bottom-40px center</code></li>
+<li>样式：<code>bg-ink text-white border-gold rounded-xl</code></li>
+<li>动画：opacity + translateY，300ms</li>
+<li>持续：2.2s 自动消失</li>
+</ul>
+<h2 id="48-表单规范">48. 表单规范</h2>
+<h3 id="481-校验规则">48.1 校验规则</h3>
+<table>
+<thead>
+<tr>
+<th>字段类型</th>
+<th>校验</th>
+<th>提示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>必填</td>
+<td><code>required</code> 属性</td>
+<td>浏览器原生提示</td>
+</tr>
+<tr>
+<td>手机号</td>
+<td>11 位数字</td>
+<td>toast"请输入正确手机号"</td>
+</tr>
+<tr>
+<td>密码</td>
+<td>非空</td>
+<td>toast"请输入密码"</td>
+</tr>
+<tr>
+<td>密码确认</td>
+<td>原密码匹配</td>
+<td>toast"原密码错误"</td>
+</tr>
+</tbody>
+</table>
+<h3 id="482-表单样式">48.2 表单样式</h3>
+<pre class="highlight"><code class="language-html">&lt;!-- 输入框 --&gt;
+&lt;input required class="w-full border border-stone-300 rounded-lg px-3 py-2.5 mb-4 focus:border-gold focus:outline-none" placeholder="请输入手机号"&gt;
+
+&lt;!-- Label --&gt;
+&lt;label class="block text-sm text-stone-600 mb-1"&gt;手机号&lt;/label&gt;
+
+&lt;!-- 下拉框 --&gt;
+&lt;select class="w-full border border-stone-300 rounded-lg px-3 py-2.5 focus:border-gold focus:outline-none"&gt;
+  &lt;option&gt;到店预约&lt;/option&gt;
+&lt;/select&gt;
+
+&lt;!-- 多行文本 --&gt;
+&lt;textarea rows="3" class="w-full border border-stone-300 rounded-lg px-3 py-2.5 focus:border-gold focus:outline-none" placeholder="留言"&gt;&lt;/textarea&gt;</code></pre>
+<h2 id="49-在线客服交互">49. 在线客服交互</h2>
+<h3 id="491-智能应答">49.1 智能应答</h3>
+<pre class="highlight"><code class="language-javascript">function botAnswer(q) {
+  q = q.toLowerCase();
+  if (q.includes('价格')) return '实木家具按系列定价，如胡桃禮沙发 ¥12,800。';
+  if (q.includes('预约')) return '点击右上角「在线预约」填写需求，顾问 1 个工作日内联系。';
+  if (q.includes('售后')) return '非人为损坏 1 年内免费维修，7 天无理由退换（定制除外）。';
+  if (q.includes('地址') || q.includes('门店')) return '总部：上海市黄浦区南京东路 1 号 YD 大厦。';
+  if (q.includes('电话') || q.includes('热线')) return '销售热线 400-888-8888，服务热线 400-888-9999。';
+  if (q.includes('人工')) return '正在为您转接人工客服～';
+  return '感谢咨询，可留下问题或电话，我们会尽快回复。也可拨 400-888-9999。';
+}</code></pre>
+<h3 id="492-快捷问题">49.2 快捷问题</h3>
+<p>6 个快捷按钮（胶囊样式）：
+- 价格咨询 / 如何预约 / 售后政策 / 门店地址 / 联系电话 / 转人工</p>
+<h3 id="493-消息气泡">49.3 消息气泡</h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>样式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>机器人</td>
+<td><code>bg-stone-100 text-ink border-bottom-left-radius:4px</code></td>
+</tr>
+<tr>
+<td>用户</td>
+<td><code>bg-gold text-ink margin-left:auto border-bottom-right-radius:4px</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="494-xss-防护">49.4 XSS 防护</h3>
+<pre class="highlight"><code class="language-javascript">function escapeHtml(s) {
+  return s.replace(/[&amp;&lt;&gt;"']/g, c =&gt; ({
+    '&amp;':'&amp;amp;','&lt;':'&amp;lt;','&gt;':'&amp;gt;','"':'&amp;quot;',"'":'&amp;#39;'
+  }[c]));
+}</code></pre>
+<p>用户输入必须经 <code>escapeHtml</code> 处理后再插入 DOM。</p>
+<h2 id="50-会员登录态交互">50. 会员登录态交互</h2>
+<h3 id="501-登录流程">50.1 登录流程</h3>
+<pre class="highlight"><code>点击"会员登录" → 弹出 loginModal
+     ↓
+输入手机号+密码 → doLogin()
+     ↓
+写入 localStorage.yd_member = {name, phone}
+     ↓
+关闭弹窗 → updateMemberUI()
+     ↓
+隐藏 #loginBtn → 显示 #avatarBtn（圆形头像）
+     ↓
+toast"登录成功"</code></pre>
+<h3 id="502-头像下拉菜单">50.2 头像下拉菜单</h3>
+<pre class="highlight"><code class="language-html">&lt;div id="userMenu" class="hidden fixed right-4 top-16 z-[70] w-44 bg-white rounded-xl shadow-2xl border border-stone-200 py-2"&gt;
+  &lt;div class="px-4 py-2 border-b text-sm text-stone-500"&gt;会员姓名&lt;/div&gt;
+  &lt;a href="#" class="block px-4 py-2 hover:bg-sand hover:text-gold"&gt;个人中心&lt;/a&gt;
+  &lt;a href="我的订单" class="block px-4 py-2 hover:bg-sand hover:text-gold"&gt;我的订单&lt;/a&gt;
+  &lt;a href="我的预约" class="block px-4 py-2 hover:bg-sand hover:text-gold"&gt;我的预约&lt;/a&gt;
+  &lt;button onclick="openChangePwd()" class="hover:bg-sand hover:text-gold"&gt;修改密码&lt;/button&gt;
+  &lt;button onclick="logout()" class="text-red-600 hover:bg-red-50"&gt;退出登录&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+<h3 id="503-持久化">50.3 持久化</h3>
+<ul>
+<li>登录态存储于 <code>localStorage.yd_member</code></li>
+<li>页面加载时 <code>updateMemberUI()</code> 读取并渲染</li>
+<li>退出登录：<code>localStorage.removeItem('yd_member')</code></li>
+</ul>
+<hr />
+<h1 id="第九篇-响应式与移动端">第九篇 · 响应式与移动端</h1>
+<h2 id="51-断点定义">51. 断点定义</h2>
+<table>
+<thead>
+<tr>
+<th>断点</th>
+<th>前缀</th>
+<th>宽度</th>
+<th>典型设备</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>—</td>
+<td>—</td>
+<td>&lt;640px</td>
+<td>手机竖屏</td>
+</tr>
+<tr>
+<td>sm</td>
+<td><code>sm:</code></td>
+<td>≥640px</td>
+<td>手机横屏 / 小平板</td>
+</tr>
+<tr>
+<td>md</td>
+<td><code>md:</code></td>
+<td>≥768px</td>
+<td>平板竖屏</td>
+</tr>
+<tr>
+<td>lg</td>
+<td><code>lg:</code></td>
+<td>≥1024px</td>
+<td>平板横屏 / 小桌面</td>
+</tr>
+<tr>
+<td>xl</td>
+<td><code>xl:</code></td>
+<td>≥1280px</td>
+<td>桌面</td>
+</tr>
+</tbody>
+</table>
+<h2 id="52-移动端导航折叠">52. 移动端导航折叠</h2>
+<h3 id="521-触发条件">52.1 触发条件</h3>
+<ul>
+<li><code>lg:hidden</code> 汉堡菜单按钮，<code>&lt;1024px</code> 显示</li>
+<li><code>hidden lg:flex</code> 顶部导航，<code>&lt;1024px</code> 隐藏</li>
+</ul>
+<h3 id="522-折叠菜单结构">52.2 折叠菜单结构</h3>
+<pre class="highlight"><code class="language-html">&lt;div id="mobileMenu" class="lg:hidden hidden border-t border-stone-200 bg-sand"&gt;
+  &lt;nav class="flex flex-col gap-1"&gt;
+    &lt;a href="首页" class="py-2 text-ink font-medium"&gt;首页&lt;/a&gt;
+    &lt;details&gt;
+      &lt;summary class="py-2 text-stone2"&gt;产品中心&lt;/summary&gt;
+      &lt;div class="pl-4 space-y-1"&gt;
+        &lt;a href="?space=客厅" class="block py-1 text-sm text-stone-300"&gt;客厅精选&lt;/a&gt;
+        &lt;!-- ... --&gt;
+      &lt;/div&gt;
+    &lt;/details&gt;
+    &lt;!-- 其他一级 + 二级 --&gt;
+    &lt;a href="后台管理" class="py-2 text-gold font-medium"&gt;后台登录 →&lt;/a&gt;
+    &lt;div class="flex gap-3 py-3 border-t"&gt;
+      &lt;button class="bg-gold text-white"&gt;在线预约&lt;/button&gt;
+      &lt;button class="border border-ink"&gt;会员登录&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
+&lt;/div&gt;</code></pre>
+<h2 id="53-移动端关键路径">53. 移动端关键路径</h2>
+<h3 id="浏览路径">浏览路径</h3>
+<pre class="highlight"><code>首页（移动端导航折叠） → 产品中心（2 列网格） → 产品详情（单列） → 加购 → 购物车 → 结算</code></pre>
+<h3 id="预约路径">预约路径</h3>
+<pre class="highlight"><code>任意页面 → 右上角"在线预约"（移动端在折叠菜单内）/ 浮窗 → 预约弹窗 → 提交</code></pre>
+<h3 id="下单路径">下单路径</h3>
+<pre class="highlight"><code>产品详情 → 加购 → 购物车结算 → 登录（如未登录） → 提交订单 → 我的订单</code></pre>
+<h2 id="54-图片自适应与触摸目标">54. 图片自适应与触摸目标</h2>
+<h3 id="541-图片规范">54.1 图片规范</h3>
+<ul>
+<li>使用 <code>loading="lazy"</code> 懒加载</li>
+<li><code>object-cover</code> 保持比例</li>
+<li>响应式：<code>srcset</code> + WebP 格式</li>
+<li>占位图：CSS 渐变 + SVG 图标</li>
+</ul>
+<h3 id="542-触摸目标">54.2 触摸目标</h3>
+<ul>
+<li><strong>最小 44×44px</strong>（WCAG 推荐）</li>
+<li>导航项：<code>py-2</code>（约 40px+，含文字）</li>
+<li>按钮：<code>px-3 py-2</code>（约 36px+，含文字）</li>
+<li>客服浮窗：<code>w-14 h-14</code>（56px，超过最小）</li>
+<li>图标按钮：<code>p-2</code> + 图标 20px（约 36px，接近最小）</li>
+</ul>
+<hr />
+<h1 id="第十篇-可访问性与交付清单">第十篇 · 可访问性与交付清单</h1>
+<h2 id="55-无障碍规范">55. 无障碍规范</h2>
+<h3 id="551-对比度">55.1 对比度</h3>
+<table>
+<thead>
+<tr>
+<th>文字类型</th>
+<th>要求</th>
+<th>当前达标情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主文字（ink #1C1917 on sand #FAFAF9）</td>
+<td>≥4.5:1</td>
+<td>✓ 达标（约 16:1）</td>
+</tr>
+<tr>
+<td>次级文字（stone2 #44403C on sand）</td>
+<td>≥4.5:1</td>
+<td>✓ 达标（约 9:1）</td>
+</tr>
+<tr>
+<td>金色文字（gold #CA8A04 on white）</td>
+<td>≥4.5:1</td>
+<td>⚠ 需验证（约 3.8:1，大文字 ≥3:1 达标）</td>
+</tr>
+<tr>
+<td>白色文字 on gold</td>
+<td>≥4.5:1</td>
+<td>⚠ 需验证</td>
+</tr>
+</tbody>
+</table>
+<p><strong>建议</strong>：gold 色用于大文字（≥18px）或装饰，小正文使用 stone-600 以上。</p>
+<h3 id="552-aria-标签">55.2 Aria 标签</h3>
+<p>所有图标按钮必须有 <code>aria-label</code>：</p>
+<pre class="highlight"><code class="language-html">&lt;button aria-label="站内搜索"&gt;&lt;svg&gt;...&lt;/svg&gt;&lt;/button&gt;
+&lt;button aria-label="在线客服"&gt;&lt;svg&gt;...&lt;/svg&gt;&lt;/button&gt;
+&lt;button aria-label="打开菜单" aria-expanded="false"&gt;&lt;svg&gt;...&lt;/svg&gt;&lt;/button&gt;</code></pre>
+<h3 id="553-键盘导航">55.3 键盘导航</h3>
+<ul>
+<li>Tab 顺序与视觉顺序一致</li>
+<li>焦点环可见：<code>focus:outline-none</code> 需配合 <code>focus:border-gold</code> 或自定义 <code>focus:ring</code></li>
+<li>ESC 关闭弹窗（建议增加）</li>
+<li>表单可用 Tab 键依次聚焦</li>
+</ul>
+<h3 id="554-表单-label">55.4 表单 Label</h3>
+<pre class="highlight"><code class="language-html">&lt;label class="block text-sm text-stone-600 mb-1" for="phone"&gt;手机号&lt;/label&gt;
+&lt;input id="phone" required ...&gt;</code></pre>
+<h3 id="555-图片-alt-文本">55.5 图片 Alt 文本</h3>
+<pre class="highlight"><code class="language-html">&lt;img src="product.jpg" alt="胡桃禮·实木沙发 - 北美黑胡桃材质，客厅会客场景"&gt;</code></pre>
+<h3 id="556-降级">55.6 降级</h3>
+<ul>
+<li><code>prefers-reduced-motion: reduce</code> → 禁用所有 transition 和 animation</li>
+<li>颜色不作为唯一信息指示（状态需配合文字/图标）</li>
+</ul>
+<h2 id="56-交付前检查清单">56. 交付前检查清单</h2>
+<h3 id="视觉质量">视觉质量</h3>
+<ul>
+<li>[ ] 无 emoji 用作 UI 图标（使用 SVG）</li>
+<li>[ ] 所有图标来自统一图标集（内联 SVG，viewBox 0 0 24 24）</li>
+<li>[ ] 品牌徽标正确（YD 黑底金字）</li>
+<li>[ ] Hover 态不引起布局位移（仅颜色/阴影/opacity 变化）</li>
+<li>[ ] 使用主题色直接（<code>bg-gold</code>）而非 <code>var()</code> 包装</li>
+</ul>
+<h3 id="交互">交互</h3>
+<ul>
+<li>[ ] 所有可点击元素有 <code>cursor-pointer</code></li>
+<li>[ ] Hover 态有明确视觉反馈</li>
+<li>[ ] 过渡时长 150–300ms（微交互）</li>
+<li>[ ] 焦点态可见（键盘导航）</li>
+</ul>
+<h3 id="主题与对比度">主题与对比度</h3>
+<ul>
+<li>[ ] 前台暖色系统一（stone/sand/gold）</li>
+<li>[ ] 后台蓝色系统一（primary #1677ff）</li>
+<li>[ ] 文字对比度 ≥4.5:1</li>
+<li>[ ] 边框在浅色背景可见（<code>border-stone-200</code>）</li>
+</ul>
+<h3 id="布局">布局</h3>
+<ul>
+<li>[ ] 导航栏 sticky + backdrop-blur</li>
+<li>[ ] 内容不被固定元素遮挡</li>
+<li>[ ] 响应式断点：375px / 768px / 1024px / 1440px</li>
+<li>[ ] 移动端无水平滚动</li>
+<li>[ ] 统一 <code>max-w-7xl</code> 容器</li>
+</ul>
+<h3 id="无障碍">无障碍</h3>
+<ul>
+<li>[ ] 图片有 alt 文本</li>
+<li>[ ] 表单有 label</li>
+<li>[ ] 颜色非唯一指示</li>
+<li>[ ] <code>prefers-reduced-motion</code> 已尊重</li>
+</ul>
+<h3 id="功能">功能</h3>
+<ul>
+<li>[ ] 前台 11 页均可访问</li>
+<li>[ ] 后台 11 模块按角色渲染</li>
+<li>[ ] 购物车加购→结算→订单闭环</li>
+<li>[ ] 招聘投递→进度跟踪闭环</li>
+<li>[ ] 客服智能应答 6 关键词</li>
+<li>[ ] 会员登录态全站持久化</li>
+</ul>
+<h2 id="57-版本记录与变更日志">57. 版本记录与变更日志</h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>变更内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1.0</td>
+<td>2026-08-18</td>
+<td>初版发布，覆盖前台 12 页 + 后台 11 模块 + 设计系统 + 组件库 + 交互规范</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<blockquote>
+<p><strong>文档结束</strong>
+本文档基于 PRD v1.1 与 14 个高保真原型撰写，作为 YD家居平台前端开发还原与验收依据。
+后续原型迭代或 PRD 变更时，需同步更新本文档对应章节。</p>
+</blockquote>
+</main>
+
+<script>
+// Mobile sidebar toggle
+const toggle = document.getElementById('sidebarToggle');
+const sidebar = document.getElementById('sidebar');
+toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+// Active TOC highlight on scroll
+const headings = document.querySelectorAll('#main h1, #main h2');
+const tocLinks = document.querySelectorAll('#tocNav a');
+const headingMap = new Map();
+tocLinks.forEach(link => {
+  const anchor = link.getAttribute('href').slice(1);
+  headingMap.set(anchor, link);
+});
+
+function updateActiveToc() {
+  let current = '';
+  for (const h of headings) {
+    if (h.getBoundingClientRect().top < 120) {
+      current = h.id;
+    }
+  }
+  tocLinks.forEach(link => link.classList.remove('active'));
+  if (current && headingMap.has(current)) {
+    headingMap.get(current).classList.add('active');
+  }
+}
+window.addEventListener('scroll', updateActiveToc, { passive: true });
+updateActiveToc();
+
+// Close sidebar on mobile when clicking a link
+tocLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    if (window.innerWidth <= 1024) sidebar.classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>

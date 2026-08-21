@@ -32,7 +32,7 @@ export default function CartDrawer({ open, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-[60] bg-ink/40" onClick={onClose}>
       <aside
-        className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-card shadow-2xl"
+        className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-center justify-between border-b border-stone-200 px-5 py-4">

@@ -1,7 +1,10 @@
 """后台订单 + 预约管理 API（需 JWT）。"""
-from fastapi import APIRouter, HTTPException, Query, status
+from typing import Annotated
 
-from app.core.deps import CurrentAdmin, DbDep
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from app.core.deps import DbDep, require_permission
+from app.models.admin_user import AdminUser
 from app.schemas.appointment import AppointmentOut, AppointmentStatusUpdate
 from app.schemas.common import ApiResponse, PaginationMeta
 from app.schemas.order import OrderOut, OrderStatusUpdate
@@ -13,7 +16,7 @@ router = APIRouter(prefix="/admin", tags=["后台-订单与预约"])
 @router.get("/orders", response_model=ApiResponse[dict])
 def list_orders(
     db: DbDep,
-    _admin: CurrentAdmin,
+    _admin: Annotated[AdminUser, Depends(require_permission("order.view"))],
     status_filter: str | None = Query(None, alias="status"),
     keyword: str | None = None,
     page: int = Query(1, ge=1),
@@ -30,7 +33,7 @@ def list_orders(
 
 
 @router.put("/orders/{order_id}/status", response_model=ApiResponse[OrderOut])
-def update_order_status(order_id: int, payload: OrderStatusUpdate, db: DbDep, _admin: CurrentAdmin):
+def update_order_status(order_id: int, payload: OrderStatusUpdate, db: DbDep, _admin: Annotated[AdminUser, Depends(require_permission("order.ship", "order.refund", mode="any"))]):
     o = order_service.update_order_status(db, order_id, payload.status)
     if not o:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="订单不存在")
@@ -40,7 +43,7 @@ def update_order_status(order_id: int, payload: OrderStatusUpdate, db: DbDep, _a
 @router.get("/appointments", response_model=ApiResponse[dict])
 def list_appointments(
     db: DbDep,
-    _admin: CurrentAdmin,
+    _admin: Annotated[AdminUser, Depends(require_permission("appointment.view"))],
     status_filter: str | None = Query(None, alias="status"),
     keyword: str | None = None,
     page: int = Query(1, ge=1),
@@ -57,7 +60,7 @@ def list_appointments(
 
 
 @router.put("/appointments/{appointment_id}/status", response_model=ApiResponse[AppointmentOut])
-def update_appointment_status(appointment_id: int, payload: AppointmentStatusUpdate, db: DbDep, admin: CurrentAdmin):
+def update_appointment_status(appointment_id: int, payload: AppointmentStatusUpdate, db: DbDep, admin: Annotated[AdminUser, Depends(require_permission("appointment.reply"))]):
     a = appointment_service.update_appointment_status(db, appointment_id, payload, admin.id)
     if not a:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="预约不存在")
@@ -65,7 +68,7 @@ def update_appointment_status(appointment_id: int, payload: AppointmentStatusUpd
 
 
 @router.delete("/appointments/{appointment_id}", response_model=ApiResponse[dict])
-def delete_appointment(appointment_id: int, db: DbDep, _admin: CurrentAdmin):
+def delete_appointment(appointment_id: int, db: DbDep, _admin: Annotated[AdminUser, Depends(require_permission("appointment.reply"))]):
     ok = appointment_service.delete_appointment(db, appointment_id)
     if not ok:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="预约不存在")

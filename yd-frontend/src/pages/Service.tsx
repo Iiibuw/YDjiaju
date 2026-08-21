@@ -48,7 +48,7 @@ export default function Service() {
       </section>
 
       {/* ===== 服务承诺 ===== */}
-      <section className="bg-card py-16">
+      <section className="bg-white py-16">
         <div className="container-yf">
           <h2 className="text-center text-2xl font-bold text-coal">服务承诺</h2>
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -68,7 +68,7 @@ export default function Service() {
           <h2 className="text-center text-2xl font-bold text-coal">服务流程</h2>
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICE_STEPS.map((s, i) => (
-              <div key={s.title} className="relative rounded-2xl bg-card p-8 shadow-sm ring-1 ring-coal/5">
+              <div key={s.title} className="relative rounded-2xl bg-white p-8 shadow-sm ring-1 ring-coal/5">
                 <span className="absolute right-4 top-4 font-display text-4xl font-bold text-walnut/15">0{i + 1}</span>
                 <div className="text-3xl">{s.icon}</div>
                 <h3 className="mt-4 font-semibold text-coal">{s.title}</h3>
@@ -80,7 +80,7 @@ export default function Service() {
       </section>
 
       {/* ===== 常见问题 ===== */}
-      <section className="bg-card py-16">
+      <section className="bg-white py-16">
         <div className="container-yf mx-auto max-w-3xl">
           <h2 className="text-center text-2xl font-bold text-coal">常见问题</h2>
           <div className="mt-10 space-y-4">

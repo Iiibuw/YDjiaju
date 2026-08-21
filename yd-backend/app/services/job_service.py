@@ -45,8 +45,8 @@ def get_job_detail(db: Session, job_id: int) -> JobDetail | None:
     return JobDetail.model_validate(j)
 
 
-def apply_job(db: Session, payload: JobApplicationCreate) -> JobApplicationOut:
-    """前台投递岗位（公开）。"""
+def apply_job(db: Session, payload: JobApplicationCreate, user_id: int | None = None) -> JobApplicationOut:
+    """前台投递岗位（公开；登录会员记录 user_id 供「我的投递」）。"""
     job = db.get(Job, payload.job_id)
     if not job or job.is_deleted or not job.is_activate:
         raise ValueError("岗位不存在或已下架")
@@ -55,6 +55,7 @@ def apply_job(db: Session, payload: JobApplicationCreate) -> JobApplicationOut:
 
     app_obj = JobApplication(
         job_id=payload.job_id,
+        user_id=user_id,
         name=payload.name,
         phone=payload.phone,
         email=payload.email,
@@ -154,6 +155,32 @@ def list_applications_admin(
         q = q.where(JobApplication.stage == stage)
     total_q = select(func.count()).select_from(q.subquery())
     total = db.execute(total_q).scalar() or 0
+    q = q.order_by(JobApplication.applied_date.desc())
+    q = q.offset((page - 1) * page_size).limit(page_size)
+    rows = db.execute(q).all()
+
+    items: list[JobApplicationOut] = []
+    for app_obj, job_title in rows:
+        out = JobApplicationOut.model_validate(app_obj)
+        out.job_title = job_title
+        items.append(out)
+    return items, total
+
+
+def list_my_applications(
+    db: Session,
+    user_id: int,
+    *,
+    page: int = 1,
+    page_size: int = 20,
+) -> tuple[list[JobApplicationOut], int]:
+    """我的投递（会员中心，按 user_id 过滤）。"""
+    q = (
+        select(JobApplication, Job.title)
+        .outerjoin(Job, JobApplication.job_id == Job.id)
+        .where(JobApplication.user_id == user_id)
+    )
+    total = db.execute(select(func.count()).select_from(q.subquery())).scalar() or 0
     q = q.order_by(JobApplication.applied_date.desc())
     q = q.offset((page - 1) * page_size).limit(page_size)
     rows = db.execute(q).all()
