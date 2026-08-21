@@ -27,6 +27,7 @@ const { Sider, Header, Content } = Layout
 /** 品牌标题：仅文字（无图标） */
 const MENU = [
   { key: '/dashboard', label: '仪表盘' },
+  { key: '/products', label: '产品管理' },
   { key: '/news', label: '资讯管理' },
   { key: '/jobs', label: '招聘管理' },
   { key: '/cases', label: '案例管理' },

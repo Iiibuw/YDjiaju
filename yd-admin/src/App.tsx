@@ -16,6 +16,9 @@ import JobNewPage from './pages/JobNew'
 import CaseNewPage from './pages/CaseNew'
 import MemberNewPage from './pages/MemberNew'
 import DeptNewPage from './pages/DeptNew'
+import Products from './pages/Products'
+import ProductNewPage from './pages/ProductNew'
+import ProductEditPage from './pages/ProductEdit'
 import AdminLayout from './layouts/AdminLayout'
 import { getToken } from './api/http'
 
@@ -57,6 +60,9 @@ const router = createBrowserRouter(
         { path: 'messages', element: <Messages />, loader: requireAuth },
         { path: 'orders', element: <Orders />, loader: requireAuth },
         { path: 'appointments', element: <Appointments />, loader: requireAuth },
+        { path: 'products', element: <Products />, loader: requireAuth },
+        { path: 'products/new', element: <ProductNewPage />, loader: requireAuth },
+        { path: 'products/edit/:id', element: <ProductEditPage />, loader: requireAuth },
       ],
     },
     // 未登录用户访问任意非白名单路径 → /login
