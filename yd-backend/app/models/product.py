@@ -43,6 +43,7 @@ class Product(Base, AuditMixin, SoftDeleteMixin):
     product_code: Mapped[str | None] = mapped_column(String(64), nullable=True, comment="v1.1 产品编号（唯一）")
     name: Mapped[str] = mapped_column(String(128), nullable=False, comment="产品名")
     subtitle: Mapped[str | None] = mapped_column(String(255), nullable=True, comment="副标题")
+    style: Mapped[str | None] = mapped_column(String(64), nullable=True, comment="风格（如：现代简约/新中式）")
     series_id: Mapped[int | None] = mapped_column(
         Integer,
         ForeignKey("categories.id", ondelete="RESTRICT", onupdate="CASCADE"),

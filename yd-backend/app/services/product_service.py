@@ -126,6 +126,7 @@ def create_product(db: Session, payload: ProductCreate, admin_id: int) -> Produc
         product_code=payload.product_code,
         name=payload.name,
         subtitle=payload.subtitle,
+        style=payload.style,
         series_id=payload.series_id,
         space_id=payload.space_id,
         category_id=payload.category_id,
@@ -158,6 +159,8 @@ def update_product(db: Session, product_id: int, payload: ProductCreate | Produc
         p.name = data["name"]
     if "subtitle" in data:
         p.subtitle = data["subtitle"]
+    if "style" in data:
+        p.style = data["style"]
     if "series_id" in data:
         p.series_id = data["series_id"]
     if "space_id" in data:
@@ -274,6 +277,7 @@ def to_admin_dict(p: Product) -> dict[str, Any]:
         "product_code": p.product_code,
         "name": p.name,
         "subtitle": p.subtitle,
+        "style": p.style,
         "category_id": p.category_id,
         "space_id": p.space_id,
         "series_id": p.series_id,

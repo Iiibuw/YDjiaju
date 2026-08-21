@@ -48,6 +48,7 @@ class ProductCreate(BaseModel):
     product_code: str | None = Field(default=None, max_length=64)
     name: str = Field(min_length=1, max_length=128)
     subtitle: str | None = Field(default=None, max_length=255)
+    style: str | None = Field(default=None, max_length=64)
     series_id: int | None = None
     space_id: int | None = None
     category_id: int | None = None
@@ -68,6 +69,7 @@ class ProductUpdate(BaseModel):
     product_code: str | None = Field(default=None, max_length=64)
     name: str | None = Field(default=None, min_length=1, max_length=128)
     subtitle: str | None = Field(default=None, max_length=255)
+    style: str | None = Field(default=None, max_length=64)
     series_id: int | None = None
     space_id: int | None = None
     category_id: int | None = None

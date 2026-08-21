@@ -23,6 +23,7 @@ import RichTextEditor from '../components/RichTextEditor'
 interface FormValues {
   name: string
   subtitle?: string
+  style?: string
   series_id?: number
   space_id?: number
   category_id?: number
@@ -150,6 +151,7 @@ export default function ProductEditPage() {
       form.setFieldsValue({
         name: item.name,
         subtitle: item.subtitle ?? '',
+        style: item.style ?? '',
         series_id: item.series_id ?? undefined,
         space_id: item.space_id ?? undefined,
         category_id: item.category_id ?? undefined,
@@ -199,6 +201,7 @@ export default function ProductEditPage() {
             updateMut.mutate({
               name: vals.name,
               subtitle: vals.subtitle || null,
+              style: vals.style || null,
               series_id: vals.series_id ?? null,
               space_id: vals.space_id ?? null,
               category_id: vals.category_id ?? null,
@@ -216,6 +219,9 @@ export default function ProductEditPage() {
           </Form.Item>
           <Form.Item name="subtitle" label="副标题">
             <Input placeholder="可选" maxLength={255} />
+          </Form.Item>
+          <Form.Item name="style" label="风格" tooltip="如：现代简约 / 新中式 / 轻奢风">
+            <Input placeholder="可选" maxLength={64} />
           </Form.Item>
           <div className="grid grid-cols-3 gap-4">
             <Form.Item name="series_id" label="系列">

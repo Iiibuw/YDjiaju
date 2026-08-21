@@ -28,6 +28,7 @@ const { Sider, Header, Content } = Layout
 const MENU = [
   { key: '/dashboard', label: '仪表盘' },
   { key: '/products', label: '产品管理' },
+  { key: '/categories', label: '分类管理' },
   { key: '/news', label: '资讯管理' },
   { key: '/jobs', label: '招聘管理' },
   { key: '/cases', label: '案例管理' },

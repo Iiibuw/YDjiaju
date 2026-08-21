@@ -17,6 +17,7 @@ import CaseNewPage from './pages/CaseNew'
 import MemberNewPage from './pages/MemberNew'
 import DeptNewPage from './pages/DeptNew'
 import Products from './pages/Products'
+import Categories from './pages/Categories'
 import ProductNewPage from './pages/ProductNew'
 import ProductEditPage from './pages/ProductEdit'
 import AdminLayout from './layouts/AdminLayout'
@@ -61,6 +62,7 @@ const router = createBrowserRouter(
         { path: 'orders', element: <Orders />, loader: requireAuth },
         { path: 'appointments', element: <Appointments />, loader: requireAuth },
         { path: 'products', element: <Products />, loader: requireAuth },
+        { path: 'categories', element: <Categories />, loader: requireAuth },
         { path: 'products/new', element: <ProductNewPage />, loader: requireAuth },
         { path: 'products/edit/:id', element: <ProductEditPage />, loader: requireAuth },
       ],
