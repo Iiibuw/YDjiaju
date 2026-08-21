@@ -41,7 +41,8 @@ def create_product(payload: ProductCreate, db: DbDep, admin: Annotated[AdminUser
 
 @router.get("/admin/products/{product_id}", response_model=ApiResponse[dict])
 def get_product(product_id: int, db: DbDep, _admin: Annotated[AdminUser, Depends(require_permission("product.view"))]):
-    p = product_service.get_product_detail(db, product_id)
+    """后台产品详情(完整 ORM,含 status=on_sale=off_sale=draft;支持 style/space_id/series_id 等全部字段)。"""
+    p = product_service.get_admin_product(db, product_id)
     if not p:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="产品不存在")
     return ApiResponse(data=product_service.to_admin_dict(p))

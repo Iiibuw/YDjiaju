@@ -77,6 +77,14 @@ def list_products(
     return items, total
 
 
+def get_admin_product(db: Session, product_id: int) -> Product | None:
+    """后台获取产品(返回 ORM Product 对象,支持 to_admin_dict 取所有列)。
+    与前台 get_product_detail(返回 ProductDetail Pydantic)区别。"""
+    p = db.get(Product, product_id)
+    if not p or p.is_deleted:
+        return None
+    return p
+
 def get_product_detail(db: Session, product_id: int) -> ProductDetail | None:
     """前台产品详情（v1.1，含 other_images + specs）。"""
     p = db.get(Product, product_id)
@@ -262,6 +270,7 @@ __all__ = [
     "create_product",
     "update_product",
     "delete_product",
+    "get_admin_product",
     "list_admin_products",
     "to_admin_dict",
 ]
