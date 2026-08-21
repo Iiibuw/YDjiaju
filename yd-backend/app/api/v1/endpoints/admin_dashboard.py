@@ -56,10 +56,12 @@ def dashboard_stats(db: DbDep, _admin: DashboardAdmin):
         .group_by(func.date(News.published_date))
     ).all()
 
-    days = [(since + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+    days_dt = [(since + timedelta(days=i)) for i in range(7)]
+    # days 返回独立数组，每项 "M/D" 短格式（如 ["8/15","8/16",...]），绝不允许拼接成单个字符串
+    days = [f"{d.month}/{d.day}" for d in days_dt]
     def fill(rows) -> list[int]:
         m = {str(k): v for k, v in rows}
-        return [m.get(d, 0) for d in days]
+        return [m.get(d.strftime("%Y-%m-%d"), 0) for d in days_dt]
 
     # 订单状态占比
     order_status_rows = db.execute(

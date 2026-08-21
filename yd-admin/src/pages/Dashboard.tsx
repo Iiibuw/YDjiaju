@@ -255,13 +255,10 @@ export default function Dashboard() {
     { label: '待回复留言', value: todos?.pending_messages ?? 0, link: '/messages', color: '#eb2f96' },
   ]
 
-  const dayLabels = (data?.days ?? []).map((d) => {
-    const m = d.slice(5) // "08-15"
-    return m.replace('-', '/').replace(/^0/, '') // "8/15"
-  })
-  const dateRangeLabel = data?.days?.length
-    ? `${data.days[0].slice(5)} - ${data.days[data.days.length - 1].slice(5)}`.replace(/-/g, '/').replace(/^0(\d)/gm, '$1')
-    : ''
+  // 后端 days 已是独立数组 ["8/15","8/16",...],直接使用,禁止再次拼接
+  const dayLabels: string[] = data?.days ?? []
+  const dateRangeLabel =
+    dayLabels.length >= 2 ? `${dayLabels[0]} - ${dayLabels[dayLabels.length - 1]}` : dayLabels[0] || ''
 
   return (
     <div className="flex flex-col gap-4">
@@ -310,7 +307,7 @@ export default function Dashboard() {
             loading={isLoading}
             styles={{ body: { padding: 12 } }}
           >
-            <EChartLine categories={dayLabels} data={data?.appointments ?? []} color="#fa8c16" />
+            <EChartLine categories={[...dayLabels]} data={data?.appointments ?? []} color="#fa8c16" />
 
           </Card>
         </Col>
@@ -328,7 +325,7 @@ export default function Dashboard() {
             loading={isLoading}
             styles={{ body: { padding: 12 } }}
           >
-            <EChartBar categories={dayLabels} data={data?.news_trend ?? []} color="#1677ff" />
+            <EChartBar categories={[...dayLabels]} data={data?.news_trend ?? []} color="#1677ff" />
 
           </Card>
         </Col>
