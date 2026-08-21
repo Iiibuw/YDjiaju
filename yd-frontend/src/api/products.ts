@@ -190,7 +190,7 @@ function delay<T>(value: T, ms = MOCK_DELAY): Promise<T> {
 
 // ===== 业务接口 =====
 
-const USE_MOCK = true // M1 dev 期；连真实后端时改为 false
+const USE_MOCK = false // ✅ 已切换真实 API(commit)
 
 export async function listProducts(params: ListParams = {}): Promise<PageData<ProductListItem>> {
   if (USE_MOCK) {

@@ -13,15 +13,16 @@ from app.schemas.product import ProductCreate, ProductUpdate, ProductDetail, Pro
 # ===== 公共读（前台） =====
 
 def _cents_to_yuan(min_c: int | None, max_c: int | None) -> str | None:
+    """返回纯数字(无 ¥ 符号),由前端 ProductCard 统一加 "¥" 避免双符号。"""
     if min_c is None and max_c is None:
         return None
     if min_c is not None and max_c is None:
-        return f"¥{min_c / 100:.2f}"
+        return f"{min_c / 100:.2f}"
     if min_c is None and max_c is not None:
-        return f"¥{max_c / 100:.2f}"
+        return f"{max_c / 100:.2f}"
     if min_c == max_c:
-        return f"¥{min_c / 100:.2f}"
-    return f"¥{min_c / 100:.2f} – ¥{max_c / 100:.2f}"
+        return f"{min_c / 100:.2f}"
+    return f"{min_c / 100:.2f} – {max_c / 100:.2f}"
 
 
 def list_products(
