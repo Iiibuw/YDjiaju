@@ -6,7 +6,7 @@
  * - 底部待办/最新会员等高，内容超出内部滚动
  * 间距统一 16px，全部由 Row/Col 栅格管理，无绝对定位。
  */
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Card, Col, List, Row, Space, Tag } from 'antd'
 import {
   FileTextOutlined,
@@ -30,73 +30,142 @@ const ORDER_STATUS_LABELS: Record<string, string> = {
   closed: '已关闭',
 }
 
-// ============ 迷你折线图（SVG，固定高度 180，不拉伸） ============
-function MiniLineChart({ data, color = '#1677ff' }: { data: number[]; color?: string }) {
-  const W = 360
-  const H = 180
-  const pad = 12
-  const max = Math.max(...data, 1)
-  const step = (W - pad * 2) / Math.max(data.length - 1, 1)
-  const pts = data.map((v, i) => [pad + i * step, H - pad - ((H - pad * 2) * v) / max])
-  const path = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]},${p[1]}`).join(' ')
-  const area = `${path} L${pts[pts.length - 1][0]},${H - pad} L${pts[0][0]},${H - pad} Z`
-  return (
-    <div className="flex items-center justify-center" style={{ height: 180 }}>
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id={`grad-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity="0.22" />
-            <stop offset="100%" stopColor={color} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path d={area} fill={`url(#grad-${color.replace('#', '')})`} />
-        <path d={path} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        {pts.map((p, i) => (
-          <circle key={i} cx={p[0]} cy={p[1]} r="3.5" fill="#fff" stroke={color} strokeWidth="1.5" />
-        ))}
-      </svg>
-    </div>
-  )
+// ============ ECharts 通用 hook（本地 vendor，X 轴类目标签独立分行） ============
+declare global {
+  interface Window {
+    echarts?: any
+  }
 }
 
-// ============ 迷你柱状图（SVG，固定高度 180，不拉伸） ============
-function MiniBarChart({ data, color = '#52c41a' }: { data: number[]; color?: string }) {
-  const W = 360
-  const H = 180
-  const pad = 12
-  const max = Math.max(...data, 1)
-  const bw = (W - pad * 2) / data.length
-  return (
-    <div className="flex items-center justify-center" style={{ height: 180 }}>
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" preserveAspectRatio="none">
-        {data.map((v, i) => {
-          const h = ((H - pad * 2) * v) / max
-          return (
-            <g key={i}>
-              <rect
-                x={pad + i * bw + bw * 0.2}
-                y={H - pad - h}
-                width={bw * 0.6}
-                height={Math.max(h, 1)}
-                rx="4"
-                fill={color}
-                opacity="0.88"
-              />
-              <text
-                x={pad + i * bw + bw / 2}
-                y={H - pad - h - 4}
-                textAnchor="middle"
-                fontSize="11"
-                fill="#8c8c8c"
-              >
-                {v}
-              </text>
-            </g>
-          )
-        })}
-      </svg>
-    </div>
+function useECharts(option: any, deps: unknown[]) {
+  const ref = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<any>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !window.echarts) return
+    if (!chartRef.current) {
+      chartRef.current = window.echarts.init(el)
+    }
+    chartRef.current.setOption(option, true)
+    const onResize = () => chartRef.current?.resize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps)
+  useEffect(() => {
+    return () => {
+      chartRef.current?.dispose()
+      chartRef.current = null
+    }
+  }, [])
+  return ref
+}
+
+/** 统一 X 轴配置：interval:0 全显示 + rotate:0 + lineHeight:16 支持换行 */
+const xAxisCommon = (categories: string[]) => ({
+  type: 'category' as const,
+  data: categories,
+  boundaryGap: false,
+  axisLabel: {
+    interval: 0,
+    rotate: 0,
+    lineHeight: 16,
+    color: '#6b7280',
+    fontSize: 11,
+    formatter: (v: string) => v,
+  },
+  axisLine: { lineStyle: { color: '#e5e7eb' } },
+  axisTick: { show: false },
+})
+
+const gridCommon = { left: 4, right: 8, top: 24, bottom: 32, containLabel: true }
+
+// ============ ECharts 折线图（预约趋势） ============
+function EChartLine({
+  categories,
+  data,
+  color = '#fa8c16',
+}: {
+  categories: string[]
+  data: number[]
+  color?: string
+}) {
+  const ref = useECharts(
+    {
+      tooltip: {
+        trigger: 'axis',
+        formatter: (params: any[]) => {
+          const p = params[0]
+          return `${p.axisValue}　预约 ${p.value} 条`
+        },
+      },
+      grid: gridCommon,
+      xAxis: xAxisCommon(categories),
+      yAxis: {
+        type: 'value',
+        minInterval: 1,
+        axisLabel: { color: '#9ca3af', fontSize: 11 },
+        splitLine: { lineStyle: { color: '#f3f4f6' } },
+      },
+      series: [
+        {
+          name: '预约',
+          type: 'line',
+          data,
+          smooth: true,
+          symbolSize: 6,
+          lineStyle: { width: 2.5, color },
+          itemStyle: { color },
+          areaStyle: { color, opacity: 0.12 },
+        },
+      ],
+    },
+    [categories.join('|'), data.join('|'), color],
   )
+  return <div ref={ref} className="w-full" style={{ height: 180 }} />
+}
+
+// ============ ECharts 柱状图（资讯趋势） ============
+function EChartBar({
+  categories,
+  data,
+  color = '#1677ff',
+}: {
+  categories: string[]
+  data: number[]
+  color?: string
+}) {
+  const ref = useECharts(
+    {
+      tooltip: {
+        trigger: 'axis',
+        formatter: (params: any[]) => {
+          const p = params[0]
+          return `${p.axisValue}　发布 ${p.value} 篇`
+        },
+      },
+      grid: gridCommon,
+      xAxis: xAxisCommon(categories),
+      yAxis: {
+        type: 'value',
+        minInterval: 1,
+        axisLabel: { color: '#9ca3af', fontSize: 11 },
+        splitLine: { lineStyle: { color: '#f3f4f6' } },
+      },
+      series: [
+        {
+          name: '资讯',
+          type: 'bar',
+          data,
+          barWidth: '45%',
+          itemStyle: { color, borderRadius: [4, 4, 0, 0] },
+          label: { show: true, position: 'top', color: '#8c8c8c', fontSize: 11 },
+        },
+      ],
+    },
+    [categories.join('|'), data.join('|'), color],
+  )
+  return <div ref={ref} className="w-full" style={{ height: 180 }} />
 }
 
 // ============ 环形占比图（正方形容器，正圆） ============
@@ -241,12 +310,8 @@ export default function Dashboard() {
             loading={isLoading}
             styles={{ body: { padding: 12 } }}
           >
-            <MiniLineChart data={data?.appointments ?? []} color="#fa8c16" />
-            <div className="mt-2 grid grid-cols-7 px-1 text-[10px] text-gray-500 font-mono">
-              {dayLabels.map((d, i) => (
-                <span key={i} className="text-center">{d}</span>
-              ))}
-            </div>
+            <EChartLine categories={dayLabels} data={data?.appointments ?? []} color="#fa8c16" />
+
           </Card>
         </Col>
         {/* 资讯发布趋势 */}
@@ -263,12 +328,8 @@ export default function Dashboard() {
             loading={isLoading}
             styles={{ body: { padding: 12 } }}
           >
-            <MiniBarChart data={data?.news_trend ?? []} color="#1677ff" />
-            <div className="mt-2 grid grid-cols-7 px-1 text-[10px] text-gray-500 font-mono">
-              {dayLabels.map((d, i) => (
-                <span key={i} className="text-center">{d}</span>
-              ))}
-            </div>
+            <EChartBar categories={dayLabels} data={data?.news_trend ?? []} color="#1677ff" />
+
           </Card>
         </Col>
         {/* 订单状态占比（正方形容器 + 正圆） */}
